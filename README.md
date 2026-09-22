@@ -24,7 +24,7 @@ Open **http://127.0.0.1:4173/**. The server serves `dist/`. Rebuild after source
 
 Normal view gives the circuit room to breathe. Drag or scroll to travel; Shift + scroll moves horizontally, Ctrl + scroll zooms. Compact shows the whole circuit. The inset locator and four district shortcuts help you travel. Dials support vertical dragging, arrow keys, Home and End. Open the machine reveals deeper controls; breadcrumb links and Back restore your place. Escape returns to the parent panel.
 
-AI project pace feeds the existing research queue, bounded by compute and experiments. Start AI projects activates it. It does not yet generate repeated incidents; deployment cadence is step 6. Save/open preserves model settings, human-response replay and survival assumptions. The model version remains 0.6.0; the redesigned interface is 0.7.0.
+AI project pace feeds the existing research queue, bounded by compute and experiments. Start AI projects activates it. It does not yet generate repeated incidents; deployment cadence is step 6. Save/open preserves model settings, human-response replay and survival assumptions. The model version is 0.6.1; the redesigned interface is 0.7.0.
 
 ## Current scope
 
@@ -45,6 +45,8 @@ All numerical transition rules are illustrative assumptions. No actual-world cat
 The app uses TypeScript, semantic HTML/CSS, inline SVG and a module worker. There are no runtime packages or remote AI calls. Fonts are system fonts; icons and surface treatments are local vectors/CSS.
 
 `npm run build` creates a static `dist/` folder suitable for GitHub Pages. Assets and worker imports use relative paths. The build includes `.nojekyll`. Publish the contents of `dist/`, not the TypeScript source directory. Hosting is not yet configured or deployed.
+
+Model 0.6.1 completes the [research and mathematical audit](docs/STEP_5_AUDIT.md), with source scope available inside component explanations. Run `npm run audit` to reproduce the small sensitivity study.
 
 ## Verification
 

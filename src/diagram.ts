@@ -80,7 +80,7 @@ export const svgDefs=`<defs><linearGradient id="module-glass" x1="0" y1="0" x2="
   <filter id="line-glow" filterUnits="userSpaceOnUse" x="-60" y="-60" width="1260" height="650"><feGaussianBlur stdDeviation="1.5"/><feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge></filter>
 </defs>`;
 export const sources = {
-  finance:{name:'Financial Stability Board · AI and financial stability',url:'https://www.fsb.org/2024/11/the-financial-stability-implications-of-artificial-intelligence/'},
+  finance:{name:'Financial Stability Board · AI and financial stability',url:'https://www.fsb.org/uploads/P14112024.pdf'},
   collapse:{name:'UNDRR · Cascading and systemic risk',url:'https://www.undrr.org/publication/briefing-note-systemic-risk'},
   recovery:{name:'FEMA · Infrastructure and recovery dependencies',url:'https://www.fema.gov/emergency-managers/practitioners/recovery-resilience-resource-library/infrastructure-dependency'},
   food:{name:'FEMA · Power outage preparedness',url:'https://www.ready.gov/sites/default/files/2024-03/ready.gov_power-outage_hazard-info-sheet.pdf'},

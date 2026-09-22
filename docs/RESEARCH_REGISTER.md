@@ -58,3 +58,14 @@ For each pathway, seek both supporting mechanisms and the strongest relevant lim
 Create an edge register before implementing release transitions. Each row links the exact model edge to its evidence category and rule. Numerical parameters require a source or an explicit illustrative label. Where reasonable alternative models disagree, preserve that disagreement in the scenario comparison rather than selecting the most dramatic result.
 
 Domain review is desirable for military escalation, public health and extinction continuations. Lack of review should be disclosed as a limitation, not disguised by polished graphics. Real user comprehension testing is separate and will be organised by the user.
+
+
+## Step 5 audit — 22 September 2026
+
+The [step 5 review](STEP_5_AUDIT.md) supersedes the initial backlog for the current educational scope. It records primary-source sections, all current pathway groups, assumptions, mathematical rules and scope decisions. The sources support mechanisms, not the chosen coefficients. Evidence notes now accompany all 25 modules on demand.
+
+Reviewed the International AI Safety Report 2026, ICRC military-AI FAQ, NATO resilience baseline, WHO essential public health functions, FSB's AI financial-stability assessment and FEMA's cross-sector dependency material. The FSB report is linked directly as a PDF. The FEMA primer landing page did not fetch; the accessible FEMA course supported the same limited dependency claim. The UNDRR publication page was inspected but does not establish a numeric collapse boundary.
+
+Four material correctness fixes: failed verification channels, zero-demand workforce loss, food-shortfall visibility, and emergency status based on actual trusted response. The audit also prevents continuing service failure from being described as an unqualified healthy world in the civilisation inspector.
+
+Remaining uncertainty is documented rather than converted into more coefficients. P0 issues are addressed for this conditional teaching model, not scientifically validated as global forecasts. Detailed nuclear aftermath remains uncomputed. Repeated incidents and deployment timing remain step 6. No external domain-review claim is made.

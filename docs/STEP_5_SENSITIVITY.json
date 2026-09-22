@@ -1,0 +1,159 @@
+{
+  "model": "0.6.1",
+  "seed": 42,
+  "scope": "Fixed introduced incidents; sensitivity checks, not frequency estimates.",
+  "presets": {
+    "outage": {
+      "repairHours": 130,
+      "careShortfallHours": 106,
+      "foodShortfallHours": 0,
+      "collapseAt": null,
+      "peakRegions": 0,
+      "escalation": true
+    },
+    "research": {
+      "repairHours": 130,
+      "careShortfallHours": 106,
+      "foodShortfallHours": 0,
+      "collapseAt": null,
+      "peakRegions": 0,
+      "escalation": true
+    },
+    "control": {
+      "repairHours": null,
+      "careShortfallHours": 696,
+      "foodShortfallHours": 457,
+      "collapseAt": null,
+      "peakRegions": 3,
+      "escalation": true
+    },
+    "health": {
+      "repairHours": 0,
+      "careShortfallHours": 307,
+      "foodShortfallHours": 0,
+      "collapseAt": null,
+      "peakRegions": 0,
+      "escalation": false
+    },
+    "information": {
+      "repairHours": null,
+      "careShortfallHours": 696,
+      "foodShortfallHours": 457,
+      "collapseAt": null,
+      "peakRegions": 3,
+      "escalation": true
+    },
+    "deliveries": {
+      "repairHours": null,
+      "careShortfallHours": 696,
+      "foodShortfallHours": 672,
+      "collapseAt": null,
+      "peakRegions": 3,
+      "escalation": true
+    }
+  },
+  "resilience": [
+    {
+      "fallback": 0,
+      "repairHours": null,
+      "careShortfallHours": 696,
+      "foodShortfallHours": 655,
+      "collapseAt": 416,
+      "peakRegions": 6,
+      "escalation": true
+    },
+    {
+      "fallback": 50,
+      "repairHours": null,
+      "careShortfallHours": 696,
+      "foodShortfallHours": 655,
+      "collapseAt": 416,
+      "peakRegions": 6,
+      "escalation": true
+    },
+    {
+      "fallback": 100,
+      "repairHours": null,
+      "careShortfallHours": 696,
+      "foodShortfallHours": 655,
+      "collapseAt": null,
+      "peakRegions": 0,
+      "escalation": true
+    }
+  ],
+  "collapseDefinition": [
+    {
+      "collapseDays": 1,
+      "repairHours": null,
+      "careShortfallHours": 696,
+      "foodShortfallHours": 655,
+      "collapseAt": 104,
+      "peakRegions": 6,
+      "escalation": true
+    },
+    {
+      "collapseDays": 7,
+      "repairHours": null,
+      "careShortfallHours": 696,
+      "foodShortfallHours": 655,
+      "collapseAt": 248,
+      "peakRegions": 6,
+      "escalation": true
+    },
+    {
+      "collapseDays": 14,
+      "repairHours": null,
+      "careShortfallHours": 696,
+      "foodShortfallHours": 655,
+      "collapseAt": 416,
+      "peakRegions": 6,
+      "escalation": true
+    },
+    {
+      "collapseDays": 28,
+      "repairHours": null,
+      "careShortfallHours": 696,
+      "foodShortfallHours": 655,
+      "collapseAt": null,
+      "peakRegions": 6,
+      "escalation": true
+    }
+  ],
+  "research": [
+    {
+      "researchSpeed": 0,
+      "made": 0,
+      "checked": 0,
+      "unchecked": 0,
+      "incident": false
+    },
+    {
+      "researchSpeed": 25,
+      "made": 30,
+      "checked": 30,
+      "unchecked": 0,
+      "incident": false
+    },
+    {
+      "researchSpeed": 50,
+      "made": 60,
+      "checked": 30,
+      "unchecked": 30,
+      "incident": true
+    },
+    {
+      "researchSpeed": 75,
+      "made": 90,
+      "checked": 30,
+      "unchecked": 60,
+      "incident": true
+    },
+    {
+      "researchSpeed": 100,
+      "made": 90,
+      "checked": 30,
+      "unchecked": 60,
+      "incident": true
+    }
+  ]
+}

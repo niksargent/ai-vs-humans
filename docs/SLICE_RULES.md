@@ -1,5 +1,7 @@
 # First playable section: causal register
 
+**Historical record, superseded:** use the [step 5 causal register and mathematical contract](STEP_5_AUDIT.md) for current rules. In particular, restoration now accumulates constrained repair work; it no longer uses the original fallback multiplier below.
+
 Model 0.1.0. Every number in this section is an authored educational assumption, not empirical calibration. The initial state introduces a faulty proposal rather than estimating the frequency of such proposals. A run is conditional on those settings. Regional population dynamics, global collapse and extinction are not calculated.
 
 | Connection | Implemented rule | Evidence boundary |

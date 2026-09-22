@@ -35,7 +35,7 @@ export function simulatePathways(s:Settings):PathwayResult {
     const trust=misinformation&&time<s.informationHours?Math.max(s.trustedChannels/100,1-s.informationReach/100):1;
     const demand=1+pulse*s.healthDemand/100;
     const healthcare=Math.min(1,(1+s.healthSurge/100)/demand);
-    const workforce=1-.4*pulse;
+    const workforce=1-Math.min(.4,.1*(demand-1));
     const hostile=harmfulOperation&&(stoppedAt===null||time<stoppedAt);
     frames.push({time,healthcare,workforce,trust,hostile,demand});
     if(time<720&&healthcare<.999)healthGapHours++;

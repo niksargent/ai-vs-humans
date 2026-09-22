@@ -2,6 +2,10 @@
 
 21 September 2026 · Local preview, not deployed.
 
+## Step 5 / model 0.6.1
+
+22 September 2026. Research and mathematical audit complete for review. Corrected verification with no working channel, health-demand/workforce coupling, food supply indicators, and emergency status. Added on-demand evidence scope for every module, reproducible sensitivity results, and an up-to-date mathematical contract. All 76 tests pass. See [step 5 audit](STEP_5_AUDIT.md). Step 6 has not begun.
+
 ## Experience redesign / interface 0.7.0
 
 22 September 2026. Five persistent exploration destinations, nested return navigation, spacious circuit, left control desk, seven dials, regional rail and glowing consequence instruments. Comparison and pinning removed. Model remains 0.6.0. All 69 tests pass. See [redesign review](EXPERIENCE_REDESIGN.md) and [remaining numbered plan](PLAN.md). Step 5 has not begun.
