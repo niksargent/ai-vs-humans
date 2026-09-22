@@ -44,6 +44,6 @@ test('Saved assumptions round-trip; missing old data resets safely; invalid data
 });
 test('The all-assumed view still names the unresolved extinction boundary',()=>{
   const l=freshContinuation();for(const id of gateIds)l.physical[id]='yes';
-  const html=continuationPanel(health,l);assert.ok(html.includes('All four extra conditions are assumed.'));
+  const html=continuationPanel(health,l);assert.ok(html.includes('Every remaining line of defence is assumed to fail.'));
   assert.ok(html.includes('Extinction is not resolved by this model.'));assert.ok(!html.includes('extinction probability'));
 });

@@ -1,0 +1,2013 @@
+{
+  "date": "2026-09-22",
+  "model": "0.7.0",
+  "seed": 42,
+  "scope": "Each main dial separately against DEFAULTS. Distinct summaries do not count all intermediate model fields. Monthly presets are deliberate different assumptions, not a representative population.",
+  "rows": [
+    {
+      "key": "capability",
+      "positions": 3,
+      "distinctSummaries": 3,
+      "runs": [
+        {
+          "value": 0,
+          "incident": false,
+          "conflict": false,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 0,
+          "end": "functioning"
+        },
+        {
+          "value": 1,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 2,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 106,
+          "repairHours": 130,
+          "end": "functioning"
+        }
+      ]
+    },
+    {
+      "key": "authority",
+      "positions": 3,
+      "distinctSummaries": 2,
+      "runs": [
+        {
+          "value": 0,
+          "incident": false,
+          "conflict": false,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 0,
+          "end": "functioning"
+        },
+        {
+          "value": 1,
+          "incident": false,
+          "conflict": false,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 0,
+          "end": "functioning"
+        },
+        {
+          "value": 2,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 106,
+          "repairHours": 130,
+          "end": "functioning"
+        }
+      ]
+    },
+    {
+      "key": "tension",
+      "positions": 21,
+      "distinctSummaries": 2,
+      "runs": [
+        {
+          "value": 0,
+          "incident": true,
+          "conflict": false,
+          "nuclear": false,
+          "careGap": 106,
+          "repairHours": 130,
+          "end": "functioning"
+        },
+        {
+          "value": 5,
+          "incident": true,
+          "conflict": false,
+          "nuclear": false,
+          "careGap": 106,
+          "repairHours": 130,
+          "end": "functioning"
+        },
+        {
+          "value": 10,
+          "incident": true,
+          "conflict": false,
+          "nuclear": false,
+          "careGap": 106,
+          "repairHours": 130,
+          "end": "functioning"
+        },
+        {
+          "value": 15,
+          "incident": true,
+          "conflict": false,
+          "nuclear": false,
+          "careGap": 106,
+          "repairHours": 130,
+          "end": "functioning"
+        },
+        {
+          "value": 20,
+          "incident": true,
+          "conflict": false,
+          "nuclear": false,
+          "careGap": 106,
+          "repairHours": 130,
+          "end": "functioning"
+        },
+        {
+          "value": 25,
+          "incident": true,
+          "conflict": false,
+          "nuclear": false,
+          "careGap": 106,
+          "repairHours": 130,
+          "end": "functioning"
+        },
+        {
+          "value": 30,
+          "incident": true,
+          "conflict": false,
+          "nuclear": false,
+          "careGap": 106,
+          "repairHours": 130,
+          "end": "functioning"
+        },
+        {
+          "value": 35,
+          "incident": true,
+          "conflict": false,
+          "nuclear": false,
+          "careGap": 106,
+          "repairHours": 130,
+          "end": "functioning"
+        },
+        {
+          "value": 40,
+          "incident": true,
+          "conflict": false,
+          "nuclear": false,
+          "careGap": 106,
+          "repairHours": 130,
+          "end": "functioning"
+        },
+        {
+          "value": 45,
+          "incident": true,
+          "conflict": false,
+          "nuclear": false,
+          "careGap": 106,
+          "repairHours": 130,
+          "end": "functioning"
+        },
+        {
+          "value": 50,
+          "incident": true,
+          "conflict": false,
+          "nuclear": false,
+          "careGap": 106,
+          "repairHours": 130,
+          "end": "functioning"
+        },
+        {
+          "value": 55,
+          "incident": true,
+          "conflict": false,
+          "nuclear": false,
+          "careGap": 106,
+          "repairHours": 130,
+          "end": "functioning"
+        },
+        {
+          "value": 60,
+          "incident": true,
+          "conflict": false,
+          "nuclear": false,
+          "careGap": 106,
+          "repairHours": 130,
+          "end": "functioning"
+        },
+        {
+          "value": 65,
+          "incident": true,
+          "conflict": false,
+          "nuclear": false,
+          "careGap": 106,
+          "repairHours": 130,
+          "end": "functioning"
+        },
+        {
+          "value": 70,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 106,
+          "repairHours": 130,
+          "end": "functioning"
+        },
+        {
+          "value": 75,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 106,
+          "repairHours": 130,
+          "end": "functioning"
+        },
+        {
+          "value": 80,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 106,
+          "repairHours": 130,
+          "end": "functioning"
+        },
+        {
+          "value": 85,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 106,
+          "repairHours": 130,
+          "end": "functioning"
+        },
+        {
+          "value": 90,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 106,
+          "repairHours": 130,
+          "end": "functioning"
+        },
+        {
+          "value": 95,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 106,
+          "repairHours": 130,
+          "end": "functioning"
+        },
+        {
+          "value": 100,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 106,
+          "repairHours": 130,
+          "end": "functioning"
+        }
+      ]
+    },
+    {
+      "key": "verification",
+      "positions": 21,
+      "distinctSummaries": 2,
+      "runs": [
+        {
+          "value": 0,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 106,
+          "repairHours": 130,
+          "end": "functioning"
+        },
+        {
+          "value": 5,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 106,
+          "repairHours": 130,
+          "end": "functioning"
+        },
+        {
+          "value": 10,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 106,
+          "repairHours": 130,
+          "end": "functioning"
+        },
+        {
+          "value": 15,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 106,
+          "repairHours": 130,
+          "end": "functioning"
+        },
+        {
+          "value": 20,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 106,
+          "repairHours": 130,
+          "end": "functioning"
+        },
+        {
+          "value": 25,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 106,
+          "repairHours": 130,
+          "end": "functioning"
+        },
+        {
+          "value": 30,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 106,
+          "repairHours": 130,
+          "end": "functioning"
+        },
+        {
+          "value": 35,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 106,
+          "repairHours": 130,
+          "end": "functioning"
+        },
+        {
+          "value": 40,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 106,
+          "repairHours": 130,
+          "end": "functioning"
+        },
+        {
+          "value": 45,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 106,
+          "repairHours": 130,
+          "end": "functioning"
+        },
+        {
+          "value": 50,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 106,
+          "repairHours": 130,
+          "end": "functioning"
+        },
+        {
+          "value": 55,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 106,
+          "repairHours": 130,
+          "end": "functioning"
+        },
+        {
+          "value": 60,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 106,
+          "repairHours": 130,
+          "end": "functioning"
+        },
+        {
+          "value": 65,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 106,
+          "repairHours": 130,
+          "end": "functioning"
+        },
+        {
+          "value": 70,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 106,
+          "repairHours": 130,
+          "end": "functioning"
+        },
+        {
+          "value": 75,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 106,
+          "repairHours": 130,
+          "end": "functioning"
+        },
+        {
+          "value": 80,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 106,
+          "repairHours": 130,
+          "end": "functioning"
+        },
+        {
+          "value": 85,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 106,
+          "repairHours": 130,
+          "end": "functioning"
+        },
+        {
+          "value": 90,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 106,
+          "repairHours": 130,
+          "end": "functioning"
+        },
+        {
+          "value": 95,
+          "incident": true,
+          "conflict": false,
+          "nuclear": false,
+          "careGap": 106,
+          "repairHours": 130,
+          "end": "functioning"
+        },
+        {
+          "value": 100,
+          "incident": true,
+          "conflict": false,
+          "nuclear": false,
+          "careGap": 106,
+          "repairHours": 130,
+          "end": "functioning"
+        }
+      ]
+    },
+    {
+      "key": "fallback",
+      "positions": 21,
+      "distinctSummaries": 21,
+      "runs": [
+        {
+          "value": 0,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 118,
+          "repairHours": 142,
+          "end": "functioning"
+        },
+        {
+          "value": 5,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 115,
+          "repairHours": 139,
+          "end": "functioning"
+        },
+        {
+          "value": 10,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 112,
+          "repairHours": 136,
+          "end": "functioning"
+        },
+        {
+          "value": 15,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 109,
+          "repairHours": 133,
+          "end": "functioning"
+        },
+        {
+          "value": 20,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 106,
+          "repairHours": 130,
+          "end": "functioning"
+        },
+        {
+          "value": 25,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 103,
+          "repairHours": 127,
+          "end": "functioning"
+        },
+        {
+          "value": 30,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 100,
+          "repairHours": 124,
+          "end": "functioning"
+        },
+        {
+          "value": 35,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 97,
+          "repairHours": 121,
+          "end": "functioning"
+        },
+        {
+          "value": 40,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 94,
+          "repairHours": 118,
+          "end": "functioning"
+        },
+        {
+          "value": 45,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 92,
+          "repairHours": 116,
+          "end": "functioning"
+        },
+        {
+          "value": 50,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 89,
+          "repairHours": 113,
+          "end": "functioning"
+        },
+        {
+          "value": 55,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 87,
+          "repairHours": 111,
+          "end": "functioning"
+        },
+        {
+          "value": 60,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 84,
+          "repairHours": 108,
+          "end": "functioning"
+        },
+        {
+          "value": 65,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 82,
+          "repairHours": 106,
+          "end": "functioning"
+        },
+        {
+          "value": 70,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 79,
+          "repairHours": 103,
+          "end": "functioning"
+        },
+        {
+          "value": 75,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 77,
+          "repairHours": 101,
+          "end": "functioning"
+        },
+        {
+          "value": 80,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 75,
+          "repairHours": 99,
+          "end": "functioning"
+        },
+        {
+          "value": 85,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 73,
+          "repairHours": 97,
+          "end": "functioning"
+        },
+        {
+          "value": 90,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 71,
+          "repairHours": 95,
+          "end": "functioning"
+        },
+        {
+          "value": 95,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 68,
+          "repairHours": 92,
+          "end": "functioning"
+        },
+        {
+          "value": 100,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 66,
+          "repairHours": 90,
+          "end": "functioning"
+        }
+      ]
+    },
+    {
+      "key": "reserves",
+      "positions": 121,
+      "distinctSummaries": 20,
+      "runs": [
+        {
+          "value": 0,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 136,
+          "repairHours": 136,
+          "end": "functioning"
+        },
+        {
+          "value": 6,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 128,
+          "repairHours": 134,
+          "end": "functioning"
+        },
+        {
+          "value": 12,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 121,
+          "repairHours": 133,
+          "end": "functioning"
+        },
+        {
+          "value": 18,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 113,
+          "repairHours": 131,
+          "end": "functioning"
+        },
+        {
+          "value": 24,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 106,
+          "repairHours": 130,
+          "end": "functioning"
+        },
+        {
+          "value": 30,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 98,
+          "repairHours": 128,
+          "end": "functioning"
+        },
+        {
+          "value": 36,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 91,
+          "repairHours": 127,
+          "end": "functioning"
+        },
+        {
+          "value": 42,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 83,
+          "repairHours": 125,
+          "end": "functioning"
+        },
+        {
+          "value": 48,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 76,
+          "repairHours": 124,
+          "end": "functioning"
+        },
+        {
+          "value": 54,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 68,
+          "repairHours": 122,
+          "end": "functioning"
+        },
+        {
+          "value": 60,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 61,
+          "repairHours": 121,
+          "end": "functioning"
+        },
+        {
+          "value": 66,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 53,
+          "repairHours": 119,
+          "end": "functioning"
+        },
+        {
+          "value": 72,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 46,
+          "repairHours": 118,
+          "end": "functioning"
+        },
+        {
+          "value": 78,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 38,
+          "repairHours": 116,
+          "end": "functioning"
+        },
+        {
+          "value": 84,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 31,
+          "repairHours": 115,
+          "end": "functioning"
+        },
+        {
+          "value": 90,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 23,
+          "repairHours": 113,
+          "end": "functioning"
+        },
+        {
+          "value": 96,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 16,
+          "repairHours": 112,
+          "end": "functioning"
+        },
+        {
+          "value": 102,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 8,
+          "repairHours": 110,
+          "end": "functioning"
+        },
+        {
+          "value": 108,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 1,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 114,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 120,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 126,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 132,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 138,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 144,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 150,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 156,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 162,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 168,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 174,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 180,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 186,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 192,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 198,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 204,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 210,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 216,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 222,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 228,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 234,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 240,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 246,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 252,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 258,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 264,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 270,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 276,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 282,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 288,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 294,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 300,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 306,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 312,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 318,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 324,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 330,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 336,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 342,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 348,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 354,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 360,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 366,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 372,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 378,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 384,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 390,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 396,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 402,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 408,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 414,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 420,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 426,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 432,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 438,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 444,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 450,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 456,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 462,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 468,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 474,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 480,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 486,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 492,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 498,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 504,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 510,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 516,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 522,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 528,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 534,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 540,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 546,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 552,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 558,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 564,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 570,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 576,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 582,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 588,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 594,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 600,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 606,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 612,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 618,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 624,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 630,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 636,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 642,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 648,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 654,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 660,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 666,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 672,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 678,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 684,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 690,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 696,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 702,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 708,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 714,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        },
+        {
+          "value": 720,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 0,
+          "repairHours": 109,
+          "end": "functioning"
+        }
+      ]
+    },
+    {
+      "key": "researchSpeed",
+      "positions": 21,
+      "distinctSummaries": 1,
+      "runs": [
+        {
+          "value": 0,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 106,
+          "repairHours": 130,
+          "end": "functioning"
+        },
+        {
+          "value": 5,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 106,
+          "repairHours": 130,
+          "end": "functioning"
+        },
+        {
+          "value": 10,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 106,
+          "repairHours": 130,
+          "end": "functioning"
+        },
+        {
+          "value": 15,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 106,
+          "repairHours": 130,
+          "end": "functioning"
+        },
+        {
+          "value": 20,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 106,
+          "repairHours": 130,
+          "end": "functioning"
+        },
+        {
+          "value": 25,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 106,
+          "repairHours": 130,
+          "end": "functioning"
+        },
+        {
+          "value": 30,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 106,
+          "repairHours": 130,
+          "end": "functioning"
+        },
+        {
+          "value": 35,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 106,
+          "repairHours": 130,
+          "end": "functioning"
+        },
+        {
+          "value": 40,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 106,
+          "repairHours": 130,
+          "end": "functioning"
+        },
+        {
+          "value": 45,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 106,
+          "repairHours": 130,
+          "end": "functioning"
+        },
+        {
+          "value": 50,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 106,
+          "repairHours": 130,
+          "end": "functioning"
+        },
+        {
+          "value": 55,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 106,
+          "repairHours": 130,
+          "end": "functioning"
+        },
+        {
+          "value": 60,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 106,
+          "repairHours": 130,
+          "end": "functioning"
+        },
+        {
+          "value": 65,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 106,
+          "repairHours": 130,
+          "end": "functioning"
+        },
+        {
+          "value": 70,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 106,
+          "repairHours": 130,
+          "end": "functioning"
+        },
+        {
+          "value": 75,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 106,
+          "repairHours": 130,
+          "end": "functioning"
+        },
+        {
+          "value": 80,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 106,
+          "repairHours": 130,
+          "end": "functioning"
+        },
+        {
+          "value": 85,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 106,
+          "repairHours": 130,
+          "end": "functioning"
+        },
+        {
+          "value": 90,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 106,
+          "repairHours": 130,
+          "end": "functioning"
+        },
+        {
+          "value": 95,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 106,
+          "repairHours": 130,
+          "end": "functioning"
+        },
+        {
+          "value": 100,
+          "incident": true,
+          "conflict": true,
+          "nuclear": false,
+          "careGap": 106,
+          "repairHours": 130,
+          "end": "functioning"
+        }
+      ]
+    }
+  ],
+  "monthly": [
+    {
+      "name": "rebuild",
+      "counts": {
+        "quiet": 39,
+        "held": 0,
+        "repairing": 12,
+        "rebuilt": 33,
+        "collapse": 44,
+        "nuclear": 0
+      }
+    },
+    {
+      "name": "guarded",
+      "counts": {
+        "quiet": 97,
+        "held": 27,
+        "repairing": 4,
+        "rebuilt": 0,
+        "collapse": 0,
+        "nuclear": 0
+      }
+    },
+    {
+      "name": "race",
+      "counts": {
+        "quiet": 0,
+        "held": 0,
+        "repairing": 0,
+        "rebuilt": 0,
+        "collapse": 128,
+        "nuclear": 0
+      }
+    },
+    {
+      "name": "brink",
+      "counts": {
+        "quiet": 0,
+        "held": 0,
+        "repairing": 2,
+        "rebuilt": 0,
+        "collapse": 0,
+        "nuclear": 126
+      }
+    },
+    {
+      "name": "refuge",
+      "counts": {
+        "quiet": 3,
+        "held": 30,
+        "repairing": 91,
+        "rebuilt": 0,
+        "collapse": 4,
+        "nuclear": 0
+      }
+    }
+  ]
+}

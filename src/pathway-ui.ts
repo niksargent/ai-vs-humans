@@ -10,14 +10,14 @@ export const pathwayPresets:Record<string,Partial<Settings>>={
   deliveries:{sharedPayments:true,sharedTransport:true,paymentFallback:0,transportFallback:10,supplyDelivery:100,repairSupplies:12,foodStores:48}
 };
 export function pathwayControls(range:Range,toggle:Toggle){
-  return `<details class="model-details"><summary>Development & checks</summary>`+
+  return `<details class="model-details"><summary>AI updates & testing</summary>`+
     toggle('repairAssistance','AI helps repair crews','Advice helps crews find the fault faster. It still needs people, powered tools and supplies.')+
-    toggle('researchEnabled','AI proposes new versions','Calculate 30 days of research before the crisis.')+
-    range('researchSpeed','Research speed','Up to four candidate updates per day.','%')+
+    toggle('researchEnabled','Start AI update projects','For the circuit, produce updates in the 30 days before the incident. The month experiment releases them as time passes.')+
+    range('researchSpeed','AI project pace','Up to four candidate updates per day.','%')+
     range('computeCapacity','Computers available','Limits how much research can run.','%')+
     range('experimentCapacity','Experiments available','Limits how many ideas can be tried.','%')+
-    range('evaluationCapacity','Checking capacity','How many candidate updates people can check each day.','%')+
-    toggle('waitForChecks','Wait for checks','Unfinished checks keep an update out of the live network.')+`</details>`+
+    range('evaluationCapacity','Update testing capacity','How many candidate updates people can check each day.','%')+
+    toggle('waitForChecks','Test before release','Unfinished checks keep an update out of the live network.')+`</details>`+
     `<details class="model-details"><summary>Can people stop it?</summary>`+
     toggle('agentEnabled','Deploy a continuing agent','It keeps acting, rather than installing one update.')+
     toggle('resistsStop','Assume it resists stopping','A scenario assumption about behaviour, not a consequence of being clever.')+
@@ -47,7 +47,7 @@ export function pathwayControls(range:Range,toggle:Toggle){
 }
 export function pathwaysPanel(r:Result){
   const p=r.pathways;
-  return `<h2 class="inspector-title">Choose the spark.</h2><p class="inspector-copy">Keep exploring your current world, or load a new starting situation below.</p>`+
+  return `<button class="primary-action" data-stage="chain">▶ Follow this world’s story</button><h2 class="inspector-title">Or choose a new spark.</h2><p class="inspector-copy">Start with the story of your current world. Or choose a new experiment below: each replaces the starting settings. Undo brings your previous world back.</p>`+
     [['outage','One bad update','An AI mistake knocks out a shared network.'],['research','Updates outrun checks','New versions go live before anyone finishes checking them.'],['control','The stop order fails','An agent keeps breaking what people are trying to repair.'],['health','Hospitals face a surge','A health threat needs several gates to fail first.'],['information','People hear conflicting instructions','False messages weaken the response.'],['deliveries','Supplies cannot move','A full warehouse is no help if purchases or deliveries stop.']].map(([id,title,copy])=>`<button class="pathway-choice" data-pathway="${id}"><strong>${title} ↗</strong><span>${copy}</span></button>`).join('')+
     `<button class="primary-action" data-stage="chain">Follow my current world →</button><button class="small-button" data-panel="advanced">Open all controls ↗</button>`;
 

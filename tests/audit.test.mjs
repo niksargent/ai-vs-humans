@@ -57,3 +57,20 @@ test('Compound pathways keep support bounded and stocks conserved',()=>{
   assert.ok(Math.abs(r.civilisation.aidSent-r.civilisation.aidReceived-r.civilisation.aidInTransit)<1e-6);
  }
 });
+
+
+test('Development explanation agrees with the fault and permission gates',()=>{
+ const unchecked=run({...pathwayPresets.research});
+ assert.equal(unchecked.pathways.researchFault,true);
+ assert.match(unchecked.nodes.development.reason,/faulty update goes live/);
+ assert.doesNotMatch(unchecked.nodes.development.reason,/Checks catch/);
+ const held=run({...pathwayPresets.research,waitForChecks:true});
+ assert.equal(held.pathways.researchFault,false);
+ assert.match(held.nodes.development.reason,/No faulty update reaches/);
+ const blocked=run({...pathwayPresets.research,authority:0});
+ assert.equal(blocked.incident,false);
+ assert.match(blocked.nodes.development.reason,/Permission blocks/);
+ const noFault=run({...pathwayPresets.research,faultyChange:false});
+ assert.equal(noFault.incident,false);
+ assert.match(noFault.nodes.development.reason,/No faulty update is introduced/);
+});

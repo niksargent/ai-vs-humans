@@ -65,3 +65,5 @@ See [implementation review](docs/IMPLEMENTATION_REVIEW.md) for completed checks,
 - [First-section edge register](docs/SLICE_RULES.md)
 
 Model 0.7.0 adds **Read the damage → Can the world keep up for a month?**: resource-limited releases, shared faults, cumulative repair work, finite supplies, and 128 reproducible monthly replays. Select outcomes to inspect their timelines. Deliberate stress worlds make different endings discoverable without inserting them into the random sample. See [step 6 review](docs/STEP_6_REPEATED_EVENTS.md).
+
+The [step 7 UX repair pass](docs/STEP_7_UX_REPAIR_REVIEW.md) addresses the approved first-encounter review: visible motion, living atlas backdrop, stable connections, centred dials, explicit experiment scope, truthful stories and laptop feedback. Real-user validation and hosting remain pending.

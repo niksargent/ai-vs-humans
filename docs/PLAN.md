@@ -27,7 +27,9 @@ Keep single-incident exploration. Add explicit deployment cadence, bounded incid
 
 See [step 6 implementation and review](STEP_6_REPEATED_EVENTS.md). Model 0.7.0 adds a 30-day experiment, 128 reproducible replays, six outcome categories and separate exploratory stress worlds.
 
-## 7. Final experience, validation and hosting — not started
+## 7. Final experience, validation and hosting — UX repair pass implemented; user validation and hosting pending
+
+Precursor review completed: [first-encounter UX walkthrough](UX_FIRST_ENCOUNTER_REVIEW.md), with [input/output range measurements](UX_RANGE_AUDIT.json). Approved by the user. See [UX repair implementation](STEP_7_UX_REPAIR_REVIEW.md) for dispositions, browser checks and remaining validation.
 
 Incorporate user comprehension testing (user organised), audit navigation/accessibility, keyboard/reduced-motion behaviour, desktop/laptop layouts and animation performance. Verify all model pathways remain discoverable. Complete final language and visual polish. Test production build and host-path behaviour; publish to the user-selected host (GitHub Pages unless subsequently changed). Stop for review before completing the delivery.
 

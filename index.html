@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-motion="on">
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#191c1c">
@@ -36,15 +36,15 @@
           <div class="machine-toolbar"><button id="desk-toggle" aria-expanded="true">◉ Controls</button><div class="scenario-line"><strong>Your world. Your choices.</strong></div><div class="history-tools"><button id="undo-button" disabled title="Undo your last change">↶ Undo</button><button id="reset-button" title="Restore the opening world">↺ Reset</button></div></div>
           <div class="instrument">
             <section class="world" aria-label="Interconnected causal world">
-              <div class="map-caption"><span id="map-title">THE LIVING CIRCUIT</span><div class="map-density" role="group" aria-label="Map density"><button data-density="normal" aria-pressed="true">Normal</button><button data-density="compact" aria-pressed="false">Compact</button></div></div>
+              <div class="map-caption"><span id="map-title">ONE INCIDENT · FOLLOW ITS CONNECTIONS</span><div class="map-density" role="group" aria-label="Map density"><button data-density="normal" aria-pressed="true">Normal</button><button data-density="compact" aria-pressed="false">Compact</button></div></div>
               <div class="map-districts" aria-label="Map areas"><button data-focus="origins">The spark</button><button data-focus="services">Shared systems</button><button data-focus="health">Lives & essentials</button><button data-focus="recovery">The way back</button></div>
               <div class="viewport" id="viewport" tabindex="0" aria-label="Living circuit. Drag or scroll to explore. Control plus scroll zooms. Arrow keys move; Home shows the whole world."><svg id="world-svg" role="group" aria-label="Connected causes, services and recovery"></svg></div>
-              <div class="map-hud"><span id="view-label">Drag to explore</span><div class="zoom-tools"><button id="zoom-out" aria-label="Zoom out">−</button><span id="zoom-label">100%</span><button id="zoom-in" aria-label="Zoom in">+</button><button id="home-view" aria-label="Fit whole world">⌖</button></div></div>
+              <div class="map-hud"><span id="view-label">Drag to explore</span><div class="zoom-tools"><button id="motion-toggle" aria-pressed="true">Motion on</button><button id="zoom-out" aria-label="Zoom out">−</button><span id="zoom-label">100%</span><button id="zoom-in" aria-label="Zoom in">+</button><button id="home-view" aria-label="Fit whole world">⌖</button></div></div>
               <div class="mini-map" id="mini-map" aria-label="World locator. Click to travel." role="button" tabindex="0"></div>
             </section>
             <aside id="readout" class="readout" aria-label="Mission readout"></aside>
           </div>
-          <div class="guide-display"><div class="guide-emblem" aria-hidden="true">◈</div><div><span class="guide-label">MISSION CONTROL <i></i></span><p id="change-text" aria-live="polite">Your world is under pressure. Turn a dial, or choose a spark to see where it leads.</p></div><button id="trace-button" title="Walk through the sequence">▶ Follow events</button></div>
+          <div class="guide-display"><div class="guide-emblem" aria-hidden="true">◈</div><div><span class="guide-label">MISSION CONTROL <i></i></span><p id="change-text" aria-live="polite">Your world is under pressure. Turn a dial, or choose a spark to see where it leads.</p></div><button id="trace-button" title="Walk through the sequence">▶ Follow the story</button></div>
           <section id="impact" class="impact" aria-label="Regional service impact"></section>
         </div>
       </div>

@@ -44,7 +44,7 @@ export function simulatePathways(s:Settings):PathwayResult {
   const events:PathwayResult['events']=[];
   if(s.researchEnabled)events.push({id:'development',time:-720,parents:[],description:`Before this crisis, AI proposes ${made.toFixed(0)} changes in 30 days. ${unchecked.toFixed(0)} are released before checks finish; ${backlog.toFixed(0)} wait in the queue.`});
   if(agentDeployed)events.push({id:'control',time:s.stopDelay,parents:['access'],description:controlLost?`People send a stop order after ${s.stopDelay} hours, but the agent keeps operating using resources outside their control.`:`People stop the agent after ${s.stopDelay} hours. Repair work can continue without it interfering.`});
-  if(healthIntroduced)events.push({id:'bio',time:0,parents:[],description:'The introduced health threat passes all four gates: AI assistance, harmful intent, physical access and failed screening. Rising demand strains hospitals and keeps workers home.'});
+  if(healthIntroduced)events.push({id:'bio',time:0,parents:[],description:'Someone misuses AI scientific help to cause a health emergency. They have real-world access, and screening fails to stop them. More people need hospital care; illness also keeps workers home.'});
   if(healthIntroduced){
     const peakAt=Math.min(168,s.healthResponseDelay);
     events.push({id:'bio-peak',time:peakAt,parents:['bio','hospital'],description:`Demand reaches ${peakDemand.toFixed(1)} times normal. At this point, staffed facilities can meet ${Math.round(frames[peakAt].healthcare*100)}% of demand before any power shortage is counted.`});
