@@ -7,42 +7,49 @@
   <title>The Switchboard — An explorable world</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='9' fill='%23191c1c'/%3E%3Cpath d='M10 10v10h20v10M10 20v10M30 10v10' stroke='%239bddc7' stroke-width='2' fill='none'/%3E%3C/svg%3E">
   <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="./machine.css">
 </head>
 <body>
   <a class="skip-link" href="#controls">Skip to the controls</a>
   <div class="app-shell">
     <header class="masthead">
-      <div class="identity"><div class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></div><div><p class="eyebrow">A WORLD OF CAUSE & EFFECT</p><h1>THE SWITCHBOARD</h1></div></div>
-      <p class="mission">How could AI cause<br><strong>civilisation to fail?</strong></p>
-      <div class="header-actions"><span class="edition"><i class="tiny-lamp"></i> INTERACTIVE STUDY <b>01</b></span><button class="utility" id="about-button" title="About this model">About the model <span>↗</span></button><button class="icon-button" id="save-button" aria-label="Save or share this scenario" title="Save or share">↥</button></div>
+      <div class="identity"><div class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></div><div><p class="eyebrow">THE FUTURE IS NOT A SPECTATOR SPORT</p><h1>THE SWITCHBOARD</h1></div></div>
+      <p class="mission">One connected world.<br><strong>Find its breaking points. Keep it alive.</strong></p>
+      <div class="header-actions"><span class="edition"><i class="tiny-lamp"></i> <span id="system-state">WORLD ONLINE</span></span><button class="utility" id="about-button" title="About this model">About the model <span>↗</span></button><button class="icon-button" id="save-button" aria-label="Save or share this scenario" title="Save or share">↥</button></div>
     </header>
 
     <main class="console" id="main">
-      <i class="screw screw-tl" aria-hidden="true"></i><i class="screw screw-tr" aria-hidden="true"></i><i class="screw screw-bl" aria-hidden="true"></i><i class="screw screw-br" aria-hidden="true"></i>
-      <div class="toolbar">
-        <div class="explore-tools"><details id="explore-menu"><summary>◎ Explore <span>⌄</span></summary><div class="explore-popover"><span class="menu-label">LOOK CLOSER</span><div class="focus-nav" role="group" aria-label="Explore the world"><button class="focus-button active" data-focus="world">Whole world</button><button class="focus-button" data-focus="military">Military</button><button class="focus-button" data-focus="services">Infrastructure & health</button><button class="focus-button" data-focus="recovery">Recovery</button></div><span class="menu-label">LOOK AT</span><button data-mode="case" class="active">What happens in this case</button><button data-mode="conditions">Which routes are open?</button><small>Open routes show where trouble could travel, before people make their choices.</small></div></details><span id="view-label">Whole world · this case</span></div>
-        <div class="journey-tools"><button class="toolbar-button" data-panel="pathways">Explore causes</button><button id="trace-button" class="journey-button">▶ Show what happened</button><button id="pin-comparison" class="journey-button" title="Keep these settings as your starting point, then change a dial.">⇄ Compare changes</button></div>
-      </div>
-
-      <div class="scenario-line"><div><span class="tag">THE EXPERIMENT</span><strong>A faulty AI update meets a world on edge.</strong><span class="scenario-explainer">Change a control. Follow the consequences.</span></div><button id="reset-button" class="text-button" title="Restore the opening settings">↶ Reset</button></div>
-
-      <div class="instrument">
-        <section class="world" aria-label="Interconnected causal world">
-          <div class="map-caption"><span id="map-title">ONE WORLD. SHARED DEPENDENCIES.</span><span id="case-label">EXAMPLE 042 · INTRODUCED INCIDENT</span></div>
-          <div class="viewport" id="viewport" tabindex="0" aria-label="Causal map. Drag empty space to pan, use plus and minus to zoom. Arrow keys pan; Home resets.">
-            <svg id="world-svg" viewBox="0 0 1140 520" role="group" aria-label="AI deployment connects to communications, military verification, power, hospitals and recovery"></svg>
+      <nav class="journey-rail" aria-label="Explore the machine">
+        <button data-stage="world"><span>01</span><b>Set the world</b><small>Choose a spark</small></button>
+        <button data-stage="chain"><span>02</span><b>Follow the chain</b><small>See cause & effect</small></button>
+        <button data-stage="damage"><span>03</span><b>Read the damage</b><small>Who feels it?</small></button>
+        <button data-stage="rescue"><span>04</span><b>Find a way back</b><small>Break the chain</small></button>
+        <button data-stage="beyond"><span>05</span><b>Beyond collapse</b><small>Could anyone survive?</small></button>
+      </nav>
+      <div class="machine-grid">
+        <aside class="control-desk" aria-label="Control desk">
+          <div class="desk-heading"><span>WORLD CONTROLS</span><button id="desk-close" aria-label="Close control desk">‹</button></div>
+          <section class="control-deck" id="controls" aria-label="World controls"></section>
+          <button id="advanced-button" class="small-button">Open the machine <span>＋</span></button>
+        </aside>
+        <div class="mission-area">
+          <div class="machine-toolbar"><button id="desk-toggle" aria-expanded="true">◉ Controls</button><div class="scenario-line"><strong>Your world. Your choices.</strong></div><div class="history-tools"><button id="undo-button" disabled title="Undo your last change">↶ Undo</button><button id="reset-button" title="Restore the opening world">↺ Reset</button></div></div>
+          <div class="instrument">
+            <section class="world" aria-label="Interconnected causal world">
+              <div class="map-caption"><span id="map-title">THE LIVING CIRCUIT</span><div class="map-density" role="group" aria-label="Map density"><button data-density="normal" aria-pressed="true">Normal</button><button data-density="compact" aria-pressed="false">Compact</button></div></div>
+              <div class="map-districts" aria-label="Map areas"><button data-focus="origins">The spark</button><button data-focus="services">Shared systems</button><button data-focus="health">Lives & essentials</button><button data-focus="recovery">The way back</button></div>
+              <div class="viewport" id="viewport" tabindex="0" aria-label="Living circuit. Drag or scroll to explore. Control plus scroll zooms. Arrow keys move; Home shows the whole world."><svg id="world-svg" role="group" aria-label="Connected causes, services and recovery"></svg></div>
+              <div class="map-hud"><span id="view-label">Drag to explore</span><div class="zoom-tools"><button id="zoom-out" aria-label="Zoom out">−</button><span id="zoom-label">100%</span><button id="zoom-in" aria-label="Zoom in">+</button><button id="home-view" aria-label="Fit whole world">⌖</button></div></div>
+              <div class="mini-map" id="mini-map" aria-label="World locator. Click to travel." role="button" tabindex="0"></div>
+            </section>
+            <aside id="readout" class="readout" aria-label="Mission readout"></aside>
           </div>
-          <section id="impact" class="impact" aria-label="Regional service impact"></section><div class="map-bottom"><div class="legend"><span><i class="dot coral"></i>Occurred</span><span><i class="dot mint"></i>Protection / recovery</span><span><i class="dot grey"></i>Not reached</span><span class="preview-key">┄ Pathway preview</span></div><div class="zoom-tools"><button class="icon-button" id="zoom-out" aria-label="Zoom out">−</button><span id="zoom-label">100%</span><button class="icon-button" id="zoom-in" aria-label="Zoom in">+</button><button class="icon-button" id="home-view" aria-label="Fit whole world">⌖</button></div></div>
-          <div class="mini-map" id="mini-map" aria-label="Map location" hidden><svg viewBox="0 0 1140 520"><g fill="#54615c"><rect x="30" y="58" width="176" height="102"/><rect x="250" y="58" width="176" height="102"/><rect x="470" y="58" width="176" height="102"/><rect x="690" y="58" width="176" height="102"/><rect x="910" y="58" width="176" height="102"/><rect x="30" y="220" width="176" height="102"/><rect x="250" y="220" width="176" height="102"/><rect x="470" y="220" width="176" height="102"/><rect x="690" y="220" width="176" height="102"/><rect x="910" y="220" width="176" height="102"/><rect x="250" y="382" width="176" height="102"/><rect x="470" y="382" width="176" height="102"/><rect x="690" y="382" width="176" height="102"/><rect x="910" y="382" width="176" height="102"/></g><rect id="mini-window" fill="#b2e1cd18" stroke="#b2e1cd" stroke-width="8"/></svg></div>
-        </section>
-        <aside id="readout" class="readout" aria-label="Outcomes and explanations"></aside>
+          <div class="guide-display"><div class="guide-emblem" aria-hidden="true">◈</div><div><span class="guide-label">MISSION CONTROL <i></i></span><p id="change-text" aria-live="polite">Your world is under pressure. Turn a dial, or choose a spark to see where it leads.</p></div><button id="trace-button" title="Walk through the sequence">▶ Follow events</button></div>
+          <section id="impact" class="impact" aria-label="Regional service impact"></section>
+        </div>
       </div>
-
-      <div class="change-strip"><div class="change-symbol" aria-hidden="true">↳</div><p id="change-text" aria-live="polite">One communications failure. Two very different consequences. Try increasing independent checks.</p><button class="text-button" id="undo-button" disabled>↶ Undo</button><button id="pin-last-change" class="text-button" hidden>Keep this comparison ↗</button></div>
-      <section class="control-deck" id="controls" aria-label="World controls"></section>
-      <div class="console-bottom"><span><i class="tiny-lamp"></i> EVERY CONTROL HAS A CONSEQUENCE</span><button id="advanced-button" class="text-button">More controls <span>+</span></button><span class="hint">Drag a dial up or down · Select a component to understand it</span></div>
     </main>
-    <footer class="footer"><span></span><div><button id="extinction-button">Beyond collapse <span>↗</span></button><span class="divider"></span><span>THE SWITCHBOARD / 0.6</span></div></footer>
+    <footer class="footer"><span></span><div><button id="extinction-button">Beyond collapse <span>↗</span></button><span class="divider"></span><span>THE SWITCHBOARD / 0.7</span></div></footer>
   </div>
   <dialog id="dialog" aria-labelledby="dialog-title"><div class="dialog-top"><span id="dialog-eyebrow" class="eyebrow"></span><button class="icon-button" id="dialog-close" aria-label="Close dialog">×</button></div><h2 id="dialog-title"></h2><div id="dialog-body"></div></dialog>
   <div id="toast" role="status"></div>

@@ -56,6 +56,7 @@ export const wires:{id:string;from:string;to:string;d:string;barrier?:boolean;pr
   {id:'bio-hospital',from:'bio',to:'hospital',d:'M338 484 V504 H1120 V300 H1086'},
 ];
 const icons:Record<string,string>={
+  radiation:'<circle cx="12" cy="12" r="2"/><path d="M10 8 7 3a10 10 0 0 1 10 0l-3 5M16 12h6a10 10 0 0 1-5 9l-3-5M8 12H2a10 10 0 0 0 5 9l3-5"/>',
   chip:'<rect x="4" y="4" width="16" height="16" rx="3"/><rect x="8" y="8" width="8" height="8" rx="1"/><path d="M8 1v3m8-3v3M8 20v3m8-3v3M1 8h3m-3 8h3m16-8h3m-3 8h3"/>',
   building:'<path d="m2 8 10-6 10 6H2Zm2 3v9m5-9v9m6-9v9m5-9v9M2 22h20"/>',
   shield:'<path d="m12 2 9 4v6c0 5-4 8-9 11-5-3-9-6-9-11V6Z"/><path d="m7 12 3 3 7-7"/>',
@@ -71,7 +72,7 @@ const icons:Record<string,string>={
   leaf:'<path d="M4 20c0-11 6-17 18-17 0 13-6 19-16 16m-4 4L16 9"/>',
 };
 export function icon(name:string){return icons[name]||icons.chip;}
-export const svgDefs=`<defs>
+export const svgDefs=`<defs><linearGradient id="module-glass" x1="0" y1="0" x2=".9" y2="1"><stop stop-color="#323c43"/><stop offset=".42" stop-color="#1b252d"/><stop offset="1" stop-color="#121a21"/></linearGradient>
   <linearGradient id="node-fill" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#303438"/><stop offset="1" stop-color="#202428"/></linearGradient>
   <linearGradient id="node-warm" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#393133"/><stop offset="1" stop-color="#242529"/></linearGradient>
   <filter id="shadow" x="-10%" y="-10%" width="130%" height="140%"><feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#000" flood-opacity=".5"/></filter>

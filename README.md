@@ -16,21 +16,23 @@ Open **http://127.0.0.1:4173/**. The server serves `dist/`. Rebuild after source
 
 ## Try it
 
-1. Start with the opening case: a faulty AI change reaches a shared communications network.
-2. Select **Try stronger checks**. Escalation is interrupted; the hospital's service gap remains unchanged.
-3. Turn **Hospital backup** up to cover the outage. The hospital branch changes independently.
-4. Turn **Permissions** down to **Advise**. The introduced change cannot execute; both dependent routes are blocked.
-5. Select any component to inspect its rule. Use focus buttons, pan, zoom and Home to explore the same world.
+1. **Set the world**: choose a starting situation, then turn the seven controls on the left.
+2. **Follow the chain**: walk through events while the circuit follows the action.
+3. **Read the damage**: open a glowing readout, inspect a region, or replay different human decisions.
+4. **Find a way back**: try safeguards. Undo restores your previous settings.
+5. **Beyond collapse**: explore the further conditions that could threaten survivors.
 
-Dials support vertical dragging, arrow keys, Home and End. More controls exposes verification deadlines, repair time and shared dependencies. Scenario export/import preserves settings and the seed. A scenario link contains the same compact configuration. Localhost links only work on the computer running the server.
+Normal view gives the circuit room to breathe. Drag or scroll to travel; Shift + scroll moves horizontally, Ctrl + scroll zooms. Compact shows the whole circuit. The inset locator and four district shortcuts help you travel. Dials support vertical dragging, arrow keys, Home and End. Open the machine reveals deeper controls; breadcrumb links and Back restore your place. Escape returns to the parent panel.
+
+AI project pace feeds the existing research queue, bounded by compute and experiments. Start AI projects activates it. It does not yet generate repeated incidents; deployment cadence is step 6. Save/open preserves model settings, human-response replay and survival assumptions. The model version remains 0.6.0; the redesigned interface is 0.7.0.
 
 ## Current scope
 
-Implemented: one deterministic-by-seed shared-network case, permission gates, verification and decision timing, illustrative military responses, hospital backup depletion, restoration, a worker-based 256-case ensemble, provenance inspectors, whole-world/focus navigation, undo, persistence and scenario files.
+Implemented: one deterministic-by-seed shared-network case, permission gates, verification and decision timing, illustrative military responses, hospital backup depletion, restoration, a worker-based replay of 256 human responses, provenance inspectors, whole-world/focus navigation, undo, persistence and scenario files.
 
 Model 0.4 adds six regional repair calculations, different reserves, limited delayed help from working regions and an adjustable sustained service-collapse test. Open **Civilisation collapse** and try **Try widespread failure**, followed by **Keep two regions independent**. See [step 2 review](docs/STEP_2_CIVILISATION.md).
 
-Model 0.5.1 adds **Explore causes**: development outrunning checks, persistent agents, a conditional health crisis, false emergency messages and payment/transport failures. These affect the same regional recovery model. Expand More controls to combine them. See [step 3 review](docs/STEP_3_PATHWAYS.md).
+Model 0.5.1 adds **Explore causes**: development outrunning checks, persistent agents, a conditional health crisis, false emergency messages and payment/transport failures. These affect the same regional recovery model. Open the machine to combine them. See [step 3 review](docs/STEP_3_PATHWAYS.md).
 
 Model 0.6 adds an interactive **Beyond collapse** view. It connects current model facts to further physical-hazard and hostile-control conditions, keeping additional assumptions separate and initially unknown. See [step 4 review](docs/STEP_4_CONTINUATIONS.md).
 
@@ -52,6 +54,8 @@ See [implementation review](docs/IMPLEMENTATION_REVIEW.md) for completed checks,
 
 ## Design and model
 
+- [Delivery plan and remaining steps](docs/PLAN.md)
+- [Experience redesign review](docs/EXPERIENCE_REDESIGN.md)
 - [Build specification](BUILD_SPEC.md)
 - [Model specification](docs/MODEL_SPEC.md)
 - [Research register](docs/RESEARCH_REGISTER.md)

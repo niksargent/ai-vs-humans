@@ -2,6 +2,7 @@ import type {Settings,NumericKey,Result} from './model.js';
 type Range=(key:NumericKey,label:string,copy:string,unit:string)=>string;
 type Toggle=(key:keyof Settings,label:string,copy:string)=>string;
 export const pathwayPresets:Record<string,Partial<Settings>>={
+  outage:{},
   research:{researchEnabled:true,waitForChecks:false,faultyChange:true},
   control:{faultyChange:false,agentEnabled:true,harmfulGoal:true,externalResources:true,independentStop:false},
   health:{faultyChange:false,healthChallenge:true,scienceAssistance:true,maliciousActor:true,physicalAccess:true,screening:false},
@@ -46,9 +47,10 @@ export function pathwayControls(range:Range,toggle:Toggle){
 }
 export function pathwaysPanel(r:Result){
   const p=r.pathways;
-  return `<h2 class="inspector-title">Different beginnings. One connected world.</h2><p class="inspector-copy">Each example loads a starting world. Try a cause, then break its chain; Undo brings your world back.</p>`+
-    [['research','Updates outrun checks','New versions go live before anyone finishes checking them.'],['control','The stop order fails','An agent keeps breaking what people are trying to repair.'],['health','Hospitals face a surge','A health threat needs several gates to fail first.'],['information','People hear conflicting instructions','False messages weaken the response.'],['deliveries','Supplies cannot move','A full warehouse is no help if purchases or deliveries stop.']].map(([id,title,copy])=>`<button class="pathway-choice" data-pathway="${id}"><strong>${title} ↗</strong><span>${copy}</span></button>`).join('')+
-    `<div class="comparison"><div><span>Unchecked releases</span><b>${Math.floor(p.research.unchecked)}</b></div><div><span>Stop order</span><b>${!p.agentDeployed?'Not needed':p.controlLost?'Fails':'Works'}</b></div><div><span>Region 1 care shortfall</span><b>${r.recoveryModel.healthcareGap}h</b></div></div><button class="small-button" data-panel="advanced">Adjust the prerequisites ↗</button><button class="small-button" id="trace-selected">Show what happened ↗</button>`;
+  return `<h2 class="inspector-title">Choose the spark.</h2><p class="inspector-copy">Keep exploring your current world, or load a new starting situation below.</p>`+
+    [['outage','One bad update','An AI mistake knocks out a shared network.'],['research','Updates outrun checks','New versions go live before anyone finishes checking them.'],['control','The stop order fails','An agent keeps breaking what people are trying to repair.'],['health','Hospitals face a surge','A health threat needs several gates to fail first.'],['information','People hear conflicting instructions','False messages weaken the response.'],['deliveries','Supplies cannot move','A full warehouse is no help if purchases or deliveries stop.']].map(([id,title,copy])=>`<button class="pathway-choice" data-pathway="${id}"><strong>${title} ↗</strong><span>${copy}</span></button>`).join('')+
+    `<button class="primary-action" data-stage="chain">Follow my current world →</button><button class="small-button" data-panel="advanced">Open all controls ↗</button>`;
+
 }
 export function pathwayInterventions(id:string){
   const rows:Record<string,[string,string]>= {development:['waitForChecks','Require checks before release'],control:['independentStop','Try independent isolation'],bio:['screening','Stop the health threat at screening'],information:['trustedChannels','Restore trusted channels'],payments:['paymentFallback','Keep offline payments working'],transport:['transportFallback','Keep independent transport working']};

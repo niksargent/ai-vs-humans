@@ -2,6 +2,10 @@
 
 21 September 2026 · Local preview, not deployed.
 
+## Experience redesign / interface 0.7.0
+
+22 September 2026. Five persistent exploration destinations, nested return navigation, spacious circuit, left control desk, seven dials, regional rail and glowing consequence instruments. Comparison and pinning removed. Model remains 0.6.0. All 69 tests pass. See [redesign review](EXPERIENCE_REDESIGN.md) and [remaining numbered plan](PLAN.md). Step 5 has not begun.
+
 ## Step 4 / model 0.6.0
 
 Complete for review: the existing Beyond collapse dialog now connects current model facts to two inspectable continuations. Extra assumptions remain separate, begin unknown, persist with the scenario and can show where a surviving community interrupts a route. No extinction probability or death count is claimed. No main-board footprint was added. See [step 4 review](STEP_4_CONTINUATIONS.md). All 67 tests pass. Step 5 has not begun.
