@@ -1,7 +1,7 @@
 import {simulatePathways,type PathwayResult} from './pathways.js';
 import type {RecoveryResult} from './recovery.js';
 import {simulateCivilisation,type CivilisationResult} from './civilisation.js';
-export const MODEL_VERSION = '0.6.1';
+export const MODEL_VERSION = '0.7.0';
 export interface Settings {
   repairAssistance:boolean; researchEnabled:boolean; waitForChecks:boolean; researchSpeed:number; computeCapacity:number; experimentCapacity:number; evaluationCapacity:number;
   agentEnabled:boolean; resistsStop:boolean; externalResources:boolean; independentStop:boolean; harmfulGoal:boolean; stopDelay:number;

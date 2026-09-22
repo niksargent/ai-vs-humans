@@ -1,3 +1,9 @@
+## Current checkpoint — step 6 (model 0.7.0)
+
+The older review below describes the first playable slice. Current coverage includes steps 1–6; see [delivery plan](PLAN.md), [research audit](STEP_5_AUDIT.md) and [repeated-event review](STEP_6_REPEATED_EVENTS.md). The new monthly experiment adds release cadence, cumulative incidents and six outcome distributions without altering the single-incident view. 86 tests pass. Stop for user review before step 7.
+
+---
+
 # First playable section: implementation review
 
 21 September 2026 · Local preview, not deployed.

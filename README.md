@@ -63,3 +63,5 @@ See [implementation review](docs/IMPLEMENTATION_REVIEW.md) for completed checks,
 - [Research register](docs/RESEARCH_REGISTER.md)
 - [Acceptance plan](docs/ACCEPTANCE.md)
 - [First-section edge register](docs/SLICE_RULES.md)
+
+Model 0.7.0 adds **Read the damage → Can the world keep up for a month?**: resource-limited releases, shared faults, cumulative repair work, finite supplies, and 128 reproducible monthly replays. Select outcomes to inspect their timelines. Deliberate stress worlds make different endings discoverable without inserting them into the random sample. See [step 6 review](docs/STEP_6_REPEATED_EVENTS.md).

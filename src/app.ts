@@ -1,3 +1,5 @@
+import {MONTH_DEFAULTS,validateMonth,monthChallenges,type MonthSettings,type MonthEnsemble,type MonthOutcome} from './month.js';
+import {monthPanel} from './month-ui.js';
 import {evidenceFor} from './evidence.js';
 import {worldNodes as layout,nodeById,WORLD,connection,primaryEdges,districts,outcomeIcon} from './world-view.js';
 import {freshContinuation,validateContinuation,type Continuation,type Gate,type Route,type Assumption} from './continuation.js';
@@ -12,13 +14,15 @@ const esc=(s:string)=>s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;
 let settings={...DEFAULTS},seed=42, mode:'case'|'conditions'='case';
 let result=simulate(settings,seed);
 let continuation=freshContinuation();
+let monthOptions={...MONTH_DEFAULTS},monthSeed=42,monthData:MonthEnsemble|null=null,monthIndex=0,monthError='',monthRequest=0;
+let monthWorker:Worker|null=null;
 type Panel='outcomes'|'node'|'advanced'|'range'|'story'|'recovery'|'collapse'|'region'|'pathways'|'rescue'|'beyond';
 let panel:Panel='pathways',selected='';
 let storyIndex=0;
 let changed:string[]=[], changeColour='#86baff', feedbackTimer=0;
 let viewArea='Whole world';
 let regionContext:number|null=null;
-let history:{settings:Settings;seed:number;continuation:Continuation}[]=[];
+let history:{settings:Settings;seed:number;continuation:Continuation;monthOptions:MonthSettings;monthSeed:number}[]=[];
 let camera={x:0,y:0,w:1000,h:700};
 let density:'normal'|'compact'='normal';
 type Stage='world'|'chain'|'damage'|'rescue'|'beyond';
@@ -68,7 +72,7 @@ function initDeck(){
   });
 }
 function updateDeck(){const power=document.querySelector('#research-power');if(power)power.textContent=settings.researchEnabled?'Pause AI projects':'Start AI projects';for(const d of deckInfo){const bank=$(`[data-bank="${d.key}"]`),desc=description(d.key),c=controls[d.key];const dial=bank.querySelector<HTMLElement>('.dial')!;bank.querySelector<HTMLElement>('.dial-wrap')!.style.setProperty('--fill',`${270*(settings[d.key]-c.min)/(c.max-c.min)}deg`);dial.style.setProperty('--angle',`${-135+270*(settings[d.key]-c.min)/(c.max-c.min)}deg`);dial.setAttribute('aria-valuenow',String(settings[d.key]));dial.setAttribute('aria-valuetext',`${desc.value}, ${desc.unit}`);bank.querySelector('.dial-value')!.innerHTML=`${desc.value}<small>${desc.unit}</small>`;bank.querySelector('.control-note')!.textContent=desc.note;dial.setAttribute('title',desc.note+' Drag up or down; arrow keys adjust.');}}
-function remember(){history.push({settings:{...settings},seed,continuation:validateContinuation(continuation)});if(history.length>80)history.shift();}
+function remember(){history.push({settings:{...settings},seed,continuation:validateContinuation(continuation),monthOptions:{...monthOptions},monthSeed});if(history.length>80)history.shift();}
 function persist(){try{localStorage.setItem('switchboard-v1',JSON.stringify(scenarioObject()));}catch{/* Browsing can continue without storage. */}}
 function feedback(before:Result){
   changed=changedNodes(before,result);
@@ -130,7 +134,7 @@ function renderPanel(){
       outcomeCard('Hospital lifeline',result.recoveryModel.healthcareGap?`${result.recoveryModel.healthcareGap} hours when care cannot keep up.`:'Essential care holds. People can get help.',result.nodes.hospital.status,'hospital')+
       outcomeCard('Nuclear weapons',result.nuclear?'Leaders choose to use nuclear weapons.':'This escalation is avoided.',result.nuclear?'harm':'quiet','nuclear')+
       outcomeCard('Civilisation',result.nuclear?'A nuclear catastrophe. What follows is unknown.':c.endStatus==='collapse'?'The lifelines fail. Recovery is still out of reach.':c.recoveredAt!==null?'Brought back from the brink. Services recover.':c.endStatus==='disrupted'?'Still standing. Still fighting to recover.':'The world holds together.',result.nodes.collapse.status,'collapse')+
-      `<button class="primary-action" data-stage="rescue">Find a way back <span>→</span></button><button class="small-button" data-panel="range">Could people choose differently? ↗</button>`;
+      `<button class="primary-action" data-stage="rescue">Find a way back <span>→</span></button><button class="small-button" id="open-month">Can the world keep up for a month? ↗</button><button class="small-button" data-panel="range">Could people choose differently? ↗</button>`;
   } else if(panel==='collapse'){
     el.innerHTML=collapsePanel();
   } else if(panel==='beyond'){
@@ -146,7 +150,7 @@ function renderPanel(){
     el.innerHTML=panelHeader('SHOW WHAT HAPPENED')+`<div class="story-number">${String(storyIndex+1).padStart(2,'0')}<small> / ${steps.length}</small></div><p class="story-time">${step.time}</p><h2 class="inspector-title">${step.title}</h2><p class="story-copy" aria-live="polite">${step.copy}</p><div class="story-nav"><button id="story-prev" ${storyIndex===0?'disabled':''}>← Back</button><button id="story-next" ${storyIndex===steps.length-1?'disabled':''}>Next →</button></div><div class="story-dots">${steps.map((_,i)=>`<button data-step="${i}" aria-label="Step ${i+1}" aria-current="${i===storyIndex?'step':'false'}"></button>`).join('')}</div>`;
   } else if(panel==='node'){
     const n=nodeById[selected]||{title:'Nuclear weapons',kicker:'A HUMAN DECISION'};const state=selected==='nuclear'?{...result.nodes.military,status:result.nuclear?'harm' as Status:'quiet' as Status,label:result.nuclear?'Nuclear weapons are used':'Nuclear use is avoided',reason:result.nuclear?'The false warning escalates into conflict. Leaders make a further decision to use nuclear weapons. It is a catastrophe beyond the original network failure.':'The escalation does not reach nuclear weapons in this run. Keeping checks independent and giving leaders time to verify a warning can break the route.',rule:'This requires escalation, high tension and a separate seeded human strategic-use decision. Nuclear damage is not calculated.'}:result.nodes[selected],display=regionContext!==null&&regionContext>=result.affectedRegions?{status:'safe' as Status,label:'Available in this region'}:selected==='nuclear'?state:displayNode(selected);
-    el.innerHTML=panelHeader('FOLLOW THE CONNECTION')+`<span class="etched-label">${n.kicker}</span><h2 class="inspector-title">${n.title}</h2><div class="inspector-status"><i class="status-lamp ${display.status}"></i>${esc(display.label)}</div><p class="inspector-copy">${regionContext!==null?`<strong>Region ${regionContext+1}</strong><br>${regionContext>=result.affectedRegions?'This region uses a separate network, or the update was stopped. Its services keep working.':esc(state.reason)}`:esc(mode==='conditions'&&state.status!=='unknown'?'The highlighted route shows how this component is connected. Choose “What happens in this case” in Explore to inspect which events occurred.':state.reason)}</p><details class="model-details"><summary>How this works & sources</summary><p class="rule-label">${state.status==='unknown'?'MODEL COVERAGE':'THE RULE IN THIS MODEL'}</p><p class="rule-copy">${esc(state.rule)}</p>${evidenceNote(selected)}</details>${pathwayInterventions(selected)}<button class="small-button" data-panel="advanced">Inspect the settings <span>↗</span></button><button class="small-button" id="trace-selected">Show what happened <span>↗</span></button>`;
+    el.innerHTML=panelHeader('FOLLOW THE CONNECTION')+`<span class="etched-label">${n.kicker}</span><h2 class="inspector-title">${n.title}</h2><div class="inspector-status"><i class="status-lamp ${display.status}"></i>${esc(display.label)}</div><p class="inspector-copy">${regionContext!==null?`<strong>Region ${regionContext+1}</strong><br>${regionContext>=result.affectedRegions?'This region uses a separate network, or the update was stopped. Its services keep working.':esc(state.reason)}`:esc(mode==='conditions'&&state.status!=='unknown'?'The highlighted route shows how this component is connected. Choose “What happens in this case” in Explore to inspect which events occurred.':state.reason)}</p><details class="model-details"><summary>How this works & sources</summary><p class="rule-label">${state.status==='unknown'?'MODEL COVERAGE':'THE RULE IN THIS MODEL'}</p><p class="rule-copy">${esc(state.rule)}</p>${evidenceNote(selected)}</details>${pathwayInterventions(selected)}${selected==='development'?'<button class="primary-action" id="open-month">Run a month of releases →</button>':''}<button class="small-button" data-panel="advanced">Inspect the settings <span>↗</span></button><button class="small-button" id="trace-selected">Show what happened <span>↗</span></button>`;
   } else if(panel==='pathways'){
     el.innerHTML=panelHeader('EXPLORE THE CAUSES')+pathwaysPanel(result);
   } else if(panel==='advanced'){
@@ -192,8 +196,42 @@ function requestEnsemble(){const id=++requestId;try{if(!worker){worker=new Worke
 function inspect(id:string){if(id==='extinction'){showExtinction();return;}if(selected===id&&panel==='node'){back();return;}rememberPlace();regionContext=null;selected=id;panel=id==='collapse'?'collapse':id==='repair'||id==='recovery'?'recovery':'node';renderMap();renderPanel();$('#readout').scrollTop=0;focusNode(id);revealPanel();}
 function setPanel(next:Panel){rememberPlace();regionContext=null;panel=next;if(next!=='node')selected='';renderMap();renderPanel();$('#readout').scrollTop=0;revealPanel();}
 function toast(text:string){$('#toast').textContent=text;$('#toast').classList.add('visible');window.setTimeout(()=>$('#toast').classList.remove('visible'),3000);}
-function openDialog(title:string,eyebrow:string,html:string){$('#dialog').classList.remove('continuation-dialog');$('#dialog-title').textContent=title;$('#dialog-eyebrow').textContent=eyebrow;$('#dialog-body').innerHTML=html;$<HTMLDialogElement>('#dialog').showModal();}
+function openDialog(title:string,eyebrow:string,html:string){$('#dialog').classList.remove('continuation-dialog','month-dialog');$('#dialog-title').textContent=title;$('#dialog-eyebrow').textContent=eyebrow;$('#dialog-body').innerHTML=html;$<HTMLDialogElement>('#dialog').showModal();}
 function showAbout(){openDialog('A machine for asking “what if?”','THE MODEL / STUDY 01',`<p>This first playable section explores how <strong>introduced AI-related challenges</strong> can interrupt services, affect a military decision, overwhelm care or prevent recovery.</p><p class="callout">Change the inputs. The consequences update immediately. Select any component to inspect its rule and the evidence behind the dependency.</p><h3>What is calculated?</h3><p>Permission gates, a shared communications/power outage, verification before a deadline, illustrative human responses, backup depletion, regional repair, finite mutual aid, emergency coordination and an adjustable sustained-collapse test. Additional introduced cases explore development queues, persistent agents, health demand, false messages, payments and transport. The same settings and human-response replay reproduce the same result.</p><h3>What is still a preview?</h3><p>Wider political change, detailed epidemics, financial-market contagion and extinction. Their components reveal the intended whole-world structure without claiming to calculate those outcomes.</p><h3>What do the numbers mean?</h3><p>All coefficients and starting values are educational assumptions. The model is not calibrated to today's world. Sources support general mechanisms; they do not validate the model's probabilities. The circuit shows the current result; Follow the chain explains it one event at a time.</p>${sourceLink('ai')}${sourceLink('military')}${sourceLink('resilience')}<p>Model ${MODEL_VERSION}. Runs on your device. No AI service is making its decisions. Settings are saved in this browser; Reset restores the opening world.</p>`);}
+
+function renderMonth(){
+ if(!$('#dialog').classList.contains('month-dialog'))return;
+ const open=Array.from(document.querySelectorAll<HTMLDetailsElement>('#dialog-body details[open]')).map(d=>d.querySelector('summary')?.textContent);
+ const top=$('#dialog').scrollTop,active=document.activeElement as HTMLElement,key=active?.dataset.month,setting=active?.dataset.monthSetting;
+ $('#dialog-body').innerHTML=monthPanel(settings,monthOptions,monthData,monthIndex,monthError);
+ document.querySelectorAll<HTMLDetailsElement>('#dialog-body details').forEach(d=>{d.open=open.includes(d.querySelector('summary')?.textContent);});
+ $('#month-undo').toggleAttribute('disabled',!history.length);$('#dialog').scrollTop=top;
+ if(key)document.querySelector<HTMLElement>(`[data-month="${key}"]`)?.focus({preventScroll:true});
+ if(setting)document.querySelector<HTMLElement>(`[data-month-setting="${setting}"]`)?.focus({preventScroll:true});
+}
+function requestMonth(){
+ const id=++monthRequest;monthData=null;monthIndex=0;monthError='';renderMonth();
+ try{if(!monthWorker){monthWorker=new Worker(new URL('./worker.js',import.meta.url),{type:'module'});monthWorker.onmessage=e=>{if(e.data.id!==monthRequest)return;if(e.data.error)monthError=e.data.error;else monthData=e.data;renderMonth();};monthWorker.onerror=()=>{monthError='The month could not run. Try again.';monthWorker?.terminate();monthWorker=null;renderMonth();};}monthWorker.postMessage({kind:'month',id,settings,seed:monthSeed,options:monthOptions});}catch{monthError='This browser could not start the month experiment.';renderMonth();}
+}
+function showMonth(){openDialog('Can the world keep up?','THE NEXT 30 DAYS','');$('#dialog').classList.add('month-dialog');requestMonth();}
+$('#dialog-body').addEventListener('change',e=>{
+ const input=e.target as HTMLInputElement;
+ if(input.dataset.month){remember();const key=input.dataset.month as keyof MonthSettings;monthOptions={...monthOptions,[key]:Number(input.value)};if(monthOptions.checkedFault>monthOptions.uncheckedFault){if(key==='checkedFault')monthOptions.uncheckedFault=monthOptions.checkedFault;else monthOptions.checkedFault=monthOptions.uncheckedFault;}persist();requestMonth();}
+ if(input.dataset.monthSetting){const key=input.dataset.monthSetting as keyof Settings;change({...settings,[key]:input.type==='checkbox'?input.checked:Number(input.value)});requestMonth();}
+});
+$('#dialog-body').addEventListener('click',e=>{
+ const target=e.target as Element,challenge=target.closest<HTMLElement>('[data-month-challenge]'),outcome=target.closest<HTMLElement>('[data-month-outcome]');
+ if(challenge){const c=monthChallenges[challenge.dataset.monthChallenge!];remember();monthOptions={...c.options};change({...DEFAULTS,...c.settings},false);requestMonth();return;}
+ if(outcome&&monthData){monthIndex=monthData.runs.findIndex(r=>r.outcome===outcome.dataset.monthOutcome as MonthOutcome);renderMonth();return;}
+ const id=target.closest<HTMLElement>('[id]')?.id;
+ if(id==='month-prev'||id==='month-next'){monthIndex=Math.max(0,Math.min((monthData?.count||1)-1,monthIndex+(id==='month-next'?1:-1)));renderMonth();}
+ if(id==='month-more'){remember();monthSeed=(monthSeed+128)>>>0;persist();requestMonth();}
+ if(id==='month-retry')requestMonth();
+ if(id==='month-power'){change({...settings,researchEnabled:!settings.researchEnabled});requestMonth();}
+ if(id==='month-undo'){$('#undo-button').click();requestMonth();}
+ if(id==='month-world'){$<HTMLDialogElement>('#dialog').close();setPanel('advanced');}
+});
+
 function showExtinction(){openDialog('Could anyone survive?','BEYOND COLLAPSE',continuationPanel(result,continuation));$('#dialog').classList.add('continuation-dialog');}
 function refreshContinuation(focusGate?:Gate){
   $('#undo-button').toggleAttribute('disabled',!history.length);
@@ -203,14 +241,15 @@ function refreshContinuation(focusGate?:Gate){
   if(focusGate)$<HTMLSelectElement>(`#continuation-${focusGate}`).focus();
 }
 $('#dialog-body').addEventListener('change',e=>{const input=e.target as HTMLSelectElement;const gate=input.dataset.continuationGate as Gate|undefined;if(!gate)return;remember();continuation[continuation.route][gate]=input.value as Assumption;persist();refreshContinuation(gate);});
-function scenarioObject(){return {version:MODEL_VERSION,settings,seed,continuation};}
-function loadScenario(raw:unknown){clearFeedback();const obj=raw as {version?:unknown;settings?:unknown;seed?:unknown;continuation?:unknown};if(!obj||!['0.1.0','0.2.0','0.2.1','0.3.0','0.4.0','0.5.0','0.5.1','0.6.0',MODEL_VERSION].includes(String(obj.version)))throw Error('This file needs a compatible model version.');if(typeof obj.seed!=='number'||!Number.isInteger(obj.seed)||obj.seed<0||obj.seed>4294967295)throw Error('Invalid case number.');const checked=validateSettings(obj.version!==MODEL_VERSION?{...DEFAULTS,...obj.settings as object}:obj.settings);const checkedContinuation=validateContinuation(obj.continuation);remember();continuation=checkedContinuation;seed=obj.seed;settings=checked;result=simulate(settings,seed);selected='';panel='outcomes';range=null;requestId++;persist();render();$('#change-text').textContent=obj.version===MODEL_VERSION?'Your world is restored. Change a dial or follow what happened.':'Model updated. Your controls are kept; outcomes have been recalculated.';}
+function scenarioObject(){return {version:MODEL_VERSION,settings,seed,continuation,monthOptions,monthSeed};}
+function loadScenario(raw:unknown){clearFeedback();const obj=raw as {version?:unknown;settings?:unknown;seed?:unknown;continuation?:unknown;monthOptions?:unknown;monthSeed?:unknown};if(!obj||!['0.1.0','0.2.0','0.2.1','0.3.0','0.4.0','0.5.0','0.5.1','0.6.0','0.6.1',MODEL_VERSION].includes(String(obj.version)))throw Error('This file needs a compatible model version.');if(typeof obj.seed!=='number'||!Number.isInteger(obj.seed)||obj.seed<0||obj.seed>4294967295)throw Error('Invalid case number.');const checked=validateSettings(obj.version!==MODEL_VERSION?{...DEFAULTS,...obj.settings as object}:obj.settings);const checkedContinuation=validateContinuation(obj.continuation);const checkedMonth=validateMonth(obj.monthOptions);if(obj.monthSeed!==undefined&&(typeof obj.monthSeed!=='number'||!Number.isInteger(obj.monthSeed)||obj.monthSeed<0||obj.monthSeed>4294967295))throw Error('Invalid month replay.');remember();monthOptions=checkedMonth;monthSeed=obj.monthSeed as number??42;continuation=checkedContinuation;seed=obj.seed;settings=checked;result=simulate(settings,seed);selected='';panel='outcomes';range=null;requestId++;persist();render();$('#change-text').textContent=obj.version===MODEL_VERSION?'Your world is restored. Change a dial or follow what happened.':'Model updated. Your controls are kept; outcomes have been recalculated.';}
 function showSave(){openDialog('Keep this world.','SAVE / OPEN / SHARE',`<p>Save your settings and human-response replay. Reopening the same model version reproduces the result.</p><div class="export-line"><button class="primary" id="download-scenario">Download scenario</button><button class="secondary" id="copy-link">Copy scenario link</button></div><label class="import-label">Open a saved scenario<input id="import-scenario" type="file" accept="application/json,.json"></label><p>Links point to the current host. A localhost link only works on this computer; use a deployed site URL to share with others.</p>`);}
 
 document.addEventListener('click',e=>{
   const target=e.target as Element;
   const stageButton=target.closest<HTMLElement>('[data-stage]');if(stageButton){enterStage(stageButton.dataset.stage as Stage);return;}
   const crumb=target.closest<HTMLElement>('[data-trail-index]');if(crumb){trail.splice(Number(crumb.dataset.trailIndex)+1);back();return;}
+  if(target.closest('#open-month')){showMonth();return;}
   if(target.closest('#panel-back')){back();return;}
   if(target.closest('#research-power')){change({...settings,researchEnabled:!settings.researchEnabled});return;}
   const rescue=target.closest<HTMLElement>('[data-rescue]');if(rescue){const id=rescue.dataset.rescue!;const changes:Record<string,Partial<Settings>>={checks:{verification:100,decisionTime:120},hospital:{reserves:720},isolation:{independentStop:true},screening:{screening:true},trust:{trustedChannels:100},repair:{repairBackup:720,repairSupplies:168,supplyDelivery:100},refuges:{reach:4,aidStrength:100,aidBudget:168}};change({...settings,...changes[id]});return;}
@@ -246,8 +285,8 @@ document.addEventListener('change',async e=>{const input=e.target as HTMLInputEl
 $('#about-button').addEventListener('click',showAbout);$('#save-button').addEventListener('click',showSave);$('#extinction-button').addEventListener('click',showExtinction);
 $('#dialog-close').addEventListener('click',()=>$<HTMLDialogElement>('#dialog').close());
 $('#advanced-button').addEventListener('click',()=>setPanel(panel==='advanced'?'outcomes':'advanced'));
-$('#undo-button').addEventListener('click',()=>{const old=history.pop();if(!old)return;clearFeedback();settings=old.settings;seed=old.seed;continuation=old.continuation;result=simulate(settings,seed);range=null;requestId++;persist();render();$('#change-text').textContent="Your last change is undone. You are back where you were.";});
-$('#reset-button').addEventListener('click',()=>{clearFeedback();remember();settings={...DEFAULTS};continuation=freshContinuation();seed=42;result=simulate(settings,seed);selected='';panel='outcomes';range=null;requestId++;persist();render();focus('world');$('#change-text').textContent='Opening world restored. Try stronger checks, then give hospitals more backup.';});
+$('#undo-button').addEventListener('click',()=>{const old=history.pop();if(!old)return;clearFeedback();settings=old.settings;seed=old.seed;continuation=old.continuation;monthOptions=old.monthOptions;monthSeed=old.monthSeed;result=simulate(settings,seed);range=null;requestId++;persist();render();$('#change-text').textContent="Your last change is undone. You are back where you were.";});
+$('#reset-button').addEventListener('click',()=>{clearFeedback();remember();settings={...DEFAULTS};continuation=freshContinuation();monthOptions={...MONTH_DEFAULTS};monthSeed=42;seed=42;result=simulate(settings,seed);selected='';panel='outcomes';range=null;requestId++;persist();render();focus('world');$('#change-text').textContent='Opening world restored. Try stronger checks, then give hospitals more backup.';});
 
 function updateCamera(){
   const viewport=$('#viewport'),ratio=viewport.clientWidth/Math.max(1,viewport.clientHeight);camera.h=camera.w/ratio;

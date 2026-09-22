@@ -1,6 +1,6 @@
 # Model specification
 
-**Current implementation:** model 0.6.1 is documented in [the step 5 audit](STEP_5_AUDIT.md). The document below remains the broader design contract; its proposed multi-year horizons and incident-arrival equations are not yet implemented.
+**Current implementation:** model 0.7.0 is documented in [the step 5 audit](STEP_5_AUDIT.md) and [step 6 repeated events](STEP_6_REPEATED_EVENTS.md). The document below remains the broader design contract; its proposed multi-year horizons and incident-arrival equations are not yet implemented.
 
 Version 0.1 · Proposed modelling contract; no equations below are empirically calibrated unless a later parameter record explicitly establishes that.
 
