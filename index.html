@@ -20,20 +20,20 @@
 
     <main class="console" id="main">
       <nav class="journey-rail" aria-label="Explore the machine">
-        <button data-stage="world"><span>01</span><b>Set the world</b><small>Choose a spark</small></button>
-        <button data-stage="chain"><span>02</span><b>Follow the chain</b><small>See cause & effect</small></button>
+        <button data-stage="world"><span>01</span><b>Set the world</b><small>Choose a scenario</small></button>
+        <button data-stage="chain"><span>02</span><b>Watch the story</b><small>See cause & effect</small></button>
         <button data-stage="damage"><span>03</span><b>Read the damage</b><small>Who feels it?</small></button>
-        <button data-stage="rescue"><span>04</span><b>Find a way back</b><small>Break the chain</small></button>
+        <button data-stage="rescue"><span>04</span><b>Protect the world</b><small>Choose safeguards</small></button>
         <button data-stage="beyond"><span>05</span><b>Beyond collapse</b><small>Could anyone survive?</small></button>
       </nav>
       <div class="machine-grid">
         <aside class="control-desk" aria-label="Control desk">
           <div class="desk-heading"><span>WORLD CONTROLS</span><button id="desk-close" aria-label="Close control desk">‹</button></div>
           <section class="control-deck" id="controls" aria-label="World controls"></section>
-          <button id="advanced-button" class="small-button">Open the machine <span>＋</span></button>
+          <button id="advanced-button" class="small-button">World settings <span>⚙</span></button>
         </aside>
         <div class="mission-area">
-          <div class="machine-toolbar"><button id="desk-toggle" aria-expanded="true">◉ Controls</button><div class="scenario-line"><strong>Your world. Your choices.</strong></div><div class="history-tools"><button id="undo-button" disabled title="Undo your last change">↶ Undo</button><button id="reset-button" title="Restore the opening world">↺ Reset</button></div></div>
+          <div class="machine-toolbar"><button id="desk-toggle" aria-expanded="true">◉ Controls</button><div class="scenario-line"><strong>Your world. Your choices.</strong></div><div class="history-tools"><button id="tour-button">Quick tour</button><button data-panel="advanced" id="world-settings-button">⚙ World settings</button><button id="undo-button" disabled title="Undo your last change">↶ Undo</button><button id="reset-button" title="Restore the opening world">↺ Reset</button></div></div>
           <div class="instrument">
             <section class="world" aria-label="Interconnected causal world">
               <div class="map-caption"><span id="map-title">ONE INCIDENT · FOLLOW ITS CONNECTIONS</span><div class="map-density" role="group" aria-label="Map density"><button data-density="normal" aria-pressed="true">Normal</button><button data-density="compact" aria-pressed="false">Compact</button></div></div>
@@ -44,7 +44,7 @@
             </section>
             <aside id="readout" class="readout" aria-label="Mission readout"></aside>
           </div>
-          <div class="guide-display"><div class="guide-emblem" aria-hidden="true">◈</div><div><span class="guide-label">MISSION CONTROL <i></i></span><p id="change-text" aria-live="polite">Your world is under pressure. Turn a dial, or choose a spark to see where it leads.</p></div><button id="trace-button" title="Walk through the sequence">▶ Follow the story</button></div>
+          <div class="guide-display"><div class="guide-emblem" aria-hidden="true">◈</div><div><span class="guide-label">MISSION CONTROL <i></i></span><p id="change-text" aria-live="polite">Your world is under pressure. Turn a dial, or choose a scenario to see where it leads.</p></div><button id="trace-button" title="Walk through the sequence">▶ Watch the story</button></div>
           <section id="impact" class="impact" aria-label="Regional service impact"></section>
         </div>
       </div>

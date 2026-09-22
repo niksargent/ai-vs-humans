@@ -31,6 +31,8 @@ See [step 6 implementation and review](STEP_6_REPEATED_EVENTS.md). Model 0.7.0 a
 
 Precursor review completed: [first-encounter UX walkthrough](UX_FIRST_ENCOUNTER_REVIEW.md), with [input/output range measurements](UX_RANGE_AUDIT.json). Approved by the user. See [UX repair implementation](STEP_7_UX_REPAIR_REVIEW.md) for dispositions, browser checks and remaining validation.
 
+User-feedback follow-up implemented: [intuitive controls review](INTUITIVE_CONTROLS_REVIEW.md). Visible safeguard changes and results, direct setting links, current-scenario recognition, consistent navigation language, optional first-use tour and animated dial setup. All 89 tests pass; user testing and hosting remain pending.
+
 Incorporate user comprehension testing (user organised), audit navigation/accessibility, keyboard/reduced-motion behaviour, desktop/laptop layouts and animation performance. Verify all model pathways remain discoverable. Complete final language and visual polish. Test production build and host-path behaviour; publish to the user-selected host (GitHub Pages unless subsequently changed). Stop for review before completing the delivery.
 
 Numbered model steps remain in order. The UX interlude is complete; step 6 is now complete for review. A qualitative nuclear-aftermath continuation is recommended for later scope review, not silently added to step 6.

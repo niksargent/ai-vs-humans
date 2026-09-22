@@ -1,4 +1,4 @@
-import type {Settings,NumericKey,Result} from './model.js';
+import {DEFAULTS,type Settings,type NumericKey,type Result} from './model.js';
 type Range=(key:NumericKey,label:string,copy:string,unit:string)=>string;
 type Toggle=(key:keyof Settings,label:string,copy:string)=>string;
 export const pathwayPresets:Record<string,Partial<Settings>>={
@@ -12,7 +12,7 @@ export const pathwayPresets:Record<string,Partial<Settings>>={
 export function pathwayControls(range:Range,toggle:Toggle){
   return `<details class="model-details"><summary>AI updates & testing</summary>`+
     toggle('repairAssistance','AI helps repair crews','Advice helps crews find the fault faster. It still needs people, powered tools and supplies.')+
-    toggle('researchEnabled','Start AI update projects','For the circuit, produce updates in the 30 days before the incident. The month experiment releases them as time passes.')+
+    toggle('researchEnabled','Start AI update projects','For the circuit, produce updates in the 30 days before the incident. The month scenario releases them as time passes.')+
     range('researchSpeed','AI project pace','Up to four candidate updates per day.','%')+
     range('computeCapacity','Computers available','Limits how much research can run.','%')+
     range('experimentCapacity','Experiments available','Limits how many ideas can be tried.','%')+
@@ -45,11 +45,13 @@ export function pathwayControls(range:Range,toggle:Toggle){
     toggle('sharedTransport','Transport shares the failed system','Dispatch failure disrupts deliveries.')+
     range('transportFallback','Independent transport','Local routes that work without the shared dispatch system.','%')+`</details>`;
 }
+export const scenarioNames:Record<string,string>={outage:'One bad update',research:'Updates outrun checks',control:'The stop order fails',health:'Hospitals face a surge',information:'People hear conflicting instructions',deliveries:'Supplies cannot move'};
+export function currentScenario(s:Settings){const exact=Object.entries(pathwayPresets).find(([,patch])=>Object.entries({...DEFAULTS,...patch}).every(([k,v])=>s[k as keyof Settings]===v));if(exact)return {id:exact[0],name:scenarioNames[exact[0]],modified:false};const active=[s.researchEnabled?'research':'',s.agentEnabled?'control':'',s.healthChallenge?'health':'',s.informationCampaign?'information':'',s.sharedPayments||s.sharedTransport?'deliveries':''].filter(Boolean);const id=active.length===1?active[0]:active.length?'combined':'outage';return {id,name:scenarioNames[id]||'Combined scenario',modified:true};}
 export function pathwaysPanel(r:Result){
-  const p=r.pathways;
-  return `<button class="primary-action" data-stage="chain">▶ Follow this world’s story</button><h2 class="inspector-title">Or choose a new spark.</h2><p class="inspector-copy">Start with the story of your current world. Or choose a new experiment below: each replaces the starting settings. Undo brings your previous world back.</p>`+
-    [['outage','One bad update','An AI mistake knocks out a shared network.'],['research','Updates outrun checks','New versions go live before anyone finishes checking them.'],['control','The stop order fails','An agent keeps breaking what people are trying to repair.'],['health','Hospitals face a surge','A health threat needs several gates to fail first.'],['information','People hear conflicting instructions','False messages weaken the response.'],['deliveries','Supplies cannot move','A full warehouse is no help if purchases or deliveries stop.']].map(([id,title,copy])=>`<button class="pathway-choice" data-pathway="${id}"><strong>${title} ↗</strong><span>${copy}</span></button>`).join('')+
-    `<button class="primary-action" data-stage="chain">Follow my current world →</button><button class="small-button" data-panel="advanced">Open all controls ↗</button>`;
+  const current=currentScenario(r.settings);
+  return `<button class="current-scenario" data-stage="chain"><span class="etched-label">CURRENT SCENARIO${current.modified?' · ADJUSTED SETTINGS':''}</span><strong>${current.name}</strong><span>▶ Watch the story</span></button><h2 class="inspector-title">Choose a scenario</h2><p class="inspector-copy">Each scenario below loads its own starting settings. Your current scenario stays above; Undo restores your last change.</p>`+
+    [['outage','One bad update','An AI mistake knocks out a shared network.'],['research','Updates outrun checks','New versions go live before anyone finishes checking them.'],['control','The stop order fails','An agent keeps breaking what people are trying to repair.'],['health','Hospitals face a surge','A health threat needs several gates to fail first.'],['information','People hear conflicting instructions','False messages weaken the response.'],['deliveries','Supplies cannot move','A full warehouse is no help if purchases or deliveries stop.']].map(([id,title,copy])=>`<button class="pathway-choice" data-pathway="${id}" aria-pressed="${current.id===id&&!current.modified}"><strong>${title} ↗</strong><span>${copy}</span></button>`).join('')+
+    `<button class="small-button" data-panel="advanced">⚙ World settings</button>`;
 
 }
 export function pathwayInterventions(id:string){

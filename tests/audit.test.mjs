@@ -74,3 +74,27 @@ test('Development explanation agrees with the fault and permission gates',()=>{
  assert.equal(noFault.incident,false);
  assert.match(noFault.nodes.development.reason,/No faulty update is introduced/);
 });
+
+
+test('Protection choices make exact changes, become no-ops once applied, and never widen reach',async()=>{
+ const {protections,settingChanges,protectionEffect}=await import('../dist/src/protection.js');
+ for(const patch of [{},{reach:1},{reach:6},pathwayPresets.control,pathwayPresets.health]){
+  const s={...DEFAULTS,...patch};
+  for(const option of protections(s)){
+   const next={...s,...option.patch};
+   assert.equal(settingChanges(next,option.patch).length,0);
+   if(option.id==='refuges')assert.ok(next.reach<=s.reach);
+  }
+ }
+ const s={...DEFAULTS,...pathwayPresets.control};
+ const after=simulate({...s,reserves:720});
+ assert.match(protectionEffect(simulate(s),after),/care shortfall|agent is still undoing repairs/);
+});
+
+test('Current scenario recognises presets and labels combined or adjusted settings',async()=>{
+ const {currentScenario}=await import('../dist/src/pathway-ui.js');
+ assert.deepEqual(currentScenario(DEFAULTS),{id:'outage',name:'One bad update',modified:false});
+ assert.equal(currentScenario({...DEFAULTS,...pathwayPresets.health}).id,'health');
+ assert.equal(currentScenario({...DEFAULTS,reserves:720}).modified,true);
+ assert.equal(currentScenario({...DEFAULTS,researchEnabled:true,agentEnabled:true}).id,'combined');
+});
