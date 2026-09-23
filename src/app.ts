@@ -5,7 +5,7 @@ import {monthPanel} from './month-ui.js';
 import {evidenceFor} from './evidence.js';
 import {worldNodes as layout,nodeById,WORLD,connection,primaryEdges,districts,outcomeIcon,livingAtlas} from './world-view.js';
 import {freshContinuation,validateContinuation,evaluateContinuation,gateIds,type Continuation,type Gate,type Route,type Assumption} from './continuation.js';
-import {continuationPanel,survivalCanvas,threatReadouts} from './survival-ui.js';
+import {continuationPanel,survivalCanvas,threatReadouts,survivalQuestions} from './survival-ui.js';
 import {pathwayControls,pathwaysPanel,pathwayPresets,pathwayInterventions,currentScenario} from './pathway-ui.js';
 import {controlColours,nodeControls,changedNodes} from './feedback.js';
 import {DEFAULTS,MODEL_VERSION,controls,simulate,summariseChange,validateSettings,type Settings,type Result,type NumericKey,type Status} from './model.js';
@@ -267,7 +267,7 @@ document.addEventListener('click',e=>{
   const target=e.target as Element;
   const stageButton=target.closest<HTMLElement>('[data-stage]');if(stageButton){enterStage(stageButton.dataset.stage as Stage);return;}
   const crumb=target.closest<HTMLElement>('[data-trail-index]');if(crumb){trail.splice(Number(crumb.dataset.trailIndex)+1);back();return;}
-  if(target.closest('#continuation-start')){const route=continuation.route;change({...DEFAULTS,...(route==='hostile'?pathwayPresets.control:{connectedness:100,fallback:0,tension:0})});continuation=freshContinuation();continuation.route=route;survivalGate='power';persist();enterStage('beyond');guide('Starting world loaded. Choose what happens at the first defence; Undo restores your previous world.');return;}
+  if(target.closest('#continuation-start,[data-survival-start]')){const route=continuation.route;change({...DEFAULTS,...(route==='hostile'?pathwayPresets.control:{connectedness:100,fallback:0,tension:0})});continuation=freshContinuation();continuation.route=route;survivalGate='power';persist();enterStage('beyond');guide('Starting world loaded. Choose what happens at the first defence; Undo restores your previous world.');return;}
   if(target.closest('#tour-button')){startTour();return;}
   if(target.closest('#open-month')){showMonth();return;}
   if(target.closest('#clear-selection')){clearSelection();return;}
@@ -282,7 +282,7 @@ document.addEventListener('click',e=>{
   const densityButton=target.closest<HTMLElement>('[data-density]');if(densityButton){density=densityButton.dataset.density as typeof density;focus(density==='compact'?'world':stage==='world'?'origins':stage==='rescue'?'recovery':'services');return;}
 
   const gateOpen=target.closest<HTMLElement>('[data-gate-open]');if(gateOpen){survivalGate=gateOpen.dataset.gateOpen as Gate;refreshContinuation();return;}
-  const survivalAnswer=target.closest<HTMLElement>('[data-survival-answer]');if(survivalAnswer){if(!evaluateContinuation(result,continuation).started)return;remember();survivalGate=survivalAnswer.dataset.gate as Gate;continuation[continuation.route][survivalGate]=survivalAnswer.dataset.survivalAnswer as Assumption;persist();refreshContinuation();return;}
+  const survivalAnswer=target.closest<HTMLElement>('[data-survival-answer]');if(survivalAnswer){if(!evaluateContinuation(result,continuation).started)return;remember();survivalGate=survivalAnswer.dataset.gate as Gate;continuation[continuation.route][survivalGate]=survivalAnswer.dataset.survivalAnswer as Assumption;persist();refreshContinuation();const q=survivalQuestions[continuation.route][survivalGate];guide(survivalAnswer.dataset.survivalAnswer==='yes'?q.lost:survivalAnswer.dataset.survivalAnswer==='no'?q.saved:'This question is open again. Choose either ending on its card.');const choice=document.querySelector<HTMLButtonElement>(`[data-canvas-choice][data-gate="${survivalGate}"][data-survival-answer="${survivalAnswer.dataset.survivalAnswer}"]`);if(survivalAnswer.dataset.canvasChoice)choice?.focus({preventScroll:true});return;}
   const continuationRoute=target.closest<HTMLElement>('[data-continuation-route]');if(continuationRoute){remember();continuation.route=continuationRoute.dataset.continuationRoute as Route;survivalGate='power';persist();refreshContinuation();$<HTMLButtonElement>(`[data-continuation-route="${continuation.route}"]`).focus();return;}
   if(target.closest('#continuation-refuge')){remember();continuation[continuation.route].reach='no';survivalGate='reach';persist();refreshContinuation();return;}
   if(target.closest('#continuation-reset')){remember();const route=continuation.route;continuation[route]=freshContinuation()[route];survivalGate='power';persist();refreshContinuation();return;}

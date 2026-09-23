@@ -49,3 +49,11 @@ This is an agent walkthrough, not a real child test. Verified in the browser:
 - Keyboard-accessible defence cards and choices; no browser console errors in the checked flows.
 
 All 96 tests pass, including inactive-route actionability, separation of story choices from model results, and unchanged-dial scenario receipts. Main physics and extinction-condition logic are unchanged. User-organised testing continues; hosting remains pending.
+
+## Follow-up: screen space and obvious canvas actions
+
+The two status instruments and Mission control now share one horizontal strip (67 pixels tall in the checked desktop viewport). Status instruments are passive; the journey rail owns navigation. Repeated permanent scope text is available through instrument tooltips, and the redundant Watch the story button in the strip is hidden.
+
+Each refuge card now carries its two explicit outcome buttons. A user can start a qualifying scenario, make choices and see the settlement outcome entirely on the canvas. Selecting a title still opens supporting explanation. The right readout no longer duplicates those choice buttons. Mission control states the consequence of the chosen ending, and keyboard focus returns to the chosen canvas control after rendering.
+
+Browser verification: loaded a collapse scenario using the canvas action, chose “Somewhere stays safe” directly on the second card, observed its selected state and “A way to survive remains”, and confirmed the consequence appeared in Mission control. All three strip sections share the same top coordinate and 65-pixel interior height. Restored the user's world and choices through Undo. All 96 tests pass; no console errors in the checked flow.
