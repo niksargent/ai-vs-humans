@@ -141,3 +141,5 @@ html[data-motion=off] #change-text{overflow-x:auto;scrollbar-width:thin}
 /* Direct manipulation tracks the hand; keep easing for preset/setup changes. */
 html[data-motion=on] .control-bank:focus-within .dial,
 html[data-motion=on] .control-bank:focus-within .dial-wrap{transition:none!important}
+.tour-card.tour-welcome{top:50%;bottom:auto;transform:translate(-50%,-50%);width:min(550px,92vw);padding:32px;border-color:#a5deff;box-shadow:0 20px 100px #000e,0 0 65px #65bdff33;background:radial-gradient(ellipse at top right,#35628066,transparent 65%),linear-gradient(135deg,#243c50,#101c2a)}
+.tour-welcome h2{font-size:30px;line-height:1.15;margin:18px 0}.tour-welcome .welcome-purpose{color:#b8d4e6;border-left:2px solid #8edbc7;padding-left:14px}.tour-welcome .welcome-credit{font:12px var(--mono);color:#a9e4d5;margin:22px 0}.tour-welcome nav{margin-top:22px}

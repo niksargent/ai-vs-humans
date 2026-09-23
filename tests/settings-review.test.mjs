@@ -66,3 +66,16 @@ test('Communications distinguishes protected, partly working and prolonged sever
  const short=simulate({...DEFAULTS,researchSpeed:5/6,checkEffectiveness:0,repair:12,fallback:40,aiAdvice:false});
  assert.ok(short.incident);assert.equal(short.nodes.comms.status,'exposed');
 });
+
+test('Calm preset holds across replays, but faster releases can overwhelm it',()=>{
+ const calm={...DEFAULTS,...pathwayPresets.calm};
+ for(let seed=0;seed<32;seed++){
+  const r=simulate(calm,seed);assert.equal(r.updates.made,30);assert.equal(r.incident,false);assert.equal(r.civilisation.endStatus,'functioning');
+  assert.ok(Object.values(r.nodes).every(n=>n.status!=='harm'));
+ }
+ const strained=simulate({...calm,researchSpeed:8},42);
+ assert.ok(strained.updates.releases.some(x=>x.fault));assert.equal(strained.nodes.power.status,'harm');
+ const broken=simulate({...calm,researchSpeed:40,connectedness:100,fallback:20},42);
+ assert.equal(broken.civilisation.endStatus,'collapse');
+ assert.equal(DEFAULTS.researchSpeed,20);
+});

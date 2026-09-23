@@ -3,6 +3,7 @@ type Range=(key:NumericKey,label:string,copy:string,unit:string)=>string;
 type Toggle=(key:keyof Settings,label:string,copy:string)=>string;
 export const pathwayPresets:Record<string,Partial<Settings>>={
   outage:{},
+  calm:{researchSpeed:5,evaluationCapacity:5,checkEffectiveness:100,fallback:50,reserves:72,repair:24,connectedness:35,tension:40},
   research:{researchSpeed:100,computeCapacity:100,experimentCapacity:100,waitForChecks:false},
   control:{researchSpeed:0,agentEnabled:true,harmfulGoal:true,externalResources:true,independentStop:false},
   health:{researchSpeed:0,healthChallenge:true,scienceAssistance:true,maliciousActor:true,physicalAccess:true,screening:false},
@@ -47,12 +48,12 @@ export function pathwayControls(range:Range,toggle:Toggle,status=''){
     toggle('sharedTransport','Transport shares the failed system','Dispatch failure disrupts deliveries.')+
     range('transportFallback','Independent transport','Local routes that work without the shared dispatch system.','%')+`</details>`;
 }
-export const scenarioNames:Record<string,string>={outage:'Updates go wrong',research:'Updates outrun checks',control:'The stop order fails',health:'Hospitals face a surge',information:'People hear conflicting instructions',deliveries:'Supplies cannot move'};
+export const scenarioNames:Record<string,string>={calm:'Everything seems okay',outage:'Updates go wrong',research:'Updates outrun checks',control:'The stop order fails',health:'Hospitals face a surge',information:'People hear conflicting instructions',deliveries:'Supplies cannot move'};
 export function currentScenario(s:Settings){const exact=Object.entries(pathwayPresets).find(([,patch])=>Object.entries({...DEFAULTS,...patch}).every(([k,v])=>s[k as keyof Settings]===v));if(exact)return {id:exact[0],name:scenarioNames[exact[0]],modified:false};const active=[s.researchSpeed>DEFAULTS.researchSpeed?'research':'',s.agentEnabled?'control':'',s.healthChallenge?'health':'',s.informationCampaign?'information':'',s.sharedPayments||s.sharedTransport?'deliveries':''].filter(Boolean);const id=active.length===1?active[0]:active.length?'combined':'outage';return {id,name:scenarioNames[id]||'Combined scenario',modified:true};}
 export function pathwaysPanel(r:Result){
   const current=currentScenario(r.settings);
   return `<button class="current-scenario" data-stage="chain"><span class="etched-label">CURRENT SCENARIO${current.modified?' · ADJUSTED SETTINGS':''}</span><strong>${current.name}</strong><span>▶ Watch the story</span></button><h2 class="inspector-title">Choose a scenario</h2><p class="inspector-copy">Each scenario below loads its own starting settings. Your current scenario stays above; Undo restores your last change.</p>`+
-    [['outage','Updates go wrong','An AI mistake knocks out a shared network.'],['research','Updates outrun checks','New versions go live before anyone finishes checking them.'],['control','The stop order fails','An agent keeps breaking what people are trying to repair.'],['health','Hospitals face a surge','A health threat needs several gates to fail first.'],['information','People hear conflicting instructions','False messages weaken the response.'],['deliveries','Supplies cannot move','A full warehouse is no help if purchases or deliveries stop.']].map(([id,title,copy])=>`<button class="pathway-choice" data-pathway="${id}" aria-pressed="${current.id===id&&!current.modified}"><strong>${title} ↗</strong><span>${copy}</span></button>`).join('')+
+    [['calm','Everything seems okay','Checks keep up. Services hold. Turn up AI project pace and find the cracks.'],['outage','Updates go wrong','An AI mistake knocks out a shared network.'],['research','Updates outrun checks','New versions go live before anyone finishes checking them.'],['control','The stop order fails','An agent keeps breaking what people are trying to repair.'],['health','Hospitals face a surge','A health threat needs several gates to fail first.'],['information','People hear conflicting instructions','False messages weaken the response.'],['deliveries','Supplies cannot move','A full warehouse is no help if purchases or deliveries stop.']].map(([id,title,copy])=>`<button class="pathway-choice" data-pathway="${id}" aria-pressed="${current.id===id&&!current.modified}"><strong>${title} ↗</strong><span>${copy}</span></button>`).join('')+
     `<button class="small-button" data-panel="advanced">⚙ World settings</button>`;
 
 }
