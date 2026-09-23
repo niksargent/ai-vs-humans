@@ -54,3 +54,15 @@ test('A faster stop order only helps when the agent can actually be stopped',()=
  assert.ok(simulate({...world,stopDelay:168}).recoveryModel.healthcareGap>0);
  assert.equal(simulate({...world,independentStop:false,stopDelay:0}).pathways.controlLost,true);
 });
+
+
+test('Monthly pace can produce every integer from zero to thirty without coarse daily jumps',()=>{
+ for(let monthly=0;monthly<=30;monthly++)assert.equal(updateSchedule({...DEFAULTS,researchSpeed:monthly/6,aiAdvice:false}).made,monthly);
+});
+test('Communications distinguishes protected, partly working and prolonged severe disruption',()=>{
+ assert.equal(simulate({...DEFAULTS,fallback:100}).nodes.comms.status,'safe');
+ assert.equal(simulate({...DEFAULTS,fallback:50}).nodes.comms.status,'exposed');
+ assert.equal(simulate({...DEFAULTS,fallback:0}).nodes.comms.status,'harm');
+ const short=simulate({...DEFAULTS,researchSpeed:5/6,checkEffectiveness:0,repair:12,fallback:40,aiAdvice:false});
+ assert.ok(short.incident);assert.equal(short.nodes.comms.status,'exposed');
+});

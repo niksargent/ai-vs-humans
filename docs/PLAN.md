@@ -48,3 +48,7 @@ Implemented model 0.9: one shared monthly calculation for board and replay explo
 
 ### Model and settings audit — 0.9.1
 All 56 live settings reviewed; 6,417 sensitivity comparisons across 23 contexts and three seeds found an operative context for each. Fixed release-policy communication, visible development wiring, testing/health-capacity range limits, unlimited idle repair-stock accumulation and resource creation by regional variation. 107 tests pass. See [model/settings review](MODEL_SETTINGS_REVIEW.md) and [measured audit](SETTINGS_AUDIT.json). User testing and delivery remain pending.
+
+
+### Monthly pace and communications severity
+Reduced world viewport height by 5% and matched adjacent readouts. Pace now displays 0–600 updates/month, supports single-update steps, and gives the low end more dial travel; existing saved throughput is unchanged. Communications is green when calls stay available, amber for partial/brief interruption, red for at least a continuous day below half capacity in Region 1. This is a display severity rule, not a new risk probability.

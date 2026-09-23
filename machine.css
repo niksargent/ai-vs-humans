@@ -131,3 +131,10 @@ html[data-motion=on] .survival-trail{animation:signal-flow 14s linear infinite!i
 html[data-motion=off] #change-text .mission-message{animation:none!important}
 html[data-motion=off] #change-text{overflow-x:auto;scrollbar-width:thin}
 .survival-story-picker{font:18px var(--sans);color:#d6e5f2}.survival-story-picker h2{font-size:26px;margin:0 0 24px}.survival-story-picker button{display:block;width:100%;text-align:left;padding:22px 25px;margin:0 0 16px;border:1px solid #99bcdf77;border-radius:12px;background:linear-gradient(115deg,#233744,#142129);color:#e5f2ff;cursor:pointer;box-shadow:inset 0 1px #ffffff19,0 0 22px #73b6ff12}.survival-story-picker button:hover,.survival-story-picker button:focus-visible{border-color:#cce5ff;box-shadow:0 0 24px #79b8ff40}.survival-story-picker strong{display:block;font-size:22px;margin-bottom:9px}.survival-story-picker span,.survival-story-picker p{font-size:16px;line-height:1.5;color:#b7cbdc}
+
+/* Five percent less map height, with the adjacent readout reduced by the same amount. */
+.viewport{height:clamp(332.5px,calc(95vh - 337.25px),589px)}
+.readout{height:calc(clamp(350px,calc(100vh - 355px),620px)*.95 + 75px)}
+.survival-view .viewport{min-height:389.5px}
+.survival-view .readout{height:clamp(437px,calc(95vh - 270.75px),693.5px)}
+@media(max-height:800px) and (min-width:951px){.viewport{height:max(247px,calc(95vh - 446.5px))}.readout{height:calc(max(260px,calc(100vh - 470px))*.95 + 80px)}}

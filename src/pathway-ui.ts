@@ -13,7 +13,7 @@ export function pathwayControls(range:Range,toggle:Toggle,status=''){
   return `<details class="model-details"><summary>AI updates & testing</summary>`+
     toggle('repairAssistance','AI helps repair crews','Advice helps crews find the fault faster. It still needs people, powered tools and supplies.')+
 
-    range('researchSpeed','AI project pace','0–20 updates per day. Zero means no new updates.','%')+
+    range('researchSpeed','AI project pace','0–600 updates per month. Use arrow keys for one update at a time.','updates/month')+
     range('mistakeRate','Mistake rate','Out of every 100 updates, how many contain a potentially harmful mistake?','%')+
     range('checkEffectiveness','Testing effectiveness','Out of every 100 tested mistakes, how many do the checks catch?','%')+
     range('computeCapacity','Computers available','Limits how much research can run.','%')+
