@@ -35,7 +35,7 @@ test('Cold fridges cannot hide a food supply failure',()=>{
  const r=run({sharedProvider:false,sharedPayments:true,paymentFallback:0,supplyDelivery:0,foodStores:0,aidStrength:0});
  assert.equal(r.foodGap,0);assert.ok(r.recoveryModel.foodShortageHours>0);
  assert.equal(r.nodes.food.status,'harm');assert.equal(r.regions[0].food,true);
- assert.match(r.nodes.food.label,/supply shortfall/);
+ assert.match(r.nodes.food.label,/20% at worst/);
 });
 test('Working radios cannot hide complete loss of trusted emergency instructions',()=>{
  const r=run({faultyChange:false,fallback:100,informationCampaign:true,informationReach:100,trustedChannels:0});

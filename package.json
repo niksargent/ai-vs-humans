@@ -7,7 +7,7 @@
     "build": "tsc && node scripts/build.mjs",
     "dev": "node scripts/serve.mjs",
     "audit": "npm run build && node scripts/audit.mjs",
-    "test": "npm run build && node --test --test-isolation=none tests/model.test.mjs tests/recovery.test.mjs tests/civilisation.test.mjs tests/pathways.test.mjs tests/continuation.test.mjs tests/world-view.test.mjs tests/audit.test.mjs tests/month.test.mjs tests/settings-review.test.mjs"
+    "test": "npm run build && node --test --test-isolation=none tests/model.test.mjs tests/recovery.test.mjs tests/civilisation.test.mjs tests/pathways.test.mjs tests/continuation.test.mjs tests/world-view.test.mjs tests/audit.test.mjs tests/month.test.mjs tests/settings-review.test.mjs tests/module-scenarios.test.mjs"
   },
   "devDependencies": { "typescript": "~5.9.3" }
 }

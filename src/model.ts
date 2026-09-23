@@ -1,3 +1,4 @@
+import {harmoniseReadouts} from './module-readouts.js';
 import {updateSchedule,type UpdateSchedule} from './updates.js';
 import {draw} from './random.js';
 export {draw} from './random.js';
@@ -203,7 +204,8 @@ export function simulate(input:Settings,seed=42):Result {
   if(civilisation.crossedAt!==null)events.push({id:'service-collapse',time:civilisation.crossedAt,parents:['governance','hospital','food','power'],description:'The network-service experiment crosses its chosen multi-region collapse threshold. Nuclear consequences are outside this calculation.'});
   if(civilisation.recoveredAt!==null)events.push({id:'civilisation-recovery',time:civilisation.recoveredAt,parents:['service-collapse','repair','aid'],description:'All six regions have regained essential services and emergency coordination for 24 hours.'});
   events.sort((a,b)=>a.time-b.time||a.id.localeCompare(b.id));
-  return {updates,spread,pathways,civilisation,recoveryModel,nodes,seed,settings:s,incident,powerOutage,hospitalGap,restoreHours,warning,verified,escalation,nuclear,verificationMinutes,verificationAvailable,nuclearAt,events,foodGap,emergencyGap,affectedRegions,regions};
+  const result:Result={updates,spread,pathways,civilisation,recoveryModel,nodes,seed,settings:s,incident,powerOutage,hospitalGap,restoreHours,warning,verified,escalation,nuclear,verificationMinutes,verificationAvailable,nuclearAt,events,foodGap,emergencyGap,affectedRegions,regions};
+  harmoniseReadouts(result);return result;
 }
 export function summariseChange(before:Result,after:Result):string {
   if(before.settings.collapseDays!==after.settings.collapseDays||before.settings.collapseRegions!==after.settings.collapseRegions)return 'The definition changed. Services and repairs did not change.';

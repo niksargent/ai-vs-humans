@@ -52,3 +52,8 @@ All 56 live settings reviewed; 6,417 sensitivity comparisons across 23 contexts 
 
 ### Monthly pace and communications severity
 Reduced world viewport height by 5% and matched adjacent readouts. Pace now displays 0–600 updates/month, supports single-update steps, and gives the low end more dial travel; existing saved throughput is unchanged. Communications is green when calls stay available, amber for partial/brief interruption, red for at least a continuous day below half capacity in Region 1. This is a display severity rule, not a new risk probability.
+
+### Module colours and replay clarity — 23 September 2026
+Completed 26 authored scenario worlds, with green/amber/red regression coverage for every one of the 25 board modules. Standardised eight service lamps and regional indicators around full, partial/brief, and sustained severe disruption. Mechanism lamps retain inspectable, domain-specific meanings; nuclear aftermath remains unknown. See [scenario review](MODULE_SCENARIO_REVIEW.md) and `tests/fixtures/module-scenarios.json`.
+
+Fixed Protect the world falling through to the replay panel. Safeguards show settings changes and Undo; Replay this world changes the seed and preserves the protection location. Explore possible outcomes is now a fixed-settings replay explorer, with a separate route to World settings. Updated About text and renamed the visible app AI vs. Humans. Build and all 216 tests pass. Browser checked safeguard receipts, Undo, replay navigation, populated 128-replay explorer and console; saved user settings restored. User acceptance and hosting remain pending.

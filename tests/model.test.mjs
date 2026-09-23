@@ -10,7 +10,7 @@ test('Partial reach is amber; all regions red; protected regions green',()=>{
   assert.equal(simulate({...DEFAULTS,authority:0}).nodes.spread.status,'safe');
 });
 test('Emergency response distinguishes partial service from complete disruption',()=>{
-  assert.equal(simulate({...DEFAULTS,fallback:20}).nodes.emergency.status,'exposed');
+  assert.equal(simulate({...DEFAULTS,fallback:50}).nodes.emergency.status,'exposed');
   assert.equal(simulate({...DEFAULTS,fallback:0}).nodes.emergency.status,'harm');
   assert.equal(simulate({...DEFAULTS,fallback:100}).nodes.emergency.status,'safe');
 });

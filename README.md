@@ -1,4 +1,4 @@
-# The Switchboard
+# AI vs. Humans
 
 An interactive design proof and first playable section of an educational AI-risk simulator.
 
