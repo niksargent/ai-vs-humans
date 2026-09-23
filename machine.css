@@ -138,3 +138,6 @@ html[data-motion=off] #change-text{overflow-x:auto;scrollbar-width:thin}
 .survival-view .viewport{min-height:389.5px}
 .survival-view .readout{height:clamp(437px,calc(95vh - 270.75px),693.5px)}
 @media(max-height:800px) and (min-width:951px){.viewport{height:max(247px,calc(95vh - 446.5px))}.readout{height:calc(max(260px,calc(100vh - 470px))*.95 + 80px)}}
+/* Direct manipulation tracks the hand; keep easing for preset/setup changes. */
+html[data-motion=on] .control-bank:focus-within .dial,
+html[data-motion=on] .control-bank:focus-within .dial-wrap{transition:none!important}

@@ -82,10 +82,12 @@ function initDeck(){
   $('#controls').innerHTML=deckInfo.map((d,i)=>`<article class="control-bank" data-bank="${d.key}" style="--signal:${controlColours[d.key]}"><div class="bank-top"><h2 class="bank-title">${d.title}</h2><span class="bank-number">0${i+1}</span></div><button class="bank-inspect" data-inspect="${d.node}" aria-label="Explain ${d.title.toLowerCase()}" title="What does this mean?">↗</button><p class="bank-question">${d.question}</p><div class="dial-row"><div class="dial-wrap"><button class="dial" data-key="${d.key}" role="slider" aria-label="${d.title.toLowerCase()}" aria-valuemin="${controls[d.key].min}" aria-valuemax="${controls[d.key].max}" aria-valuenow="${settings[d.key]}" title="Drag up or down. Arrow keys adjust."></button></div><div class="dial-value"></div></div><p class="control-note"></p></article>`).join('');
   document.querySelectorAll<HTMLButtonElement>('.dial').forEach(dial=>{
     const key=dial.dataset.key as NumericKey,c=controls[key];
-    let startY=0,startValue=0,drag=false,recorded=false,dialBefore=result;
-    dial.addEventListener('pointerdown',e=>{guide(description(key).note+' Drag up or down to change it.');dialBefore=result;startY=e.clientY;startValue=settings[key];drag=true;recorded=false;dial.setPointerCapture(e.pointerId);dial.focus();e.preventDefault();});
-    dial.addEventListener('pointermove',e=>{if(!drag)return;const next=Math.max(c.min,Math.min(c.max,Math.round((key==='researchSpeed'?100*Math.pow(Math.max(0,Math.min(1,Math.sqrt(startValue/100)+(startY-e.clientY)/150)),2):startValue+(startY-e.clientY)*(c.max-c.min)/150)/c.step)*c.step));if(next!==settings[key]){if(!recorded){remember();recorded=true;}change({...settings,[key]:next},false,dialBefore);}});
-    dial.addEventListener('pointerup',()=>drag=false);dial.addEventListener('pointercancel',()=>drag=false);
+    let startY=0,startValue=0,drag=false,recorded=false,dialBefore=result,pending:number|null=null,frame=0;
+    const flush=()=>{cancelAnimationFrame(frame);frame=0;if(pending===null)return;const value=pending;pending=null;if(value!==settings[key])change({...settings,[key]:value},false,dialBefore);};
+    const finish=()=>{if(!drag)return;flush();drag=false;updateDeck();persist();dial.classList.remove('dragging');};
+    dial.addEventListener('pointerdown',e=>{guide(description(key).note+' Drag up or down to change it.');dialBefore=result;startY=e.clientY;startValue=settings[key];drag=true;recorded=false;dial.classList.add('dragging');cancelAnimationFrame(setupFrame);dial.setPointerCapture(e.pointerId);dial.focus();e.preventDefault();});
+    dial.addEventListener('pointermove',e=>{if(!drag)return;const next=Math.max(c.min,Math.min(c.max,Math.round((key==='researchSpeed'?100*Math.pow(Math.max(0,Math.min(1,Math.sqrt(startValue/100)+(startY-e.clientY)/150)),2):startValue+(startY-e.clientY)*(c.max-c.min)/150)/c.step)*c.step));if(next!==settings[key]){if(!recorded){remember();recorded=true;}pending=next;dial.style.setProperty('--angle',`${-135+270*dialFraction(key,next)}deg`);dial.parentElement!.style.setProperty('--fill',`${270*dialFraction(key,next)}deg`);if(!frame)frame=requestAnimationFrame(flush);}else if(pending!==null){pending=next;}});
+    dial.addEventListener('pointerup',finish);dial.addEventListener('pointercancel',finish);dial.addEventListener('lostpointercapture',finish);
     dial.addEventListener('keydown',e=>{if(['ArrowUp','ArrowRight','ArrowDown','ArrowLeft','Home','End'].includes(e.key))e.preventDefault();let next=settings[key];if(['ArrowUp','ArrowRight'].includes(e.key))next+=c.step;if(['ArrowDown','ArrowLeft'].includes(e.key))next-=c.step;if(e.key==='Home')next=c.min;if(e.key==='End')next=c.max;if(next!==settings[key]){e.preventDefault();change({...settings,[key]:Math.max(c.min,Math.min(c.max,next))});}});
   });
 }
@@ -111,7 +113,7 @@ function feedback(before:Result){
   clearTimeout(feedbackTimer);
 }
 function clearFeedback(){changed=[];clearTimeout(feedbackTimer);}
-function change(next:Settings,record=true,origin?:Result){scenarioChangeReceipt='';protectionReceipt='';cancelAnimationFrame(setupFrame);if(record)remember();const before=origin||result;settings=validateSettings(next);result=simulate(settings,seed);range=null;requestId++;feedback(before);persist();render();}
+function change(next:Settings,record=true,origin?:Result){scenarioChangeReceipt='';protectionReceipt='';cancelAnimationFrame(setupFrame);if(record)remember();const before=origin||result;settings=validateSettings(next);result=simulate(settings,seed);range=null;requestId++;feedback(before);if(!origin)persist();render();}
 
 
 function displayNode(id:string):{status:Status;label:string}{
@@ -147,6 +149,28 @@ function renderMap(){
   const linked=step?new Set(step.nodes):selected&&selected!=='nuclear'?new Set([selected,...(result.nodes[selected]?.parents||[]),...Object.keys(result.nodes).filter(id=>result.nodes[id].parents.includes(selected))]):null;
   const edges=new Map(primaryEdges.map(([a,b])=>[a+'-'+b,[a,b]]));
   for(const [id,node] of Object.entries(result.nodes))for(const parent of node.parents)if(nodeById[parent]&&nodeById[id])edges.set(parent+'-'+id,[parent,id]);
+  const svg=$('#world-svg');
+  if(svg.querySelector('.machine-node')&&svg.querySelectorAll('.circuit-wire').length===edges.size){
+    for(const wire of svg.querySelectorAll<SVGElement>('.circuit-wire')){
+      const from=wire.dataset.from!,to=wire.dataset.to!,related=!linked||linked.has(from)&&linked.has(to),secondary=!primaryEdges.some(([a,b])=>a===from&&b===to);
+      const cls=`circuit-wire ${result.nodes[from]?.status} ${related?'':'distant'} ${linked&&related?'focused-link':''} ${secondary&&!(linked&&related)?'secondary':''}`;
+      if(wire.getAttribute('class')!==cls)wire.setAttribute('class',cls);
+    }
+    for(const node of layout){
+      const el=svg.querySelector<SVGGElement>(`[data-node="${node.id}"]`)!,state=displayNode(node.id);
+      const cls=`machine-node ${state.status} ${selected===node.id||step?.nodes.includes(node.id)?'selected':''} ${linked&&!linked.has(node.id)?'distant':''} ${changed.includes(node.id)?'changed':''}`;
+      if(el.getAttribute('class')!==cls)el.setAttribute('class',cls);
+      const label=`${node.title}: ${state.label}. Select to explore.`;
+      if(el.getAttribute('aria-label')!==label){
+        el.setAttribute('aria-label',label);
+        el.querySelector('title')!.textContent=`${node.title}. ${state.label}. Select to illuminate its incoming and outgoing connections. Title colour identifies its control; the lamp shows its state.`;
+        const lines=wrap(state.label,28),old=[...el.querySelectorAll('.module-sub')];
+        lines.forEach((line,i)=>{let text=old[i];if(!text){text=document.createElementNS('http://www.w3.org/2000/svg','text');text.setAttribute('class','module-sub');text.setAttribute('x','16');text.setAttribute('y',String(80+i*16));el.append(text);}if(text.textContent!==line)text.textContent=line;});
+        old.slice(lines.length).forEach(text=>text.remove());
+      }
+    }
+    return;
+  }
   const paths=[...edges.values()].map(([from,to])=>{const active=result.nodes[from]?.status,related=!linked||linked.has(from)&&linked.has(to),secondary=!primaryEdges.some(([a,b])=>a===from&&b===to);return `<path class="circuit-track ${secondary?'secondary':''}" d="${connection(from,to)}"/><path data-from="${from}" data-to="${to}" class="circuit-wire ${active} ${related?'':'distant'} ${linked&&related?'focused-link':''} ${secondary&&!(linked&&related)?'secondary':''}" d="${connection(from,to)}"/>`;}).join('');
   const cards=layout.map(n=>{const state=displayNode(n.id),colour=controlColours[nodeControls[n.id]]||'#d7e6f4';return `<g class="machine-node ${state.status} ${selected===n.id||step?.nodes.includes(n.id)?'selected':''} ${linked&&!linked.has(n.id)?'distant':''} ${changed.includes(n.id)?'changed':''}" data-node="${n.id}" transform="translate(${n.x} ${n.y})" tabindex="0" role="button" aria-label="${n.title}: ${esc(state.label)}. Select to explore."><title>${n.title}. ${state.label}. Select to illuminate its incoming and outgoing connections. Title colour identifies its control; the lamp shows its state.</title><rect class="socket" width="210" height="112" rx="13"/><rect class="glass" x="5" y="5" width="200" height="102" rx="10"/><rect class="selection-ring" x="8" y="8" width="194" height="96" rx="7"/><path class="glass-edge" d="M18 6 H192"/><circle class="port" cx="0" cy="56" r="3"/><circle class="port" cx="210" cy="56" r="3"/><g class="module-icon" transform="translate(16 14) scale(.72)">${icon(n.icon)}</g><circle class="lamp-bezel" cx="187" cy="23" r="9"/><circle class="module-led" cx="187" cy="23" r="5.5"/><text class="module-title" fill="${colour}" x="16" y="58">${n.title}</text>${wrap(state.label,28).map((line,i)=>`<text class="module-sub" x="16" y="${80+i*16}">${esc(line)}</text>`).join('')}</g>`;}).join('');
   $('#world-svg').innerHTML=svgDefs+livingAtlas()+`<g class="district-engraving">${districts.map((d,i)=>`<text x="${d.x}" y="40">0${i+1} / ${d.name}</text><text class="district-sub" x="${d.x}" y="64">${d.sub}</text>`).join('')}</g>`+paths+cards;
