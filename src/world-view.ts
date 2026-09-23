@@ -11,7 +11,7 @@ const positions:Record<string,[number,number]>={
 };
 export const worldNodes=[...previous,{id:'collapse',title:'Civilisation',icon:'building',kicker:'OUR SHARED FUTURE'}].map(n=>({...n,title:n.id==='checks'?'Warning checks':n.id==='bio'?'AI-assisted health threat':n.title,x:positions[n.id][0],y:positions[n.id][1]}));
 export const nodeById=Object.fromEntries(worldNodes.map(n=>[n.id,n]));
-export const primaryEdges=[['ai','access'],['access','comms'],['comms','power'],['power','hospital'],['power','food'],['comms','warning'],['checks','warning'],['warning','military'],['supplies','repair'],['repair','recovery'],['recovery','collapse']];
+export const primaryEdges=[['ai','development'],['development','access'],['ai','access'],['access','comms'],['comms','power'],['power','hospital'],['power','food'],['comms','warning'],['checks','warning'],['warning','military'],['supplies','repair'],['repair','recovery'],['recovery','collapse']];
 export function connection(from:string,to:string){
   const a=nodeById[from],b=nodeById[to];if(!a||!b)return '';
   if(a.x===b.x){const down=b.y>a.y,x=a.x+105,sy=a.y+(down?112:0),ty=b.y+(down?0:112);return `M${x} ${sy} C${x+65} ${sy+(down?65:-65)},${x+65} ${ty+(down?-65:65)},${x} ${ty}`;}

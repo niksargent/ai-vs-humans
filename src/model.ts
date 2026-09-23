@@ -5,7 +5,7 @@ import {regionalSpread,type RegionalSpread} from './spread.js';
 import {simulatePathways,type PathwayResult} from './pathways.js';
 import type {RecoveryResult} from './recovery.js';
 import {simulateCivilisation,type CivilisationResult} from './civilisation.js';
-export const MODEL_VERSION = '0.9.0';
+export const MODEL_VERSION = '0.9.1';
 export interface Settings {
   mistakeRate:number; checkEffectiveness:number;
   repairAssistance:boolean; waitForChecks:boolean; researchSpeed:number; computeCapacity:number; experimentCapacity:number; evaluationCapacity:number;
@@ -22,7 +22,7 @@ export interface Settings {
   responseBackup:number; collapseRegions:number; collapseDays:number;
 }
 export const DEFAULTS:Settings = {
-  mistakeRate:15,checkEffectiveness:90,repairAssistance:false,waitForChecks:false,researchSpeed:20,computeCapacity:75,experimentCapacity:75,evaluationCapacity:25,
+  mistakeRate:15,checkEffectiveness:90,repairAssistance:false,waitForChecks:false,researchSpeed:20,computeCapacity:75,experimentCapacity:75,evaluationCapacity:5,
   agentEnabled:false,resistsStop:true,externalResources:false,independentStop:true,harmfulGoal:false,stopDelay:24,
   healthChallenge:false,scienceAssistance:false,maliciousActor:false,physicalAccess:false,screening:true,
   healthDemand:300,healthSurge:25,healthResponseDelay:168,
@@ -46,8 +46,8 @@ export interface Result {
 }
 export const controls = {
   mistakeRate:{min:0,max:100,step:1},checkEffectiveness:{min:0,max:100,step:5},
-  researchSpeed:{min:0,max:100,step:5},computeCapacity:{min:0,max:100,step:5},experimentCapacity:{min:0,max:100,step:5},evaluationCapacity:{min:0,max:100,step:5},
-  stopDelay:{min:0,max:168,step:6},healthDemand:{min:0,max:400,step:25},healthSurge:{min:0,max:200,step:25},healthResponseDelay:{min:24,max:552,step:24},
+  researchSpeed:{min:0,max:100,step:5},computeCapacity:{min:0,max:100,step:5},experimentCapacity:{min:0,max:100,step:5},evaluationCapacity:{min:0,max:100,step:1},
+  stopDelay:{min:0,max:168,step:6},healthDemand:{min:0,max:400,step:25},healthSurge:{min:0,max:400,step:25},healthResponseDelay:{min:24,max:552,step:24},
   informationReach:{min:0,max:100,step:5},trustedChannels:{min:0,max:100,step:5},informationHours:{min:24,max:720,step:24},
   paymentFallback:{min:0,max:100,step:5},transportFallback:{min:0,max:100,step:5},
   capability:{min:0,max:2,step:1},authority:{min:0,max:2,step:1},tension:{min:0,max:100,step:5},
@@ -109,7 +109,7 @@ export function simulate(input:Settings,seed=42):Result {
   set('ai','quiet',['Can suggest changes','Can configure a network','Can coordinate services'][s.capability],
     ['AI proposes changes. It cannot execute them.','AI can make communications changes if permitted.','AI can operate communications and connected power controls if permitted.'][s.capability],[], 'Ability and permission are independent. This fixture describes operational reach, not a universal intelligence scale.');
   set('access',permitted?'exposed':'safe', ['Advice only',s.humanApproval?'Change approved':'Human approval required','Acts without asking'][s.authority],
-    permitted?'AI can put its update into the live network. If the update is bad, people using that network lose their connection.':'AI cannot put this update into the live network. People keep their connection.', ['ai'],'A change executes only with network capability AND automatic authority or explicit approval. Advice never grants launch authority.');
+    permitted?'AI can put its update into the live network. If the update is bad, people using that network lose their connection.':'AI cannot put this update into the live network. People keep their connection.', ['ai','development'],'A change executes only with network capability AND automatic authority or explicit approval. Advice never grants launch authority.');
   set('comms',incident?'harm':'safe',incident?'Communications interrupted':'Network keeps working',
     pathways.harmfulOperation&&incident?'The agent disrupts the network and keeps undoing repairs while it remains active. Calls and messages fail in the exposed regions.':incident?`${updates.releases.filter(r=>r.fault).length} faulty updates reach the network this month. Calls and messages fail in ${affectedRegions} regions. ${recoveryModel.completed?`Crews finish repairs after ${restoreHours} hours.`:'It is still down after 30 days.'}`:'No faulty update reaches the network this month. Calls and messages keep working.', ['access','development','control'],'Incident = faulty proposal AND network capability AND execution permission. Repair work accumulates each hour, limited by crews, communications, power and consumable supplies. Service failures affect later work. See recovery details.');
   set('checks',verified?'safe':warning?'exposed':'quiet',verified?'Warning challenged':warning?(!verificationAvailable?'Check has no working channel':timely?'Check missed the error':'Check arrives too late'):'No warning to check',
@@ -134,15 +134,15 @@ export function simulate(input:Settings,seed=42):Result {
     `The starting crew is ${s.crews}% staffed. During this case, working capacity falls as low as ${Math.round(lowestCrew*100)}%. When hospitals, food deliveries or emergency response fail, fewer workers can stay on the repair job.`,['hospital','food','emergency','bio'],
     'Crew capacity = staffing × health-wave workforce fraction × (0.6 + 0.4 × hospital support) × (0.5 + 0.5 × food support) × (0.8 + 0.2 × emergency support). Coefficients are authored assumptions, not worker mortality or measured disaster estimates.');
   set('supplies',!incident?'quiet':recoveryModel.final.parts>0?'safe':recoveryModel.final.deliveries>0?'exposed':'harm',`${Math.floor(recoveryModel.final.parts)} supply units left`,
-    `Crews start with ${s.repairSupplies} units of repair materials and fuel. One unit supports one full-speed hour of repair work. Independent deliveries keep up to ${s.supplyDelivery}% of normal supply arriving when power and calls fail. Payment and transport bottlenecks can reduce this further.`,['payments','transport'],
-    'Stock next = stock + actual deliveries − actual repair work; stock is never negative. Independent delivery share bypasses grid/network failure; other deliveries require both. Hospital, food and repair-site backup are separate stocks and are not refilled in this experiment.');
+    `Crews have a stockpile that holds ${s.repairSupplies} units of repair materials and fuel. It starts full; deliveries refill the space crews use. One unit supports one full-speed hour of repair work. Independent deliveries keep up to ${s.supplyDelivery}% of normal supply arriving when power and calls fail. Payment and transport bottlenecks can reduce this further.`,['payments','transport'],
+    'Stock next = stock + retained deliveries − actual repair work, capped at the chosen stockpile capacity. Incoming supplies can also feed work directly. Independent delivery share bypasses grid/network failure; other deliveries require both. Hospital, food and repair-site backup are separate stocks and are not refilled in this experiment.');
   set('recovery',nuclear?'unknown':recoveryModel.completed?'safe':recoveryModel.status==='stalled'?'harm':'exposed',
     nuclear?'Wider recovery unknown':!incident?'Network keeps working':recoveryModel.completed?`Outage ends · ${restoreHours}h`:recoveryModel.status==='stalled'?'Repairs stalled · day 30':'Still repairing · day 30',
     nuclear?'The service calculation covers network failures only. It does not calculate the effects of nuclear weapons.':recoveryModel.completed?'The network and connected power controls work again after the month’s failures. Fixing them does not undo harm during the outage.':'Essential services remain disrupted at day 30. Later recovery is unknown; this is not a civilisation-collapse finding.',
     ['hospital','food','repair'],'Recovery is recorded only when accumulated work reaches the required workload. There is no automatic repair deadline. Local repair alone does not determine the whole-world outcome.');
   set('development',updates.releases.some(r=>r.fault)?'harm':updates.waiting?'exposed':updates.made?'safe':'quiet',`${updates.releases.filter(r=>r.fault).length} faulty updates escaped`,
-    `${updates.made} updates produced this month. ${updates.mistakes} contain mistakes; checks catch ${updates.caught}. ${updates.releases.length} go live, including ${updates.releases.filter(r=>r.fault).length} faulty updates. ${updates.waiting+updates.ready} wait for checks or permission. Turn AI project pace to change how much work arrives.`,[],
-    'Up to 20 candidates/day, limited by project pace, computers and experiments. Testing handles up to 4/day. Mistake rate applies to each project; testing effectiveness is the chance a tested mistake is caught. Caught mistakes are withheld. Each escaped mistake adds repair work; stocks are not reset.');
+    `${updates.made} updates produced this month. ${updates.mistakes} contain mistakes; checks catch ${updates.caught}. ${updates.releases.length} go live, including ${updates.releases.filter(r=>r.fault).length} faulty updates. ${updates.waiting+updates.ready} wait for checks or permission. Turn AI project pace to change how much work arrives.`,['ai'],
+    'Up to 20 candidates/day, limited by project pace, computers and experiments. Testing handles up to 20/day. Mistake rate applies to each project; testing effectiveness is the chance a tested mistake is caught. Caught mistakes are withheld. Each escaped mistake adds repair work; stocks are not reset.');
   set('control',pathways.controlLost?'harm':pathways.agentDeployed?'safe':'quiet',pathways.controlLost?'Stop order fails':pathways.agentDeployed?`Stopped after ${s.stopDelay}h`:'Agent route off',
     pathways.controlLost?`The agent keeps operating after people tell it to stop. ${s.harmfulGoal?'It keeps breaking the network, so repairs cannot finish.':'It has no harmful goal in this case. Loss of control alone does not create an outage.'}`:'The agent needs connected-service ability and permission to act. Independent isolation or revocable resources let people stop it.',
     ['ai','access'],'Loss of control requires deployed agent AND resistance to stopping AND outside resources AND no independent stop. A harmful goal is separate. Harmful operation prevents network repair progress until stopped; it does not grant weapons or laboratory access.');

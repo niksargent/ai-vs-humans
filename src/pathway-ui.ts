@@ -9,7 +9,7 @@ export const pathwayPresets:Record<string,Partial<Settings>>={
   information:{informationCampaign:true,informationReach:90,trustedChannels:10,informationHours:336},
   deliveries:{sharedPayments:true,sharedTransport:true,paymentFallback:0,transportFallback:10,supplyDelivery:100,repairSupplies:12,foodStores:48}
 };
-export function pathwayControls(range:Range,toggle:Toggle){
+export function pathwayControls(range:Range,toggle:Toggle,status=''){
   return `<details class="model-details"><summary>AI updates & testing</summary>`+
     toggle('repairAssistance','AI helps repair crews','Advice helps crews find the fault faster. It still needs people, powered tools and supplies.')+
 
@@ -18,8 +18,8 @@ export function pathwayControls(range:Range,toggle:Toggle){
     range('checkEffectiveness','Testing effectiveness','Out of every 100 tested mistakes, how many do the checks catch?','%')+
     range('computeCapacity','Computers available','Limits how much research can run.','%')+
     range('experimentCapacity','Experiments available','Limits how many ideas can be tried.','%')+
-    range('evaluationCapacity','Update testing capacity','How many candidate updates people can check each day.','%')+
-    toggle('waitForChecks','Test before release','Unfinished checks keep an update out of the live network.')+`</details>`+
+    range('evaluationCapacity','Update testing capacity','0–20 tests per day. With the release hold on, updates wait when the testers cannot keep up.','%')+
+    toggle('waitForChecks','Hold updates until tested','On: untested updates wait. Off: they can go live. Tests can still miss mistakes; Testing effectiveness controls that.')+`<p class="release-policy-status" role="status">${status}</p></details>`+
     `<details class="model-details"><summary>Can people stop it?</summary>`+
     toggle('agentEnabled','Deploy a continuing agent','It keeps acting, rather than installing one update.')+
     toggle('resistsStop','Assume it resists stopping','A scenario assumption about behaviour, not a consequence of being clever.')+

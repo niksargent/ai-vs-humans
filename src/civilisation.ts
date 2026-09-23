@@ -3,7 +3,7 @@ import type {PathwayResult} from './pathways.js';
 import type {Settings} from './model.js';
 import {recoveryProcess,RECOVERY_HORIZON,type RecoveryFrame,type RecoveryResult} from './recovery.js';
 
-export const REGION_PROFILES=[1,.6,1.4,.8,1.8,1.2];
+export const REGION_PROFILES=[1,.44,1.24,.64,1.64,1.04];
 export interface RegionalCase {
   name:string; exposed:boolean; reserveFactor:number; settings:Settings; recovery:RecoveryResult;
   aidSent:number; aidReceived:number; aidUnused:number; aidBudgetLeft:number;

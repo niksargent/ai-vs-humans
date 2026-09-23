@@ -50,7 +50,8 @@ test('The all-assumed view still names the unresolved extinction boundary',()=>{
 
 test('Survival entry provides a starting action, not choices that do nothing',()=>{
  const html=continuationPanel(simulate({...DEFAULTS,authority:0}),freshContinuation());
- assert.ok(html.includes('Load a collapse scenario'));
+ assert.ok(html.includes('Choose a story above'));
+ assert.ok(html.includes('data-continuation-route="hostile"'));
  assert.ok(!html.includes('data-survival-answer'));
  assert.ok(!html.includes('<select'));
 });
@@ -65,4 +66,14 @@ test('A surviving refuge changes the story and canvas without changing the world
  assert.ok(survivalCanvas(health,lens,'reach').includes('HOLDS IN YOUR STORY'));
  assert.ok(threatReadouts(health,lens).includes('Your what-if story'));
  assert.equal(JSON.stringify(health),before);
+});
+
+
+test('An unstarted survival canvas offers direct story entry instead of inert defence cards',async()=>{
+ const {survivalCanvas}=await import('../dist/src/survival-ui.js');
+ const html=survivalCanvas(simulate({...DEFAULTS,authority:0}),freshContinuation(),'power');
+ assert.ok(html.includes('data-continuation-route="hostile"'));
+ assert.ok(html.includes('data-continuation-route="physical"'));
+ assert.ok(!html.includes('Load a starting scenario'));
+ assert.ok(!html.includes('survival-stop'));
 });

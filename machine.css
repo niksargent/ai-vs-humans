@@ -116,3 +116,18 @@ html[data-motion=on] .survival-trail{animation:signal-flow 14s linear infinite!i
 #update-flow span{font-size:8px;letter-spacing:1px;color:#8fa0b7}#update-flow b{color:#d9e7ff;font-variant-numeric:tabular-nums}#update-flow i{color:#758298;font-style:normal;margin:0 2px}#update-flow .caught{color:#80f5ba}#update-flow .escaped{color:#ff8779;text-shadow:0 0 9px #ff534c99}
 #update-flow:hover,#update-flow:focus-visible{color:white;text-shadow:0 0 10px #accdff66}
 .release-event{display:block;width:100%;padding:10px 0;text-align:left;background:none;border:0;border-bottom:1px solid #ffffff17;color:#ffbbac;cursor:pointer}.release-event span{display:block;color:#b9c6d7;font-size:12px;margin-top:4px}.update-ledger summary{cursor:pointer;color:#d6e4f6}.update-ledger p{font-size:12px;color:#aebfd3}
+
+.release-policy-status{font-size:12px;line-height:1.55;color:#f2ce88;border-left:2px solid #e3b864;padding:8px 12px;background:#edb84408}#update-flow .waiting{color:#ffcb70}
+
+/* Fixed-height mission instrument: long messages travel within the display. */
+.mission-strip .guide-display{height:65px;min-height:65px;max-height:65px;box-sizing:border-box;overflow:hidden}
+.mission-strip .guide-display>div:nth-child(2){overflow:hidden;min-width:0}
+.mission-strip #change-text{height:18px;line-height:18px;white-space:nowrap;overflow:hidden;margin:5px 0 0;max-width:100%}
+.mission-message{display:inline-block;width:max-content;white-space:nowrap;transform:translateX(0)}
+#change-text.scrolling .mission-message{animation:mission-ticker var(--ticker-duration,18s) linear infinite!important}
+#change-text:hover .mission-message,#change-text:focus .mission-message{animation-play-state:paused!important}
+#change-text:focus-visible{outline:1px solid #bedcff;outline-offset:2px}
+@keyframes mission-ticker{0%,15%{transform:translateX(0)}85%,100%{transform:translateX(var(--ticker-distance))}}
+html[data-motion=off] #change-text .mission-message{animation:none!important}
+html[data-motion=off] #change-text{overflow-x:auto;scrollbar-width:thin}
+.survival-story-picker{font:18px var(--sans);color:#d6e5f2}.survival-story-picker h2{font-size:26px;margin:0 0 24px}.survival-story-picker button{display:block;width:100%;text-align:left;padding:22px 25px;margin:0 0 16px;border:1px solid #99bcdf77;border-radius:12px;background:linear-gradient(115deg,#233744,#142129);color:#e5f2ff;cursor:pointer;box-shadow:inset 0 1px #ffffff19,0 0 22px #73b6ff12}.survival-story-picker button:hover,.survival-story-picker button:focus-visible{border-color:#cce5ff;box-shadow:0 0 24px #79b8ff40}.survival-story-picker strong{display:block;font-size:22px;margin-bottom:9px}.survival-story-picker span,.survival-story-picker p{font-size:16px;line-height:1.5;color:#b7cbdc}

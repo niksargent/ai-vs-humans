@@ -13,7 +13,7 @@ export function updateSchedule(s:Settings,seed=42,until=720):UpdateSchedule {
  days: for(let day=0;day<30&&day*24<until;day++){
   production+=rate;
   while(production>=1-1e-9){production-=1;const id=++made,mistake=draw(seed,`update:${id}:mistake`)<s.mistakeRate/100;mistakes+=+mistake;queue.push({id,mistake});}
-  testing=Math.min(testing+4*s.evaluationCapacity/100,queue.length);
+  testing=Math.min(testing+20*s.evaluationCapacity/100,queue.length);
   while(testing>=1-1e-9&&queue.length){testing-=1;const item=queue.shift()!;checked++;if(item.mistake&&draw(seed,`update:${item.id}:catch`)<s.checkEffectiveness/100)caught++;else ready.push({...item,checked:true});}
   if(!s.waitForChecks)while(queue.length)ready.push({...queue.shift()!,checked:false});
   if(permitted){
@@ -31,4 +31,12 @@ export function updateSchedule(s:Settings,seed=42,until=720):UpdateSchedule {
   history.push({day:day+1,made,checked,backlog:queue.length});
  }
  return {made,checked,waiting:queue.length,ready:ready.length,mistakes,caught,releases,history};
+}
+
+export function releaseExplanation(s:Settings,u:Pick<UpdateSchedule,'made'|'waiting'|'ready'|'checked'|'caught'> & {releases:{fault:boolean}[]}):string {
+ if(!u.made)return s.researchSpeed===0?'Project pace is zero. No new updates are produced.':s.capability===0?'AI can only suggest changes here. No working updates are produced.':'Computers or experiments are at zero. No updates are produced.';
+ const faults=u.releases.filter(r=>r.fault).length;
+ if(s.waitForChecks&&s.evaluationCapacity===0)return `${u.waiting} updates are waiting. You require tests, but testing capacity is zero, so none can go live.`;
+ if(s.authority===0||s.authority===1&&!s.humanApproval)return `${u.ready} updates await permission${u.waiting?` and ${u.waiting} await testing`:''}. No updates can go live until you allow them.`;
+ return `${u.checked} tested · ${u.caught} mistakes caught · ${u.releases.length} released · ${faults} faulty updates escaped.${u.waiting?` ${u.waiting} updates still await testing.`:''} ${s.waitForChecks?'Only tested updates can go live. A test can still miss a mistake.':'Untested updates can go live when the testers cannot keep up.'}`;
 }

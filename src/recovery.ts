@@ -73,7 +73,8 @@ export function* recoveryProcess(s:Settings,incident:boolean,powerAffected:boole
     if(!finished&&!stress?.hostile&&rate<potential-1e-9)record('supplies','Crews have too few repair supplies. Work is limited by what deliveries bring.');
     if(!finished&&rate<1e-9)record('stalled',`Repair work stops. Missing support: ${limiting}.`);
     const done=Math.min(rate*dt,Math.max(0,target-work));
-    const delivered=incoming*dt;
+    // Restock to the chosen stockpile capacity; idle months do not create unlimited parts.
+    const delivered=Math.min(incoming*dt,Math.max(0,s.repairSupplies-parts)+done);
     parts=Math.max(0,parts+delivered-done);suppliesDelivered+=delivered;suppliesUsed+=done;work+=done;
     if(healthcare<1)healthcareGap+=dt;
     hospitalGap+=(1-hospital)*dt;foodGap+=(1-coldStorage)*dt;

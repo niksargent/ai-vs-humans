@@ -44,3 +44,7 @@ Numbered model steps remain in order. The UX interlude is complete; step 6 is no
 
 ### Input-driven month — 23 September 2026
 Implemented model 0.9: one shared monthly calculation for board and replay explorer. Project pace 0–20 requested updates/day, mistake rate and testing effectiveness in World settings. Removed project start/pause and introduced-bad-update controls. Scenario presets now visibly produce faults through settings. Dated escaped-update ledger and compact persistent production readout connect input to output. See INPUT_DRIVEN_MONTH.md for assumptions, compatibility and validation. Later numbered steps remain in this plan.
+
+
+### Model and settings audit — 0.9.1
+All 56 live settings reviewed; 6,417 sensitivity comparisons across 23 contexts and three seeds found an operative context for each. Fixed release-policy communication, visible development wiring, testing/health-capacity range limits, unlimited idle repair-stock accumulation and resource creation by regional variation. 107 tests pass. See [model/settings review](MODEL_SETTINGS_REVIEW.md) and [measured audit](SETTINGS_AUDIT.json). User testing and delivery remain pending.
