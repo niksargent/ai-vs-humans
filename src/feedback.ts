@@ -1,9 +1,9 @@
 import type {Result} from './model.js';
 
-export const controlColours:Record<string,string>={researchSpeed:'#adc7ff',capability:'#86baff',authority:'#bf9aff',tension:'#ff9167',verification:'#ffce69',fallback:'#6ff0db',reserves:'#8ee798',reach:'#86baff',foodBackup:'#f3c77a',repair:'#6ff0db',decisionTime:'#ffce69',independent:'#ffce69',sharedProvider:'#86baff',aiAdvice:'#ff9167',faultyChange:'#bf9aff',humanApproval:'#bf9aff'};
+export const controlColours:Record<string,string>={researchSpeed:'#adc7ff',capability:'#86baff',authority:'#bf9aff',tension:'#ff9167',verification:'#ffce69',fallback:'#6ff0db',reserves:'#8ee798',connectedness:'#75d5ff',foodBackup:'#f3c77a',repair:'#6ff0db',decisionTime:'#ffce69',independent:'#ffce69',sharedProvider:'#86baff',aiAdvice:'#ff9167',faultyChange:'#bf9aff',humanApproval:'#bf9aff'};
 Object.assign(controlColours,{crews:'#6ff0db',repairBackup:'#6ff0db',repairSupplies:'#f3c77a',supplyDelivery:'#f3c77a',foodStores:'#f3c77a'});
 Object.assign(controlColours,{regionDifference:'#86baff',aidStrength:'#86baff',aidDelay:'#86baff',aidBudget:'#86baff',responseBackup:'#ffce69',collapseRegions:'#ff9167',collapseDays:'#ff9167'});
-export const nodeControls:Record<string,string>={development:'researchSpeed',ai:'capability',access:'authority',military:'tension',checks:'verification',fallback:'fallback',hospital:'reserves',crews:'crews',supplies:'repairSupplies'};
+export const nodeControls:Record<string,string>={spread:'connectedness',development:'researchSpeed',ai:'capability',access:'authority',military:'tension',checks:'verification',fallback:'fallback',hospital:'reserves',crews:'crews',supplies:'repairSupplies'};
 export function differences(before:Result,after:Result){
   const metrics:[string,string|number,string|number,string][]=[
     ['Care below demand',before.recoveryModel.healthcareGap,after.recoveryModel.healthcareGap,'h'],

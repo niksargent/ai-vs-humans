@@ -12,7 +12,7 @@ test('A service outage alone does not establish either extinction continuation',
   assert.equal(evaluateContinuation(r,l).state,'not-started');
 });
 test('Collapse and nuclear use open questions, never fill in survival assumptions',()=>{
-  const l=freshContinuation(),r=simulate({...DEFAULTS,reach:6,crews:25,repairBackup:24,foodStores:48});
+  const l=freshContinuation(),r=simulate({...DEFAULTS,connectedness:100,crews:25,repairBackup:24,foodStores:48});
   assert.notEqual(r.civilisation.crossedAt,null);assert.equal(evaluateContinuation(r,l).state,'unresolved');
   assert.equal(evaluateContinuation({...r,nuclear:true},l).unknowns.length,4);
 });

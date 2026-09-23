@@ -4,8 +4,8 @@ import {DEFAULTS,simulate,validateSettings,ensemble,draw} from '../dist/src/mode
 import {differences,changedNodes} from '../dist/src/feedback.js';
 
 test('Partial reach is amber; all regions red; protected regions green',()=>{
-  assert.equal(simulate({...DEFAULTS,reach:3}).nodes.spread.status,'exposed');
-  assert.equal(simulate({...DEFAULTS,reach:6}).nodes.spread.status,'harm');
+  assert.equal(simulate({...DEFAULTS,connectedness:40}).nodes.spread.status,'exposed');
+  assert.equal(simulate({...DEFAULTS,connectedness:100}).nodes.spread.status,'harm');
   assert.equal(simulate({...DEFAULTS,authority:0}).nodes.spread.status,'safe');
 });
 test('Emergency response distinguishes partial service from complete disruption',()=>{
@@ -22,7 +22,7 @@ test('Hospital protection feeds back into repair speed without changing military
 });
 
 test('Without mutual aid, reach changes footprint but not Region 1 duration or military draw',()=>{
-  const local=simulate({...DEFAULTS,reach:1,aidStrength:0}),wide=simulate({...DEFAULTS,reach:6,aidStrength:0});
+  const local=simulate({...DEFAULTS,connectedness:0,aidStrength:0}),wide=simulate({...DEFAULTS,connectedness:100,aidStrength:0});
   assert.equal(local.regions.filter(r=>r.comms).length,1);
   assert.equal(wide.regions.filter(r=>r.comms).length,6);
   assert.equal(local.hospitalGap,wide.hospitalGap);
@@ -46,7 +46,7 @@ test('Full independent capacity maintains emergency response even when the main 
   assert.ok(r.regions.every(r=>!r.emergency));
 });
 test('Stopping the update prevents every regional service interruption',()=>{
-  const r=simulate({...DEFAULTS,authority:0,reach:6,foodBackup:0,reserves:0});
+  const r=simulate({...DEFAULTS,authority:0,connectedness:100,foodBackup:0,reserves:0});
   assert.equal(r.affectedRegions,0);assert.equal(r.foodGap,0);assert.equal(r.emergencyGap,0);
   assert.ok(r.regions.every(r=>!r.comms&&!r.power&&!r.hospital&&!r.food&&!r.emergency));
 });

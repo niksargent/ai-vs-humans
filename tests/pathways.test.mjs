@@ -56,9 +56,9 @@ test('Health response and surge capacity reduce unmet care; effects remain after
   assert.ok(surge.recoveryModel.healthcareGap<a.recoveryModel.healthcareGap);
   assert.equal(a.recoveryModel.restoredAt,0);assert.equal(a.recoveryModel.observedHours,720);
   assert.ok(a.events.some(e=>e.id==='bio-response'&&e.time>0));
-  assert.ok(a.civilisation.regions.slice(3).every(r=>r.recovery.healthcareGap===0));
-  const compound=run({...pathwayPresets.health,faultyChange:true});
-  assert.ok(compound.restoreHours>run().restoreHours);
+  assert.ok(a.civilisation.regions.filter((r,i)=>!a.spread.exposed[i]).every(r=>r.recovery.healthcareGap===0));
+  const compound=run({...pathwayPresets.health,faultyChange:true,connectedness:0});
+  assert.ok(compound.restoreHours>run({connectedness:0}).restoreHours);
   assert.ok(compound.recoveryModel.frames.some(f=>f.time>compound.restoreHours&&f.healthcare<1));
 });
 test('Trusted channels can remove a campaign penalty without fixing the network',()=>{
@@ -90,12 +90,12 @@ test('AI repair advice can help without adding authority or ignoring material li
   const a=run(),b=run({repairAssistance:true});
   assert.ok(b.restoreHours<a.restoreHours);assert.equal(a.incident,b.incident);
   assert.equal(run({repairAssistance:true,authority:0}).incident,false);
-  const none=run({repairAssistance:true,repairSupplies:0,supplyDelivery:0,aidStrength:0,reach:6});
+  const none=run({repairAssistance:true,repairSupplies:0,supplyDelivery:0,aidStrength:0,connectedness:100});
   assert.equal(none.recoveryModel.progress,0);
 });
 
 test('A health-stressed repaired region cannot immediately export relief',()=>{
-  const r=run({...pathwayPresets.health,faultyChange:true,reach:6,regionDifference:100});
+  const r=run({...pathwayPresets.health,faultyChange:true,connectedness:100,regionDifference:100});
   assert.ok(r.civilisation.shipments.length>0);
   for(const shipment of r.civilisation.shipments){
     const frames=r.civilisation.regions[shipment.from].recovery.frames;

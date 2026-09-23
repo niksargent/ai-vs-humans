@@ -48,8 +48,8 @@ test('Every map module has evidence scope and every overview wire matches a decl
  for(const [from,to] of primaryEdges)assert.ok(r.nodes[to].parents.includes(from),`${from} -> ${to}`);
 });
 test('Compound pathways keep support bounded and stocks conserved',()=>{
- for(const reach of [1,4,6])for(const fallback of [0,50,100])for(const healthDemand of [0,400]){
-  const r=run({...pathwayPresets.health,...pathwayPresets.information,...pathwayPresets.deliveries,faultyChange:true,reach,fallback,healthDemand});
+ for(const connectedness of [0,60,100])for(const fallback of [0,50,100])for(const healthDemand of [0,400]){
+  const r=run({...pathwayPresets.health,...pathwayPresets.information,...pathwayPresets.deliveries,faultyChange:true,connectedness,fallback,healthDemand});
   for(const region of r.civilisation.regions){const m=region.recovery;
    assert.ok(Math.abs(region.settings.repairSupplies+m.suppliesDelivered-m.suppliesUsed-m.final.parts)<.002);
    for(const f of m.frames)for(const key of ['power','communications','healthcare','foodSupply','emergency','payments','transport','trust'])assert.ok(Number.isFinite(f[key])&&f[key]>=0&&f[key]<=1,key);
@@ -78,12 +78,12 @@ test('Development explanation agrees with the fault and permission gates',()=>{
 
 test('Protection choices make exact changes, become no-ops once applied, and never widen reach',async()=>{
  const {protections,settingChanges,protectionEffect}=await import('../dist/src/protection.js');
- for(const patch of [{},{reach:1},{reach:6},pathwayPresets.control,pathwayPresets.health]){
+ for(const patch of [{},{connectedness:0},{connectedness:100},pathwayPresets.control,pathwayPresets.health]){
   const s={...DEFAULTS,...patch};
   for(const option of protections(s)){
    const next={...s,...option.patch};
    assert.equal(settingChanges(next,option.patch).length,0);
-   if(option.id==='refuges')assert.ok(next.reach<=s.reach);
+   if(option.id==='refuges')assert.ok(next.connectedness<=s.connectedness);
   }
  }
  const s={...DEFAULTS,...pathwayPresets.control};
@@ -97,4 +97,51 @@ test('Current scenario recognises presets and labels combined or adjusted settin
  assert.equal(currentScenario({...DEFAULTS,...pathwayPresets.health}).id,'health');
  assert.equal(currentScenario({...DEFAULTS,reserves:720}).modified,true);
  assert.equal(currentScenario({...DEFAULTS,researchEnabled:true,agentEnabled:true}).id,'combined');
+});
+
+test('Connectedness is repeatable and monotone per replay, with local and global limits',async()=>{
+ const {regionalSpread}=await import('../dist/src/spread.js');
+ for(let seed=0;seed<256;seed++){
+  assert.equal(regionalSpread(0,seed).count,1);
+  assert.equal(regionalSpread(100,seed).count,6);
+  let previous=regionalSpread(0,seed);
+  for(let c=5;c<=100;c+=5){
+   const next=regionalSpread(c,seed);
+   assert.deepEqual(next,regionalSpread(c,seed));
+   assert.ok(previous.exposed.every((hit,i)=>!hit||next.exposed[i]));
+   assert.ok(next.aidAccess>=previous.aidAccess);
+   previous=next;
+  }
+ }
+});
+
+test('One connectedness score allows different footprints, including shared and dependency routes',async()=>{
+ const {regionalSpread}=await import('../dist/src/spread.js');
+ const worlds=Array.from({length:256},(_,seed)=>regionalSpread(50,seed));
+ assert.deepEqual([...new Set(worlds.map(w=>w.count))].sort(),[1,2,3,4,5,6]);
+ assert.ok(worlds.some(w=>w.routes.includes('shared')&&w.routes.includes('dependency')));
+ const r=simulate({...DEFAULTS,connectedness:40},42);
+ assert.deepEqual(r.regions.map(x=>x.comms),[true,true,true,true,false,true]);
+ assert.equal(r.civilisation.regions[4].recovery.hospitalGap,0);
+ assert.ok(r.civilisation.regions[5].recovery.hospitalGap>0);
+ assert.ok(Math.abs(r.civilisation.aidSent-r.civilisation.aidReceived-r.civilisation.aidInTransit)<1e-7);
+});
+
+test('Higher connectedness carries relief faster while a fixed footprint is unchanged',async()=>{
+ const a=simulate({...DEFAULTS,connectedness:45},42),b=simulate({...DEFAULTS,connectedness:60},42);
+ assert.deepEqual(a.spread.exposed,b.spread.exposed);
+ assert.ok(b.civilisation.shipments[0].amount>a.civilisation.shipments[0].amount);
+ assert.ok(b.civilisation.regions.every(r=>r.aidSent<=r.settings.aidBudget+1e-7));
+});
+
+test('Main dials alone can reveal collapse, recovery after collapse, and protection',()=>{
+ const world={...DEFAULTS,connectedness:80,aiAdvice:false};
+ const collapse=simulate({...world,fallback:0},42);
+ const rebuild=simulate({...world,fallback:10},42);
+ const protectedWorld=simulate({...world,fallback:0,reserves:120},42);
+ assert.equal(collapse.affectedRegions,6);
+ assert.equal(collapse.civilisation.endStatus,'collapse');
+ assert.equal(rebuild.civilisation.endStatus,'recovered');
+ assert.equal(protectedWorld.civilisation.endStatus,'functioning');
+ assert.equal(protectedWorld.civilisation.crossedAt,null);
 });

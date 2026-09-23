@@ -2,11 +2,11 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {DEFAULTS,simulate} from '../dist/src/model.js';
 import {simulateCivilisation,classifyWorld} from '../dist/src/civilisation.js';
-const run=o=>simulateCivilisation({...DEFAULTS,...o},true,true);
-const fragile={reach:6,crews:25,repairBackup:24,foodStores:48};
+const run=(o,seed=42)=>simulateCivilisation({...DEFAULTS,...o},true,true,undefined,undefined,seed);
+const fragile={connectedness:100,crews:25,repairBackup:24,foodStores:48};
 
 test('Widespread interruption is not automatically civilisation collapse',()=>{
-  const c=run({reach:6});assert.equal(c.crossedAt,null);assert.equal(c.endStatus,'functioning');
+  const c=run({connectedness:100});assert.equal(c.crossedAt,null);assert.equal(c.endStatus,'functioning');
   assert.ok(c.peakRegions>=4);assert.ok(c.longestHours<336);
 });
 test('Sustained simultaneous loss crosses the explicit threshold',()=>{
@@ -14,18 +14,18 @@ test('Sustained simultaneous loss crosses the explicit threshold',()=>{
   assert.ok(c.longestHours>=336);assert.equal(c.recoveredAt,null);
 });
 test('Independent survivors with finite aid interrupt the same fragile chain',()=>{
-  const c=run({...fragile,reach:4,aidStrength:100,aidBudget:168});
+  const c=run({...fragile,connectedness:65,aidStrength:100,aidBudget:168},9);
   assert.equal(c.crossedAt,null);assert.equal(c.endStatus,'functioning');
   assert.ok(c.regions.slice(0,4).every(r=>r.recovery.completed));
   assert.ok(c.regions.slice(4).every(r=>r.deprivationHours===0&&r.aidSent>0));
 });
 test('Withholding aid from the same two survivors leaves the fragile regions in collapse',()=>{
-  const c=run({...fragile,reach:4,aidStrength:0});
+  const c=run({...fragile,connectedness:65,aidStrength:0},9);
   assert.equal(c.endStatus,'collapse');assert.equal(c.aidSent,0);
   assert.ok(c.regions.slice(4).every(r=>r.recovery.completed&&r.deprivationHours===0));
 });
 test('Collapse history survives subsequent recovery',()=>{
-  const c=run({reach:6,aidStrength:0,regionDifference:0});
+  const c=run({connectedness:100,aidStrength:0,regionDifference:0});
   assert.equal(c.crossedAt,543);assert.equal(c.recoveredAt,634);assert.equal(c.endStatus,'recovered');
 });
 test('Aid is delayed, bounded by donor surplus, and conserved through transit',()=>{
@@ -37,9 +37,9 @@ test('Aid is delayed, bounded by donor surplus, and conserved through transit',(
   for(const r of c.regions.filter(r=>r.exposed))assert.ok(r.recovery.frames.filter(f=>f.time<=72).every(f=>f.aid===0));
 });
 test('Exhausted surplus stops dispatch and does not consume donor essentials',()=>{
-  const c=run({...fragile,reach:4,aidStrength:100,aidBudget:6});
+  const c=run({...fragile,connectedness:65,aidStrength:100,aidBudget:6},9);
   for(const r of c.regions.slice(4)){assert.equal(r.aidBudgetLeft,0);assert.equal(r.recovery.hospitalGap,0);assert.ok(Math.abs(r.recovery.final.foodStock-r.settings.foodStores)<.001);}
-  assert.ok(c.shipments.every(s=>s.sentAt<30));
+  assert.ok(c.shipments.every(s=>s.sentAt<34));
 });
 test('Late shipments are counted as unused, not retroactive rescue',()=>{
   const c=run({fallback:100,reserves:720,foodBackup:720,aidDelay:168});

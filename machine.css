@@ -75,3 +75,23 @@ html[data-motion=on] .circuit-wire.focused-link:not(.distant){stroke-dasharray:1
 @property --fill{syntax:'<angle>';inherits:true;initial-value:0deg}
 html[data-motion=on] .dial{transition:--angle .65s ease!important}
 html[data-motion=on] .dial-wrap{transition:--fill .65s ease!important}
+
+/* Status belongs to the whole instrument, not just a tiny lamp. */
+.machine-node.harm .socket{fill:#35151c;stroke:#ff493f;stroke-width:2.3;filter:drop-shadow(0 0 7px #ff392ddb) drop-shadow(0 0 23px #ff392d88)}
+.machine-node.exposed .socket{fill:#302314;stroke:#ffb52c;stroke-width:1.9;filter:drop-shadow(0 0 6px #ffab2599) drop-shadow(0 0 17px #ffac2544)}
+.machine-node.safe .socket{fill:#112c28;stroke:#42edb5;stroke-width:1.7;filter:drop-shadow(0 0 6px #34efb36b) drop-shadow(0 0 15px #34efb329)}
+.machine-node.harm .module-led{fill:#fff0e3;stroke:#ff473c;stroke-width:1.7;filter:drop-shadow(0 0 6px #ff382a) drop-shadow(0 0 13px #ff382a)}
+.machine-node.exposed .module-led{fill:#fff3c0;stroke:#ffb526;filter:drop-shadow(0 0 7px #ffab19)}
+.machine-node.safe .module-led{fill:#c6ffe9;stroke:#39ffc0;filter:drop-shadow(0 0 7px #36ffc0)}
+.machine-node.harm .module-sub{fill:#ffbcb0}.machine-node.exposed .module-sub{fill:#ffda91}.machine-node.safe .module-sub{fill:#a6f6d9}
+.machine-node.harm.distant{opacity:.88}.machine-node.selected .glass-edge,.machine-node:focus-visible .glass-edge{stroke:#e5f5ff;stroke-width:3}
+html[data-motion=on] .machine-node.harm .socket{animation:housing-alarm 2.6s ease-in-out infinite!important}
+html[data-motion=on] .machine-node.exposed .socket{animation:housing-caution 4.6s ease-in-out infinite!important}
+html[data-motion=on] #world-svg.world-emergency .machine-node.harm .socket{animation-duration:1.9s!important}
+.circuit-wire.harm:not(.secondary){stroke:#ff6149;opacity:1;stroke-width:3;filter:drop-shadow(0 0 5px #ff4e318f)}
+.circuit-wire.exposed:not(.secondary){stroke:#ffc23f;opacity:.95;stroke-width:2.3;stroke-dasharray:5 19;filter:drop-shadow(0 0 4px #ffb12666)}
+html[data-motion=on] .circuit-wire.exposed:not(.secondary):not(.distant){animation:signal-flow 12s linear infinite!important}
+.instrument-readout.harm{border-color:#ff5b48;box-shadow:inset 2px 0 #ff5b48,0 0 18px #ff493c33}.instrument-readout.exposed{border-color:#ffc13e}
+@keyframes housing-alarm{0%,100%{fill:#2e151b;filter:drop-shadow(0 0 5px #ff392dba) drop-shadow(0 0 13px #ff392d55)}50%{fill:#4a1b22;filter:drop-shadow(0 0 11px #ff493fff) drop-shadow(0 0 32px #ff392da6)}}
+@keyframes housing-caution{0%,100%{filter:drop-shadow(0 0 4px #ffab2570) drop-shadow(0 0 10px #ffac2533)}50%{filter:drop-shadow(0 0 9px #ffb525bf) drop-shadow(0 0 22px #ffac2566)}}
+.spread-routes{display:grid;gap:8px;margin:16px 0}.spread-route{text-align:left;padding:11px 13px;border-left:2px solid #45e3b6;background:#122522;border-radius:0 6px 6px 0}.spread-route.hit{border-color:#ffb03d;background:#2c2119}.spread-route b{display:block;font-size:12px}.spread-route span{display:block;color:#bfccda;font-size:11px;line-height:1.6;margin-top:5px}

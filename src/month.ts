@@ -48,7 +48,7 @@ export function simulateMonth(input:Settings,options:MonthSettings,seed=42):Mont
  const faults=schedule.releases.filter(r=>r.fault).map(r=>r.hour);
  // Continuing harm is an explicitly selected background challenge, not another release draw.
  if(p.harmfulOperation&&(p.controlLost||s.stopDelay>0))faults.unshift(0);
- const world=simulateCivilisation(s,faults.length>0,s.capability===2&&s.sharedProvider,p,faults);
+ const world=simulateCivilisation(s,faults.length>0,s.capability===2&&s.sharedProvider,p,faults,seed);
  const nuclearAt=schedule.releases.find(r=>r.nuclear)?.hour??null;
  const scopeEnd=nuclearAt??720;
  const collapseAt=world.crossedAt!==null&&world.crossedAt<=scopeEnd?world.crossedAt:null;
@@ -70,9 +70,9 @@ export type MonthEnsemble=ReturnType<typeof monthEnsemble>;
 // Deliberate boundary scenarios, never inserted into the random sample.
 export const monthChallenges:Record<string,{title:string;settings:Partial<Settings>;options:MonthSettings}>={
  balanced:{title:'One warning, many endings',settings:{researchEnabled:true,waitForChecks:true,tension:90,verification:70,decisionTime:90,independent:true,repairBackup:720},options:{releasesPerDay:2,checkedFault:5,uncheckedFault:15}},
- rebuild:{title:'Can a broken world rebuild?',settings:{researchEnabled:true,researchSpeed:5,reach:6,collapseDays:1,foodStores:24,aidStrength:0,fallback:50,repairBackup:720,crews:100},options:{releasesPerDay:1,checkedFault:20,uncheckedFault:50}},
- guarded:{title:'Give the checks a chance',settings:{researchEnabled:true,waitForChecks:true,verification:100,decisionTime:120,independent:true,reserves:720,fallback:100,reach:3},options:{releasesPerDay:1,checkedFault:1,uncheckedFault:10}},
- race:{title:'Race the repair crews',settings:{researchEnabled:true,waitForChecks:false,researchSpeed:100,computeCapacity:100,experimentCapacity:100,evaluationCapacity:0,reach:6,crews:25,repairBackup:24,foodStores:48},options:{releasesPerDay:4,checkedFault:1,uncheckedFault:30}},
+ rebuild:{title:'Can a broken world rebuild?',settings:{researchEnabled:true,researchSpeed:5,connectedness:100,collapseDays:1,foodStores:24,aidStrength:0,fallback:50,repairBackup:720,crews:100},options:{releasesPerDay:1,checkedFault:20,uncheckedFault:50}},
+ guarded:{title:'Give the checks a chance',settings:{researchEnabled:true,waitForChecks:true,verification:100,decisionTime:120,independent:true,reserves:720,fallback:100,connectedness:40},options:{releasesPerDay:1,checkedFault:1,uncheckedFault:10}},
+ race:{title:'Race the repair crews',settings:{researchEnabled:true,waitForChecks:false,researchSpeed:100,computeCapacity:100,experimentCapacity:100,evaluationCapacity:0,connectedness:100,crews:25,repairBackup:24,foodStores:48},options:{releasesPerDay:4,checkedFault:1,uncheckedFault:30}},
  brink:{title:'A crisis with nuclear stakes',settings:{researchEnabled:true,waitForChecks:false,researchSpeed:100,computeCapacity:100,experimentCapacity:100,evaluationCapacity:0,tension:100,verification:0},options:{releasesPerDay:4,checkedFault:1,uncheckedFault:20}},
- refuge:{title:'Keep a way back',settings:{researchEnabled:true,waitForChecks:true,reach:4,aidStrength:100,aidBudget:168,repairBackup:720,verification:100,decisionTime:120},options:{releasesPerDay:1,checkedFault:10,uncheckedFault:30}}
+ refuge:{title:'Keep a way back',settings:{researchEnabled:true,waitForChecks:true,connectedness:60,aidStrength:100,aidBudget:168,repairBackup:720,verification:100,decisionTime:120},options:{releasesPerDay:1,checkedFault:10,uncheckedFault:30}}
 };

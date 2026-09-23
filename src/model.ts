@@ -1,7 +1,10 @@
+import {draw} from './random.js';
+export {draw} from './random.js';
+import {regionalSpread,type RegionalSpread} from './spread.js';
 import {simulatePathways,type PathwayResult} from './pathways.js';
 import type {RecoveryResult} from './recovery.js';
 import {simulateCivilisation,type CivilisationResult} from './civilisation.js';
-export const MODEL_VERSION = '0.7.0';
+export const MODEL_VERSION = '0.8.0';
 export interface Settings {
   repairAssistance:boolean; researchEnabled:boolean; waitForChecks:boolean; researchSpeed:number; computeCapacity:number; experimentCapacity:number; evaluationCapacity:number;
   agentEnabled:boolean; resistsStop:boolean; externalResources:boolean; independentStop:boolean; harmfulGoal:boolean; stopDelay:number;
@@ -12,7 +15,7 @@ export interface Settings {
   capability:number; authority:number; tension:number; verification:number; fallback:number;
   reserves:number; repair:number; decisionTime:number; independent:boolean;
   faultyChange:boolean; humanApproval:boolean; aiAdvice:boolean; sharedProvider:boolean;
-  reach:number; foodBackup:number; crews:number; repairBackup:number; repairSupplies:number; supplyDelivery:number; foodStores:number;
+  connectedness:number; foodBackup:number; crews:number; repairBackup:number; repairSupplies:number; supplyDelivery:number; foodStores:number;
   regionDifference:number; aidStrength:number; aidDelay:number; aidBudget:number;
   responseBackup:number; collapseRegions:number; collapseDays:number;
 }
@@ -25,13 +28,13 @@ export const DEFAULTS:Settings = {
   sharedPayments:false,sharedTransport:false,paymentFallback:25,transportFallback:25,
   capability:2, authority:2, tension:75, verification:35, fallback:20,
   reserves:24, repair:72, decisionTime:30, independent:true,
-  faultyChange:true, humanApproval:false, aiAdvice:true, sharedProvider:true, reach:3, foodBackup:48, crews:100, repairBackup:168, repairSupplies:96, supplyDelivery:30, foodStores:168,
+  faultyChange:true, humanApproval:false, aiAdvice:true, sharedProvider:true, connectedness:50, foodBackup:48, crews:100, repairBackup:168, repairSupplies:96, supplyDelivery:30, foodStores:168,
   regionDifference:50,aidStrength:50,aidDelay:48,aidBudget:48,responseBackup:72,collapseRegions:4,collapseDays:14
 };
 export type Status = 'safe'|'exposed'|'harm'|'quiet'|'unknown';
 export interface NodeState {status:Status; label:string; reason:string; parents:string[]; rule:string;}
 export interface Result {
-  pathways:PathwayResult; civilisation:CivilisationResult;
+  spread:RegionalSpread; pathways:PathwayResult; civilisation:CivilisationResult;
   recoveryModel:RecoveryResult; nodes:Record<string,NodeState>; seed:number; settings:Settings;
   incident:boolean; powerOutage:number; hospitalGap:number; restoreHours:number;
   warning:boolean; verified:boolean; escalation:boolean; nuclear:boolean;
@@ -47,7 +50,7 @@ export const controls = {
   capability:{min:0,max:2,step:1},authority:{min:0,max:2,step:1},tension:{min:0,max:100,step:5},
   verification:{min:0,max:100,step:5},fallback:{min:0,max:100,step:5},reserves:{min:0,max:720,step:6},
   repair:{min:12,max:168,step:6},decisionTime:{min:10,max:120,step:5},
-  reach:{min:1,max:6,step:1},foodBackup:{min:0,max:720,step:6},
+  connectedness:{min:0,max:100,step:5},foodBackup:{min:0,max:720,step:6},
   crews:{min:0,max:100,step:5},repairBackup:{min:0,max:720,step:6},repairSupplies:{min:0,max:168,step:6},supplyDelivery:{min:0,max:100,step:5},foodStores:{min:0,max:720,step:6},
   regionDifference:{min:0,max:100,step:5},aidStrength:{min:0,max:100,step:5},aidDelay:{min:12,max:168,step:12},aidBudget:{min:0,max:168,step:6},responseBackup:{min:0,max:720,step:6},collapseRegions:{min:2,max:6,step:1},collapseDays:{min:1,max:28,step:1}
 } as const;
@@ -60,20 +63,15 @@ export function validateSettings(raw:unknown):Settings {
     else {const c=controls[k as NumericKey], v=r[k]; if(typeof v!=='number'||!Number.isFinite(v)||v<c.min||v>c.max||Math.abs((v-c.min)/c.step-Math.round((v-c.min)/c.step))>1e-7) throw Error(`Invalid ${k}.`); (out as any)[k]=v;}
   } return out;
 }
-// Each event has its own repeatable draw; changing a branch never shifts later draws.
-export function draw(seed:number,event:string):number {
-  let hash=(seed|0)^0x811c9dc5;
-  for(let i=0;i<event.length;i++) {hash^=event.charCodeAt(i); hash=Math.imul(hash,16777619);}
-  hash^=hash>>>16; hash=Math.imul(hash,0x7feb352d); hash^=hash>>>15; hash=Math.imul(hash,0x846ca68b); hash^=hash>>>16;
-  return (hash>>>0)/4294967296;
-}
 export function simulate(input:Settings,seed=42):Result {
   const s=validateSettings(input);
   const permitted=s.authority===2 || (s.authority===1 && s.humanApproval);
   const pathways=simulatePathways(s);
   const incident=(s.researchEnabled?pathways.researchFault:s.faultyChange && s.capability>=1 && permitted)||pathways.harmfulOperation&&s.stopDelay>0||pathways.harmfulOperation&&pathways.controlLost;
   const powerAffected=incident&&s.capability===2&&s.sharedProvider;
-  const civilisation=simulateCivilisation(s,incident,powerAffected,pathways);
+  const spread=regionalSpread(s.connectedness,seed);
+  if(pathways.harmfulOperation){spread.reasons=spread.reasons.map((text,i)=>i===0?'The harmful agent disrupts services here.':spread.routes[i]==='shared'?'The same AI-operated system disrupts services here too.':text);}
+  const civilisation=simulateCivilisation(s,incident,powerAffected,pathways,undefined,seed);
   // The causal board describes Region 1; the regional display and collapse result cover all six.
   const recoveryModel=civilisation.regions[0].recovery;
   // Duration fields measure observed interruption; only restoredAt states a completion time.
@@ -81,7 +79,7 @@ export function simulate(input:Settings,seed=42):Result {
   const powerOutage=powerAffected?restoreHours:0;
   const {hospitalGap,foodGap,emergencyGap}=recoveryModel;
   const endText=recoveryModel.completed?`${restoreHours}h`:'30 days+';
-  const affectedRegions=incident?s.reach:0;
+  const affectedRegions=incident?spread.count:0;
   const regions=civilisation.regions.map(r=>({name:r.name,comms:r.exposed,
     power:r.exposed&&powerAffected,hospital:r.recovery.healthcareGap>0,
     food:r.recovery.foodGap>0||r.recovery.foodShortageHours>0,emergency:r.recovery.emergencyGap>0}));
@@ -167,8 +165,8 @@ export function simulate(input:Settings,seed=42):Result {
     !incident&&pathways.misinformation?`The network works, but false instructions disrupt emergency coordination for ${emergencyGap} hours.`:emergencyGap?`Calls and dispatch screens fail. Separate radios and local teams cover ${s.fallback}% of the normal response. ${recoveryModel.completed?`Full service returns after ${emergencyGap} hours.`:'Service is still reduced at day 30.'}`:'Separate radios and local teams keep help moving, or the network never fails.',
     ['comms','fallback','information'],'Emergency support is limited by communications and trusted instructions. Disruption duration counts hours below full service; it is not an ambulance waiting time.');
   set('spread',affectedRegions===6?'harm':affectedRegions?'exposed':'safe',affectedRegions?`${affectedRegions} of 6 regions affected`:'No regions affected',
-    affectedRegions?`The same update reaches ${affectedRegions} regions because they share this network. The other ${6-affectedRegions} use separate networks. Select More controls to change its reach.`:'This update does not cause an outage in any region.',
-    ['comms'],'Six fictional regions of equal weight. The first N share the affected network; the rest are independent. Region profiles scale the chosen reserves. Aid follows finite budgets and travel delays. Counts describe this experiment, not countries or population. Military consequences are not included in this regional service display.');
+    affectedRegions?`${affectedRegions} of 6 regions are hit. ${spread.routes.filter(x=>x==='shared').length} others share the failing AI system; ${spread.routes.filter(x=>x==='dependency').length} are reached through services they depend on. Select a region below to see its route. Turn Regional connectedness to change how easily trouble travels.`:'This update does not cause an outage in any region.',
+    ['comms'],'Six fictional regions of equal weight. Connectedness samples a shared rollout and directed service dependencies with fixed named draws. Shared rollout failures are correlated. All reached regions receive the same repair challenge at incident onset; spread timing is not simulated. Higher connectedness also increases the rate at which healthy donors can send aid. Region profiles scale the chosen reserves. Aid follows finite budgets and travel delays. Counts describe this experiment, not countries or population. Military consequences are not included in this regional service display.');
   const events:Result['events']=[...pathways.events];
   const event=(id:string,time:number,parents:string[])=>events.push({id,time,parents,description:nodes[id]?.reason||id});
   if(incident) {event('comms',0,['access']); if(powerOutage)event('power',0,['comms']);}
@@ -183,7 +181,7 @@ export function simulate(input:Settings,seed=42):Result {
   if(civilisation.crossedAt!==null)events.push({id:'service-collapse',time:civilisation.crossedAt,parents:['governance','hospital','food','power'],description:'The network-service experiment crosses its chosen multi-region collapse threshold. Nuclear consequences are outside this calculation.'});
   if(civilisation.recoveredAt!==null)events.push({id:'civilisation-recovery',time:civilisation.recoveredAt,parents:['service-collapse','repair','aid'],description:'All six regions have regained essential services and emergency coordination for 24 hours.'});
   events.sort((a,b)=>a.time-b.time||a.id.localeCompare(b.id));
-  return {pathways,civilisation,recoveryModel,nodes,seed,settings:s,incident,powerOutage,hospitalGap,restoreHours,warning,verified,escalation,nuclear,verificationMinutes,verificationAvailable,events,foodGap,emergencyGap,affectedRegions,regions};
+  return {spread,pathways,civilisation,recoveryModel,nodes,seed,settings:s,incident,powerOutage,hospitalGap,restoreHours,warning,verified,escalation,nuclear,verificationMinutes,verificationAvailable,events,foodGap,emergencyGap,affectedRegions,regions};
 }
 export function summariseChange(before:Result,after:Result):string {
   if(before.settings.collapseDays!==after.settings.collapseDays||before.settings.collapseRegions!==after.settings.collapseRegions)return 'The definition changed. Services and repairs did not change.';
@@ -200,7 +198,7 @@ export function summariseChange(before:Result,after:Result):string {
   return 'Settings updated. This case has the same outcomes; inspect the highlighted mechanism to see why.';
 }
 export function ensemble(settings:Settings,seed:number,count=256) {
-  let escalation=0,nuclear=0,health=0;
-  for(let i=0;i<count;i++){const r=simulate(settings,(seed+i)>>>0);escalation+=+r.escalation;nuclear+=+r.nuclear;health+=+(r.hospitalGap>0);}
-  return {count,escalation,nuclear,health};
+  let escalation=0,nuclear=0,health=0,worldwide=0,collapse=0;
+  for(let i=0;i<count;i++){const r=simulate(settings,(seed+i)>>>0);escalation+=+r.escalation;nuclear+=+r.nuclear;health+=+(r.hospitalGap>0);worldwide+=+(r.affectedRegions===6);collapse+=+(!r.nuclear&&r.civilisation.endStatus==='collapse');}
+  return {count,escalation,nuclear,health,worldwide,collapse};
 }

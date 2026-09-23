@@ -1,0 +1,134 @@
+{
+  "model": "0.8.0",
+  "scope": "Illustrative sampled model, not measured disaster odds. Outcome audit disables military advice to isolate regional service effects. Seeds start at zero.",
+  "footprints": [
+    {
+      "connectedness": 10,
+      "replays": 1000,
+      "regionsHitOneThroughSix": [
+        793,
+        175,
+        25,
+        7,
+        0,
+        0
+      ]
+    },
+    {
+      "connectedness": 30,
+      "replays": 1000,
+      "regionsHitOneThroughSix": [
+        376,
+        282,
+        169,
+        100,
+        54,
+        19
+      ]
+    },
+    {
+      "connectedness": 50,
+      "replays": 1000,
+      "regionsHitOneThroughSix": [
+        121,
+        133,
+        135,
+        190,
+        197,
+        224
+      ]
+    },
+    {
+      "connectedness": 70,
+      "replays": 1000,
+      "regionsHitOneThroughSix": [
+        22,
+        40,
+        34,
+        98,
+        191,
+        615
+      ]
+    },
+    {
+      "connectedness": 90,
+      "replays": 1000,
+      "regionsHitOneThroughSix": [
+        1,
+        2,
+        2,
+        7,
+        37,
+        951
+      ]
+    }
+  ],
+  "outcomes": [
+    {
+      "connectedness": 30,
+      "fragile": false,
+      "replays": 128,
+      "counts": {
+        "functioning": 128,
+        "recovered": 0,
+        "disrupted": 0,
+        "collapse": 0
+      }
+    },
+    {
+      "connectedness": 30,
+      "fragile": true,
+      "replays": 128,
+      "counts": {
+        "functioning": 91,
+        "recovered": 0,
+        "disrupted": 23,
+        "collapse": 14
+      }
+    },
+    {
+      "connectedness": 50,
+      "fragile": false,
+      "replays": 128,
+      "counts": {
+        "functioning": 128,
+        "recovered": 0,
+        "disrupted": 0,
+        "collapse": 0
+      }
+    },
+    {
+      "connectedness": 50,
+      "fragile": true,
+      "replays": 128,
+      "counts": {
+        "functioning": 31,
+        "recovered": 0,
+        "disrupted": 21,
+        "collapse": 76
+      }
+    },
+    {
+      "connectedness": 80,
+      "fragile": false,
+      "replays": 128,
+      "counts": {
+        "functioning": 128,
+        "recovered": 0,
+        "disrupted": 0,
+        "collapse": 0
+      }
+    },
+    {
+      "connectedness": 80,
+      "fragile": true,
+      "replays": 128,
+      "counts": {
+        "functioning": 2,
+        "recovered": 0,
+        "disrupted": 1,
+        "collapse": 125
+      }
+    }
+  ]
+}

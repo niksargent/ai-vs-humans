@@ -28,7 +28,7 @@ test('Per-version risk has exact zero/one boundaries and shared regional causes'
  const zero=simulateMonth(active,{...MONTH_DEFAULTS,checkedFault:0,uncheckedFault:0},42);
  assert.equal(zero.faults.length,0);assert.equal(zero.outcome,'quiet');
  const one=schedule({}, {checkedFault:100,uncheckedFault:100});assert.ok(one.releases.every(r=>r.fault));
- const wide=releaseSchedule({...active,reach:6},MONTH_DEFAULTS,42),local=releaseSchedule({...active,reach:1},MONTH_DEFAULTS,42);
+ const wide=releaseSchedule({...active,connectedness:100},MONTH_DEFAULTS,42),local=releaseSchedule({...active,connectedness:0},MONTH_DEFAULTS,42);
  assert.deepEqual(wide,local);
 });
 test('Late failures do not cause early outages or consume backups before they happen',()=>{
