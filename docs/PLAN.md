@@ -35,6 +35,8 @@ User-feedback follow-up implemented: [intuitive controls review](INTUITIVE_CONTR
 
 Next feedback implemented in model 0.8.0: [connectedness and living alarms](CONNECTEDNESS_AND_ALARMS.md). Main connectedness dial replaces fixed regional exposure; reproducible shared-system and dependency spread, relief trade-off, regional explanations, and whole-housing status animation. 93 tests and the recorded spread/outcome audit validate the change. User testing continues; hosting remains pending.
 
+Further feedback implemented: [scenario transparency and survivor experience](SURVIVORS_UX_REVIEW.md). Exact scenario-change receipts, actionable mission-control feedback, inset white selection borders, separate world/survival readouts, and a four-defence survival canvas replace the opaque dropdown dialog. 96 tests pass. **Pending user discussion:** the AI-project toggle currently changes the source of the initiating incident; its semantics need a deliberate decision before changing the model.
+
 Incorporate user comprehension testing (user organised), audit navigation/accessibility, keyboard/reduced-motion behaviour, desktop/laptop layouts and animation performance. Verify all model pathways remain discoverable. Complete final language and visual polish. Test production build and host-path behaviour; publish to the user-selected host (GitHub Pages unless subsequently changed). Stop for review before completing the delivery.
 
 Numbered model steps remain in order. The UX interlude is complete; step 6 is now complete for review. A qualitative nuclear-aftermath continuation is recommended for later scope review, not silently added to step 6.

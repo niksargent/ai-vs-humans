@@ -195,7 +195,7 @@ export function summariseChange(before:Result,after:Result):string {
   if(before.hospitalGap!==after.hospitalGap)return after.hospitalGap?`The hospital service gap changes from ${before.hospitalGap} to ${after.hospitalGap} hours.`:'Backup now covers the outage. Hospital services continue even though the incident can still occur.';
   if(before.restoreHours!==after.restoreHours)return `Restoration changes from ${before.restoreHours} to ${after.restoreHours} hours. The initial incident is unchanged.`;
   if(before.verificationMinutes!==after.verificationMinutes)return `Verification now needs ${after.verificationMinutes} minutes, against a ${after.settings.decisionTime}-minute decision window.`;
-  return 'Settings updated. This case has the same outcomes; inspect the highlighted mechanism to see why.';
+  return 'Setting changed; this version of events still has the same outcome. Use the button beside this message to open the part it controls.';
 }
 export function ensemble(settings:Settings,seed:number,count=256) {
   let escalation=0,nuclear=0,health=0,worldwide=0,collapse=0;

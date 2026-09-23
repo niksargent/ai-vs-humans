@@ -44,6 +44,25 @@ test('Saved assumptions round-trip; missing old data resets safely; invalid data
 });
 test('The all-assumed view still names the unresolved extinction boundary',()=>{
   const l=freshContinuation();for(const id of gateIds)l.physical[id]='yes';
-  const html=continuationPanel(health,l);assert.ok(html.includes('Every remaining line of defence is assumed to fail.'));
-  assert.ok(html.includes('Extinction is not resolved by this model.'));assert.ok(!html.includes('extinction probability'));
+  const html=continuationPanel(health,l);assert.ok(html.includes('No refuge remains in your story'));
+  assert.ok(html.includes('not proof that these events would happen or that every person would die.'));assert.ok(!html.includes('extinction probability'));
+});
+
+test('Survival entry provides a starting action, not choices that do nothing',()=>{
+ const html=continuationPanel(simulate({...DEFAULTS,authority:0}),freshContinuation());
+ assert.ok(html.includes('Load a collapse scenario'));
+ assert.ok(!html.includes('data-survival-answer'));
+ assert.ok(!html.includes('<select'));
+});
+
+test('A surviving refuge changes the story and canvas without changing the world',async()=>{
+ const {survivalCanvas,threatReadouts}=await import('../dist/src/survival-ui.js');
+ const lens=freshContinuation(),before=JSON.stringify(health);
+ for(const id of gateIds)lens.physical[id]='yes';
+ assert.ok(threatReadouts(health,lens).includes('No refuge in your story'));
+ lens.physical.reach='no';
+ assert.ok(continuationPanel(health,lens,'reach').includes('A way to survive remains'));
+ assert.ok(survivalCanvas(health,lens,'reach').includes('HOLDS IN YOUR STORY'));
+ assert.ok(threatReadouts(health,lens).includes('Your what-if story'));
+ assert.equal(JSON.stringify(health),before);
 });

@@ -145,3 +145,15 @@ test('Main dials alone can reveal collapse, recovery after collapse, and protect
  assert.equal(protectedWorld.civilisation.endStatus,'functioning');
  assert.equal(protectedWorld.civilisation.crossedAt,null);
 });
+
+test('Scenario receipts reveal hidden switches without claiming unchanged dials moved',async()=>{
+ const {scenarioChanges,scenarioReceipt}=await import('../dist/src/scenario-ui.js');
+ const dials=['capability','authority','researchSpeed','connectedness','tension','verification','fallback','reserves'];
+ const changes=scenarioChanges(DEFAULTS,'research');
+ assert.deepEqual(changes.map(c=>c.key).sort(),['researchEnabled','waitForChecks']);
+ const receipt=scenarioReceipt(DEFAULTS,'research',dials);
+ assert.ok(receipt.includes('The main dials stay the same.'));
+ assert.ok(receipt.includes('AI update projects'));
+ assert.ok(receipt.includes('Test before release'));
+ assert.ok(receipt.includes('data-setting-reveal="waitForChecks"'));
+});
