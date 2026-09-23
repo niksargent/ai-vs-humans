@@ -74,8 +74,3 @@ Capability, permissions, checks, supplies and recovery are mechanism lamps: ambe
 The full settings and expected lamps are stored in `tests/fixtures/module-scenarios.json`. Tests cover every module in all three colours, exact scenario outcomes, partial versus sustained service loss, and protection counterfactuals. These authored examples prove reachability and consistency; they do not prove every possible settings combination realistic. The 24-hour service severity rule is a transparent presentation convention, not an empirically estimated harm threshold.
 
 Nuclear brink settings: AI advice enabled, tension 100, warning verification 0, project pace 600/month requested, mistake rate 100%; available computers/experiments still cap actual production. Seed 42 produces nuclear use. It requires the warning, escalation and further nuclear-decision gates; a red military lamp alone does not mean nuclear destruction.
-
-## Browser and workflow verification
-Protect the world was falling through to the old random-range renderer; restored its safeguard panel. Applied hospital protection, verified its before/after receipt, undid it, replayed random events without leaving safeguards, and undid the replay. Verified the populated 128-replay explorer has no settings sliders and a clear route back to World settings. User settings were restored. No browser console errors were recorded. Build and all 216 tests pass.
-
-Regional strip lamps now use the same service severity rule as the main board. Selecting a regional lamp opens that region's actual report rather than showing Region 1's explanation for another region.

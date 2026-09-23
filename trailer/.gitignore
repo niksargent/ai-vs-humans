@@ -1,0 +1,7 @@
+# Generated trailer media and preview captures stay out of source control.
+/audio/
+/stills/
+/output/
+/contact.png
+/dial-inspect.png
+/__pycache__/

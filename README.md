@@ -4,6 +4,10 @@ An interactive educational simulator exploring how AI mistakes, misuse and loss 
 
 **Play:** https://niksargent.github.io/ai-vs-humans/
 
+[![Watch the 30-second AI vs. Humans trailer](https://img.youtube.com/vi/CHuvl6qRFVk/maxresdefault.jpg)](https://youtu.be/CHuvl6qRFVk)
+
+*Watch the 30-second trailer on YouTube.*
+
 ## Run locally
 
 Use Node.js 24 or newer.
