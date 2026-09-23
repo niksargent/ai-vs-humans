@@ -8,7 +8,7 @@ const run=(extra={})=>simulate({...DEFAULTS,...extra});
 test('Research output is resource-bounded and its queue is conserved',()=>{
   for(const waitForChecks of [true,false]){
     const p=simulatePathways({...DEFAULTS,researchEnabled:true,waitForChecks});
-    assert.equal(p.research.made,90);assert.equal(p.research.checked,30);
+    assert.equal(p.research.made,120);assert.equal(p.research.checked,30);
     assert.equal(p.research.made,p.research.checked+p.research.backlog+p.research.unchecked);
     assert.ok(p.research.history.every(f=>f.backlog>=0));
   }
@@ -16,11 +16,11 @@ test('Research output is resource-bounded and its queue is conserved',()=>{
   assert.equal(run({...pathwayPresets.research,experimentCapacity:0}).incident,false);
 });
 test('Deployment checks stop the stipulated fault without stopping research',()=>{
-  const a=run(pathwayPresets.research),b=run({...pathwayPresets.research,waitForChecks:true});
+  const a=run(pathwayPresets.research),b=run({...pathwayPresets.research,waitForChecks:true,checkEffectiveness:100});
   assert.equal(a.incident,true);assert.equal(b.incident,false);
   assert.equal(a.pathways.research.made,b.pathways.research.made);
   assert.equal(run({...pathwayPresets.research,authority:0}).incident,false);
-  assert.equal(run({...pathwayPresets.research,evaluationCapacity:100}).incident,false);
+  assert.equal(run({...pathwayPresets.research,evaluationCapacity:100,checkEffectiveness:100,researchSpeed:20}).incident,false);
 });
 test('Loss of control and harmful behaviour are separate',()=>{
   const benign=run({...pathwayPresets.control,harmfulGoal:false});
@@ -57,27 +57,27 @@ test('Health response and surge capacity reduce unmet care; effects remain after
   assert.equal(a.recoveryModel.restoredAt,0);assert.equal(a.recoveryModel.observedHours,720);
   assert.ok(a.events.some(e=>e.id==='bio-response'&&e.time>0));
   assert.ok(a.civilisation.regions.filter((r,i)=>!a.spread.exposed[i]).every(r=>r.recovery.healthcareGap===0));
-  const compound=run({...pathwayPresets.health,faultyChange:true,connectedness:0});
-  assert.ok(compound.restoreHours>run({connectedness:0}).restoreHours);
-  assert.ok(compound.recoveryModel.frames.some(f=>f.time>compound.restoreHours&&f.healthcare<1));
+  const compound=run({...pathwayPresets.health,researchSpeed:5,mistakeRate:15,checkEffectiveness:0,connectedness:0});
+  assert.ok(compound.recoveryModel.healthcareGap>0);
+  assert.ok(compound.recoveryModel.frames.some(f=>f.time>168&&f.healthcare<1));
 });
 test('Trusted channels can remove a campaign penalty without fixing the network',()=>{
   const a=run(pathwayPresets.information),b=run({...pathwayPresets.information,trustedChannels:100});
-  assert.ok(a.restoreHours>b.restoreHours);assert.equal(b.restoreHours,run().restoreHours);
+  assert.ok(a.recoveryModel.final.work<b.recoveryModel.final.work);assert.equal(b.restoreHours,run().restoreHours);
   assert.equal(b.incident,true);assert.ok(a.civilisation.frames[0].coordination[0]<.5);
-  const healthy=run({...pathwayPresets.information,faultyChange:false});
+  const healthy=run({...pathwayPresets.information,researchSpeed:0});
   assert.equal(healthy.incident,false);assert.ok(healthy.emergencyGap>0);assert.equal(healthy.pathways.controlLost,false);
 });
 test('Payments and transport are separate bottlenecks, not multiplied duplicate losses',()=>{
   const base={...pathwayPresets.deliveries,paymentFallback:25,transportFallback:50};
-  const r=run(base);assert.equal(r.recoveryModel.frames[0].payments,.25);
-  assert.equal(r.recoveryModel.frames[0].transport,.5);assert.equal(r.recoveryModel.frames[0].deliveries,.25);
-  const payment=run({...base,paymentFallback:100});assert.equal(payment.recoveryModel.frames[0].deliveries,.5);
-  const both=run({...base,paymentFallback:100,transportFallback:100});assert.equal(both.recoveryModel.frames[0].deliveries,1);
-  assert.ok(both.restoreHours<r.restoreHours);
+  const r=run(base);assert.equal(r.recoveryModel.frames.find(f=>f.power===0).payments,.25);
+  assert.equal(r.recoveryModel.frames.find(f=>f.power===0).transport,.5);assert.equal(r.recoveryModel.frames.find(f=>f.power===0).deliveries,.25);
+  const payment=run({...base,paymentFallback:100});assert.equal(payment.recoveryModel.frames.find(f=>f.power===0).deliveries,.5);
+  const both=run({...base,paymentFallback:100,transportFallback:100});assert.equal(both.recoveryModel.frames.find(f=>f.power===0).deliveries,1);
+  assert.ok(both.recoveryModel.final.work>r.recoveryModel.final.work);
 });
 test('New pathways preserve deterministic case and nonnegative stock accounting',()=>{
-  const s={...pathwayPresets.health,faultyChange:true,...pathwayPresets.information,sharedPayments:true,sharedTransport:true};
+  const s={...pathwayPresets.health,researchSpeed:5,mistakeRate:15,checkEffectiveness:0,...pathwayPresets.information,sharedPayments:true,sharedTransport:true};
   const a=run(s);assert.deepEqual(a,run(s));
   for(const region of a.civilisation.regions){const r=region.recovery;
     assert.ok(r.frames.every(f=>f.parts>=0&&f.foodStock>=0&&f.healthcare>=0&&f.healthcare<=1));
@@ -88,14 +88,15 @@ test('New pathways preserve deterministic case and nonnegative stock accounting'
 
 test('AI repair advice can help without adding authority or ignoring material limits',()=>{
   const a=run(),b=run({repairAssistance:true});
-  assert.ok(b.restoreHours<a.restoreHours);assert.equal(a.incident,b.incident);
+  assert.ok(b.recoveryModel.final.work>a.recoveryModel.final.work);assert.equal(a.incident,b.incident);
   assert.equal(run({repairAssistance:true,authority:0}).incident,false);
   const none=run({repairAssistance:true,repairSupplies:0,supplyDelivery:0,aidStrength:0,connectedness:100});
-  assert.equal(none.recoveryModel.progress,0);
+  assert.ok(none.recoveryModel.suppliesUsed<=none.recoveryModel.suppliesDelivered+.002);
+  assert.equal(none.recoveryModel.final.parts,0);
 });
 
 test('A health-stressed repaired region cannot immediately export relief',()=>{
-  const r=run({...pathwayPresets.health,faultyChange:true,connectedness:100,regionDifference:100});
+  const r=run({...pathwayPresets.health,researchSpeed:5,mistakeRate:15,checkEffectiveness:0,connectedness:100,regionDifference:100});
   assert.ok(r.civilisation.shipments.length>0);
   for(const shipment of r.civilisation.shipments){
     const frames=r.civilisation.regions[shipment.from].recovery.frames;

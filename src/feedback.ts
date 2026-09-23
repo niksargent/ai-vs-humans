@@ -1,6 +1,6 @@
 import type {Result} from './model.js';
 
-export const controlColours:Record<string,string>={researchSpeed:'#adc7ff',capability:'#86baff',authority:'#bf9aff',tension:'#ff9167',verification:'#ffce69',fallback:'#6ff0db',reserves:'#8ee798',connectedness:'#75d5ff',foodBackup:'#f3c77a',repair:'#6ff0db',decisionTime:'#ffce69',independent:'#ffce69',sharedProvider:'#86baff',aiAdvice:'#ff9167',faultyChange:'#bf9aff',humanApproval:'#bf9aff'};
+export const controlColours:Record<string,string>={researchSpeed:'#adc7ff',capability:'#86baff',authority:'#bf9aff',tension:'#ff9167',verification:'#ffce69',fallback:'#6ff0db',reserves:'#8ee798',connectedness:'#75d5ff',foodBackup:'#f3c77a',repair:'#6ff0db',decisionTime:'#ffce69',independent:'#ffce69',sharedProvider:'#86baff',aiAdvice:'#ff9167',humanApproval:'#bf9aff'};
 Object.assign(controlColours,{crews:'#6ff0db',repairBackup:'#6ff0db',repairSupplies:'#f3c77a',supplyDelivery:'#f3c77a',foodStores:'#f3c77a'});
 Object.assign(controlColours,{regionDifference:'#86baff',aidStrength:'#86baff',aidDelay:'#86baff',aidBudget:'#86baff',responseBackup:'#ffce69',collapseRegions:'#ff9167',collapseDays:'#ff9167'});
 export const nodeControls:Record<string,string>={spread:'connectedness',development:'researchSpeed',ai:'capability',access:'authority',military:'tension',checks:'verification',fallback:'fallback',hospital:'reserves',crews:'crews',supplies:'repairSupplies'};
@@ -25,4 +25,4 @@ export function changedNodes(before:Result,after:Result){
   return Object.keys(after.nodes).filter(id=>before.nodes[id]?.label!==after.nodes[id].label||before.nodes[id]?.status!==after.nodes[id].status);
 }
 
-Object.assign(controlColours,{researchEnabled:"#86baff",waitForChecks:"#ffce69",independentStop:"#6ff0db",screening:"#8ee798",trustedChannels:"#ffce69",paymentFallback:"#f3c77a",transportFallback:"#f3c77a"});
+Object.assign(controlColours,{mistakeRate:"#adc7ff",checkEffectiveness:"#ffce69",evaluationCapacity:"#ffce69",waitForChecks:"#ffce69",independentStop:"#6ff0db",screening:"#8ee798",trustedChannels:"#ffce69",paymentFallback:"#f3c77a",transportFallback:"#f3c77a"});

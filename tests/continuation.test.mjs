@@ -7,7 +7,7 @@ import {pathwayPresets} from '../dist/src/pathway-ui.js';
 const health=simulate({...DEFAULTS,...pathwayPresets.health});
 const hostile=simulate({...DEFAULTS,...pathwayPresets.control});
 test('A service outage alone does not establish either extinction continuation',()=>{
-  const r=simulate(DEFAULTS),l=freshContinuation();
+  const r=simulate({...DEFAULTS,connectedness:0,fallback:100}),l=freshContinuation();
   assert.equal(evaluateContinuation(r,l).state,'not-started');l.route='hostile';
   assert.equal(evaluateContinuation(r,l).state,'not-started');
 });

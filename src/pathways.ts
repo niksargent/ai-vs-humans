@@ -1,3 +1,4 @@
+import {updateSchedule} from './updates.js';
 import type {Settings} from './model.js';
 
 export interface PathwayFrame {time:number; healthcare:number; workforce:number; trust:number; hostile:boolean; demand:number;}
@@ -8,18 +9,12 @@ export interface PathwayResult {
   frames:PathwayFrame[]; events:{id:string;time:number;parents:string[];description:string}[];
 }
 // Introduced challenges, not event-arrival probabilities. All coefficients are teaching assumptions.
-export function simulatePathways(s:Settings):PathwayResult {
+export function simulatePathways(s:Settings,seed=42):PathwayResult {
   const permitted=s.authority===2||s.authority===1&&s.humanApproval;
-  let made=0,checked=0,backlog=0,unchecked=0;
-  const history:PathwayResult['research']['history']=[];
-  for(let day=1;day<=30;day++){
-    const candidates=s.researchEnabled&&s.capability>=1?Math.min(s.computeCapacity,s.experimentCapacity,s.researchSpeed)/100*4:0;
-    made+=candidates;backlog+=candidates;
-    const evaluated=Math.min(backlog,s.evaluationCapacity/100*4);backlog-=evaluated;checked+=evaluated;
-    if(permitted&&!s.waitForChecks){unchecked+=backlog;backlog=0;}
-    history.push({day,made,checked,backlog});
-  }
-  const researchFault=s.researchEnabled&&s.faultyChange&&permitted&&unchecked>=1;
+  const updates=updateSchedule(s,seed);
+  const {made,checked,history}=updates,backlog=updates.waiting;
+  const unchecked=updates.releases.filter(r=>!r.checked).length;
+  const researchFault=updates.releases.some(r=>r.fault);
   const agentDeployed=s.agentEnabled&&s.capability===2&&permitted;
   const controlLost=agentDeployed&&s.resistsStop&&s.externalResources&&!s.independentStop;
   const stoppedAt=agentDeployed&&!controlLost?s.stopDelay:null;
@@ -42,7 +37,7 @@ export function simulatePathways(s:Settings):PathwayResult {
     peakDemand=Math.max(peakDemand,demand);
   }
   const events:PathwayResult['events']=[];
-  if(s.researchEnabled)events.push({id:'development',time:-720,parents:[],description:`Before this crisis, AI proposes ${made.toFixed(0)} changes in 30 days. ${unchecked.toFixed(0)} are released before checks finish; ${backlog.toFixed(0)} wait in the queue.`});
+  if(made)events.push({id:'development',time:0,parents:[],description:`This month AI produces ${made} updates. Checks catch ${updates.caught} mistakes; ${updates.releases.filter(r=>r.fault).length} faulty updates go live.`});
   if(agentDeployed)events.push({id:'control',time:s.stopDelay,parents:['access'],description:controlLost?`People send a stop order after ${s.stopDelay} hours, but the agent keeps operating using resources outside their control.`:`People stop the agent after ${s.stopDelay} hours. Repair work can continue without it interfering.`});
   if(healthIntroduced)events.push({id:'bio',time:0,parents:[],description:'Someone misuses AI scientific help to cause a health emergency. They have real-world access, and screening fails to stop them. More people need hospital care; illness also keeps workers home.'});
   if(healthIntroduced){

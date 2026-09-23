@@ -109,3 +109,10 @@ html[data-motion=on] .survival-trail{animation:signal-flow 14s linear infinite!i
 @media(max-width:760px){.mission-strip{grid-template-columns:1fr}.mission-strip .guide-display{border-top:1px solid #829bb233}}
 .canvas-start{display:flex;align-items:center;gap:18px;height:100%;font:15px var(--sans);color:#a9c7db}.canvas-start button{padding:10px 18px;background:#244357;border:1px solid #99d1ed;border-radius:6px;color:#e8f7ff;font:17px var(--sans);cursor:pointer}.canvas-start button:hover{background:#355c72}
 @media(max-width:1100px){.threat-readout{grid-template-columns:1fr}.threat-segments{display:none}.threat-readout strong{font-size:11px}}
+
+/* A compact, persistent bridge between settings and events. */
+.scenario-line{display:flex;flex-direction:column;gap:3px;min-width:0}
+#update-flow{border:0;background:none;padding:0;color:#c5d0df;font-size:11px;white-space:normal;text-align:left;cursor:pointer}
+#update-flow span{font-size:8px;letter-spacing:1px;color:#8fa0b7}#update-flow b{color:#d9e7ff;font-variant-numeric:tabular-nums}#update-flow i{color:#758298;font-style:normal;margin:0 2px}#update-flow .caught{color:#80f5ba}#update-flow .escaped{color:#ff8779;text-shadow:0 0 9px #ff534c99}
+#update-flow:hover,#update-flow:focus-visible{color:white;text-shadow:0 0 10px #accdff66}
+.release-event{display:block;width:100%;padding:10px 0;text-align:left;background:none;border:0;border-bottom:1px solid #ffffff17;color:#ffbbac;cursor:pointer}.release-event span{display:block;color:#b9c6d7;font-size:12px;margin-top:4px}.update-ledger summary{cursor:pointer;color:#d6e4f6}.update-ledger p{font-size:12px;color:#aebfd3}

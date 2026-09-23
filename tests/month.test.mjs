@@ -6,30 +6,40 @@ import {simulateCivilisation,classifyWorld} from '../dist/src/civilisation.js';
 const active={...DEFAULTS,researchEnabled:true};
 const schedule=(patch={},options={})=>releaseSchedule({...active,...patch},{...MONTH_DEFAULTS,...options},42);
 
-test('Candidate supply, evaluation and releases balance without inventing updates',()=>{
+test('Candidates balance across catches, queues and releases',()=>{
  for(const researchSpeed of [0,5,25,100])for(const evaluationCapacity of [0,25,100])for(const waitForChecks of [false,true]){
-  const r=schedule({researchSpeed,evaluationCapacity,waitForChecks},{releasesPerDay:4,checkedFault:0,uncheckedFault:0});
-  assert.ok(Math.abs(r.made-r.waiting-r.ready-r.releases.length)<1e-7);
-  assert.ok(Math.abs(r.checked-r.ready-r.releases.filter(x=>x.checked).length)<1e-7);
-  assert.ok(r.releases.length<=120);
+  const r=schedule({researchSpeed,evaluationCapacity,waitForChecks,aiAdvice:false});
+  assert.equal(r.made,r.waiting+r.ready+r.releases.length+r.caught);
+  assert.ok(r.checked<=r.made);assert.ok(r.caught<=r.mistakes);
+  assert.ok(r.releases.length<=600);
   if(waitForChecks)assert.ok(r.releases.every(x=>x.checked));
  }
 });
-test('Stopped projects, unavailable compute and absent authority block release incidents',()=>{
- for(const patch of [{researchEnabled:false},{computeCapacity:0},{experimentCapacity:0},{authority:0},{authority:1,humanApproval:false}])assert.equal(schedule(patch,{checkedFault:100,uncheckedFault:100}).releases.length,0);
+test('Zero pace, unavailable computers and absent permission prevent update failures',()=>{
+ for(const patch of [{researchSpeed:0},{computeCapacity:0},{experimentCapacity:0},{authority:0},{authority:1,humanApproval:false}])assert.equal(schedule({...patch,mistakeRate:100}).releases.length,0);
  assert.equal(schedule({evaluationCapacity:0,waitForChecks:true}).releases.length,0);
  assert.ok(schedule({evaluationCapacity:0,waitForChecks:false}).releases.length>0);
 });
-test('Cadence has a distinct effect from idea generation and checking',()=>{
- const a=schedule({}, {releasesPerDay:0}),b=schedule({}, {releasesPerDay:1});
- assert.equal(a.made,b.made);assert.equal(a.checked,b.checked);assert.equal(a.releases.length,0);assert.equal(b.releases.length,30);
+test('Pace spans zero to six hundred produced updates; same project draws survive pace changes',()=>{
+ const s={computeCapacity:100,experimentCapacity:100,aiAdvice:false,evaluationCapacity:0,mistakeRate:30};
+ const slow=schedule({...s,researchSpeed:5}),fast=schedule({...s,researchSpeed:100});
+ assert.equal(slow.made,30);assert.equal(fast.made,600);
+ assert.deepEqual(slow.releases.map(x=>x.mistake),fast.releases.slice(0,30).map(x=>x.mistake));
 });
-test('Per-version risk has exact zero/one boundaries and shared regional causes',()=>{
- const zero=simulateMonth(active,{...MONTH_DEFAULTS,checkedFault:0,uncheckedFault:0},42);
- assert.equal(zero.faults.length,0);assert.equal(zero.outcome,'quiet');
- const one=schedule({}, {checkedFault:100,uncheckedFault:100});assert.ok(one.releases.every(r=>r.fault));
- const wide=releaseSchedule({...active,connectedness:100},MONTH_DEFAULTS,42),local=releaseSchedule({...active,connectedness:0},MONTH_DEFAULTS,42);
- assert.deepEqual(wide,local);
+test('Mistakes and catching have exact zero and one boundaries',()=>{
+ assert.equal(schedule({mistakeRate:0}).releases.filter(e=>e.fault).length,0);
+ const r=schedule({mistakeRate:100,checkEffectiveness:100,waitForChecks:true});
+ assert.equal(r.releases.length,0);assert.equal(r.caught,r.checked);
+ assert.ok(schedule({mistakeRate:100,checkEffectiveness:0}).releases.every(e=>e.fault));
+});
+test('Board and month agree on every released fault, collapse, care and nuclear outcome',async()=>{
+ const {simulate}=await import('../dist/src/model.js');
+ for(const patch of [{},{researchSpeed:0},{researchSpeed:100},{waitForChecks:true,checkEffectiveness:100},{tension:100}]){
+  const s={...DEFAULTS,...patch},board=simulate(s,42),month=simulateMonth(s,MONTH_DEFAULTS,42);
+  assert.deepEqual(board.updates.releases,month.releases);
+  assert.equal(board.nuclear,month.nuclearAt!==null);
+  if(!board.nuclear){assert.equal(board.civilisation.crossedAt,month.collapseAt);assert.equal(board.hospitalGap,board.recoveryModel.hospitalGap);assert.equal(board.recoveryModel.healthcareGap,month.careGap);}
+ }
 });
 test('Late failures do not cause early outages or consume backups before they happen',()=>{
  const w=simulateCivilisation({...DEFAULTS,aidStrength:0,regionDifference:0},true,true,undefined,[360]);
@@ -71,5 +81,5 @@ test('Nuclear use stops release history and masks the unmodelled aftermath',()=>
 test('Month settings round-trip and reject invalid assumptions',()=>{
  assert.deepEqual(validateMonth(JSON.parse(JSON.stringify(MONTH_DEFAULTS))),MONTH_DEFAULTS);
  assert.deepEqual(validateMonth(undefined),MONTH_DEFAULTS);
- for(const patch of [{checkedFault:101},{checkedFault:20,uncheckedFault:10},{releasesPerDay:NaN},{releasesPerDay:5},{uncheckedFault:-1}])assert.throws(()=>validateMonth({...MONTH_DEFAULTS,...patch}));
+ for(const patch of [{checkedFault:101},{releasesPerDay:NaN},{uncheckedFault:-1}])assert.throws(()=>validateMonth({...MONTH_DEFAULTS,...patch}));
 });

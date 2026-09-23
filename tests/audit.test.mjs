@@ -59,22 +59,14 @@ test('Compound pathways keep support bounded and stocks conserved',()=>{
 });
 
 
-test('Development explanation agrees with the fault and permission gates',()=>{
- const unchecked=run({...pathwayPresets.research});
- assert.equal(unchecked.pathways.researchFault,true);
- assert.match(unchecked.nodes.development.reason,/faulty update goes live/);
- assert.doesNotMatch(unchecked.nodes.development.reason,/Checks catch/);
- const held=run({...pathwayPresets.research,waitForChecks:true});
- assert.equal(held.pathways.researchFault,false);
- assert.match(held.nodes.development.reason,/No faulty update reaches/);
- const blocked=run({...pathwayPresets.research,authority:0});
- assert.equal(blocked.incident,false);
- assert.match(blocked.nodes.development.reason,/Permission blocks/);
- const noFault=run({...pathwayPresets.research,faultyChange:false});
- assert.equal(noFault.incident,false);
- assert.match(noFault.nodes.development.reason,/No faulty update is introduced/);
+test('Development explanation reports actual released mistakes and checking results',()=>{
+ for(const patch of [pathwayPresets.research,{waitForChecks:true,checkEffectiveness:100},{authority:0},{mistakeRate:0},{researchSpeed:0}]){
+  const r=run(patch),faults=r.updates.releases.filter(e=>e.fault).length;
+  assert.equal(r.pathways.researchFault,faults>0);
+  assert.ok(r.nodes.development.reason.includes(`${faults} faulty updates`));
+  assert.ok(r.nodes.development.reason.includes(`checks catch ${r.updates.caught}`));
+ }
 });
-
 
 test('Protection choices make exact changes, become no-ops once applied, and never widen reach',async()=>{
  const {protections,settingChanges,protectionEffect}=await import('../dist/src/protection.js');
@@ -93,10 +85,10 @@ test('Protection choices make exact changes, become no-ops once applied, and nev
 
 test('Current scenario recognises presets and labels combined or adjusted settings',async()=>{
  const {currentScenario}=await import('../dist/src/pathway-ui.js');
- assert.deepEqual(currentScenario(DEFAULTS),{id:'outage',name:'One bad update',modified:false});
+ assert.deepEqual(currentScenario(DEFAULTS),{id:'outage',name:'Updates go wrong',modified:false});
  assert.equal(currentScenario({...DEFAULTS,...pathwayPresets.health}).id,'health');
  assert.equal(currentScenario({...DEFAULTS,reserves:720}).modified,true);
- assert.equal(currentScenario({...DEFAULTS,researchEnabled:true,agentEnabled:true}).id,'combined');
+ assert.equal(currentScenario({...DEFAULTS,researchSpeed:100,agentEnabled:true}).id,'combined');
 });
 
 test('Connectedness is repeatable and monotone per replay, with local and global limits',async()=>{
@@ -134,26 +126,20 @@ test('Higher connectedness carries relief faster while a fixed footprint is unch
  assert.ok(b.civilisation.regions.every(r=>r.aidSent<=r.settings.aidBudget+1e-7));
 });
 
-test('Main dials alone can reveal collapse, recovery after collapse, and protection',()=>{
+test('Main dials alone reveal crisis and protection, with zero pace removing updates',()=>{
  const world={...DEFAULTS,connectedness:80,aiAdvice:false};
- const collapse=simulate({...world,fallback:0},42);
- const rebuild=simulate({...world,fallback:10},42);
- const protectedWorld=simulate({...world,fallback:0,reserves:120},42);
- assert.equal(collapse.affectedRegions,6);
- assert.equal(collapse.civilisation.endStatus,'collapse');
- assert.equal(rebuild.civilisation.endStatus,'recovered');
- assert.equal(protectedWorld.civilisation.endStatus,'functioning');
- assert.equal(protectedWorld.civilisation.crossedAt,null);
+ const collapse=simulate({...world,fallback:0},42),protectedWorld=simulate({...world,researchSpeed:0},42);
+ assert.equal(collapse.affectedRegions,6);assert.equal(collapse.civilisation.endStatus,'collapse');
+ assert.equal(protectedWorld.civilisation.endStatus,'functioning');assert.equal(protectedWorld.updates.releases.length,0);
 });
 
 test('Scenario receipts reveal hidden switches without claiming unchanged dials moved',async()=>{
  const {scenarioChanges,scenarioReceipt}=await import('../dist/src/scenario-ui.js');
  const dials=['capability','authority','researchSpeed','connectedness','tension','verification','fallback','reserves'];
  const changes=scenarioChanges(DEFAULTS,'research');
- assert.deepEqual(changes.map(c=>c.key).sort(),['researchEnabled','waitForChecks']);
+ assert.ok(changes.some(c=>c.key==='researchSpeed'));
  const receipt=scenarioReceipt(DEFAULTS,'research',dials);
- assert.ok(receipt.includes('The main dials stay the same.'));
- assert.ok(receipt.includes('AI update projects'));
- assert.ok(receipt.includes('Test before release'));
- assert.ok(receipt.includes('data-setting-reveal="waitForChecks"'));
+ assert.ok(receipt.includes('1 main dial changed.'));
+ assert.ok(receipt.includes('AI project pace'));
+ assert.ok(receipt.includes('data-setting-reveal="researchSpeed"'));
 });

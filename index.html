@@ -33,10 +33,10 @@
           <button id="advanced-button" class="small-button">World settings <span>⚙</span></button>
         </aside>
         <div class="mission-area">
-          <div class="machine-toolbar"><button id="desk-toggle" aria-expanded="true">◉ Controls</button><div class="scenario-line"><strong>Your world. Your choices.</strong></div><div class="history-tools"><button id="tour-button">Quick tour</button><button data-panel="advanced" id="world-settings-button">⚙ World settings</button><button id="undo-button" disabled title="Undo your last change">↶ Undo</button><button id="reset-button" title="Restore the opening world">↺ Reset</button></div></div>
+          <div class="machine-toolbar"><button id="desk-toggle" aria-expanded="true">◉ Controls</button><div class="scenario-line"><strong>Your world. Your choices.</strong><button id="update-flow" data-inspect="development" title="See how your settings produced this month’s updates"></button></div><div class="history-tools"><button id="tour-button">Quick tour</button><button data-panel="advanced" id="world-settings-button">⚙ World settings</button><button id="undo-button" disabled title="Undo your last change">↶ Undo</button><button id="reset-button" title="Restore the opening world">↺ Reset</button></div></div>
           <div class="instrument">
             <section class="world" aria-label="Interconnected causal world">
-              <div class="map-caption"><span id="map-title">ONE INCIDENT · FOLLOW ITS CONNECTIONS</span><div class="map-density" role="group" aria-label="Map density"><button data-density="normal" aria-pressed="true">Normal</button><button data-density="compact" aria-pressed="false">Compact</button></div></div>
+              <div class="map-caption"><span id="map-title">ONE MONTH · FOLLOW ITS CONNECTIONS</span><div class="map-density" role="group" aria-label="Map density"><button data-density="normal" aria-pressed="true">Normal</button><button data-density="compact" aria-pressed="false">Compact</button></div></div>
               <div class="map-districts" aria-label="Map areas"><button data-focus="origins">The spark</button><button data-focus="services">Shared systems</button><button data-focus="health">Lives & essentials</button><button data-focus="recovery">The way back</button></div>
               <div class="viewport" id="viewport" tabindex="0" aria-label="Living circuit. Drag or scroll to explore. Control plus scroll zooms. Arrow keys move; Home shows the whole world."><svg id="world-svg" role="group" aria-label="Connected causes, services and recovery"></svg></div>
               <div class="map-hud"><span id="view-label">Drag to explore</span><div class="zoom-tools"><button id="motion-toggle" aria-pressed="true">Motion on</button><button id="zoom-out" aria-label="Zoom out">−</button><span id="zoom-label">100%</span><button id="zoom-in" aria-label="Zoom in">+</button><button id="home-view" aria-label="Fit whole world">⌖</button></div></div>
@@ -49,7 +49,7 @@
         </div>
       </div>
     </main>
-    <footer class="footer"><span></span><div><button id="extinction-button">Beyond collapse <span>↗</span></button><span class="divider"></span><span>THE SWITCHBOARD / 0.8</span></div></footer>
+    <footer class="footer"><span></span><div><button id="extinction-button">Beyond collapse <span>↗</span></button><span class="divider"></span><span>THE SWITCHBOARD / 0.9</span></div></footer>
   </div>
   <dialog id="dialog" aria-labelledby="dialog-title"><div class="dialog-top"><span id="dialog-eyebrow" class="eyebrow"></span><button class="icon-button" id="dialog-close" aria-label="Close dialog">×</button></div><h2 id="dialog-title"></h2><div id="dialog-body"></div></dialog>
   <div id="toast" role="status"></div>

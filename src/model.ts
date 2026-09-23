@@ -1,12 +1,14 @@
+import {updateSchedule,type UpdateSchedule} from './updates.js';
 import {draw} from './random.js';
 export {draw} from './random.js';
 import {regionalSpread,type RegionalSpread} from './spread.js';
 import {simulatePathways,type PathwayResult} from './pathways.js';
 import type {RecoveryResult} from './recovery.js';
 import {simulateCivilisation,type CivilisationResult} from './civilisation.js';
-export const MODEL_VERSION = '0.8.0';
+export const MODEL_VERSION = '0.9.0';
 export interface Settings {
-  repairAssistance:boolean; researchEnabled:boolean; waitForChecks:boolean; researchSpeed:number; computeCapacity:number; experimentCapacity:number; evaluationCapacity:number;
+  mistakeRate:number; checkEffectiveness:number;
+  repairAssistance:boolean; waitForChecks:boolean; researchSpeed:number; computeCapacity:number; experimentCapacity:number; evaluationCapacity:number;
   agentEnabled:boolean; resistsStop:boolean; externalResources:boolean; independentStop:boolean; harmfulGoal:boolean; stopDelay:number;
   healthChallenge:boolean; scienceAssistance:boolean; maliciousActor:boolean; physicalAccess:boolean; screening:boolean;
   healthDemand:number; healthSurge:number; healthResponseDelay:number;
@@ -14,13 +16,13 @@ export interface Settings {
   sharedPayments:boolean; sharedTransport:boolean; paymentFallback:number; transportFallback:number;
   capability:number; authority:number; tension:number; verification:number; fallback:number;
   reserves:number; repair:number; decisionTime:number; independent:boolean;
-  faultyChange:boolean; humanApproval:boolean; aiAdvice:boolean; sharedProvider:boolean;
+  humanApproval:boolean; aiAdvice:boolean; sharedProvider:boolean;
   connectedness:number; foodBackup:number; crews:number; repairBackup:number; repairSupplies:number; supplyDelivery:number; foodStores:number;
   regionDifference:number; aidStrength:number; aidDelay:number; aidBudget:number;
   responseBackup:number; collapseRegions:number; collapseDays:number;
 }
 export const DEFAULTS:Settings = {
-  repairAssistance:false,researchEnabled:false,waitForChecks:true,researchSpeed:75,computeCapacity:75,experimentCapacity:75,evaluationCapacity:25,
+  mistakeRate:15,checkEffectiveness:90,repairAssistance:false,waitForChecks:false,researchSpeed:20,computeCapacity:75,experimentCapacity:75,evaluationCapacity:25,
   agentEnabled:false,resistsStop:true,externalResources:false,independentStop:true,harmfulGoal:false,stopDelay:24,
   healthChallenge:false,scienceAssistance:false,maliciousActor:false,physicalAccess:false,screening:true,
   healthDemand:300,healthSurge:25,healthResponseDelay:168,
@@ -28,21 +30,22 @@ export const DEFAULTS:Settings = {
   sharedPayments:false,sharedTransport:false,paymentFallback:25,transportFallback:25,
   capability:2, authority:2, tension:75, verification:35, fallback:20,
   reserves:24, repair:72, decisionTime:30, independent:true,
-  faultyChange:true, humanApproval:false, aiAdvice:true, sharedProvider:true, connectedness:50, foodBackup:48, crews:100, repairBackup:168, repairSupplies:96, supplyDelivery:30, foodStores:168,
+  humanApproval:false, aiAdvice:true, sharedProvider:true, connectedness:50, foodBackup:48, crews:100, repairBackup:168, repairSupplies:96, supplyDelivery:30, foodStores:168,
   regionDifference:50,aidStrength:50,aidDelay:48,aidBudget:48,responseBackup:72,collapseRegions:4,collapseDays:14
 };
 export type Status = 'safe'|'exposed'|'harm'|'quiet'|'unknown';
 export interface NodeState {status:Status; label:string; reason:string; parents:string[]; rule:string;}
 export interface Result {
-  spread:RegionalSpread; pathways:PathwayResult; civilisation:CivilisationResult;
+  updates:UpdateSchedule; spread:RegionalSpread; pathways:PathwayResult; civilisation:CivilisationResult;
   recoveryModel:RecoveryResult; nodes:Record<string,NodeState>; seed:number; settings:Settings;
   incident:boolean; powerOutage:number; hospitalGap:number; restoreHours:number;
-  warning:boolean; verified:boolean; escalation:boolean; nuclear:boolean;
+  warning:boolean; verified:boolean; escalation:boolean; nuclear:boolean; nuclearAt:number|null;
   foodGap:number; emergencyGap:number; affectedRegions:number;
   regions:{name:string; comms:boolean; power:boolean; hospital:boolean; food:boolean; emergency:boolean}[];
   verificationMinutes:number; verificationAvailable:boolean; events:{id:string; time:number; parents:string[]; description:string}[];
 }
 export const controls = {
+  mistakeRate:{min:0,max:100,step:1},checkEffectiveness:{min:0,max:100,step:5},
   researchSpeed:{min:0,max:100,step:5},computeCapacity:{min:0,max:100,step:5},experimentCapacity:{min:0,max:100,step:5},evaluationCapacity:{min:0,max:100,step:5},
   stopDelay:{min:0,max:168,step:6},healthDemand:{min:0,max:400,step:25},healthSurge:{min:0,max:200,step:25},healthResponseDelay:{min:24,max:552,step:24},
   informationReach:{min:0,max:100,step:5},trustedChannels:{min:0,max:100,step:5},informationHours:{min:24,max:720,step:24},
@@ -66,17 +69,28 @@ export function validateSettings(raw:unknown):Settings {
 export function simulate(input:Settings,seed=42):Result {
   const s=validateSettings(input);
   const permitted=s.authority===2 || (s.authority===1 && s.humanApproval);
-  const pathways=simulatePathways(s);
-  const incident=(s.researchEnabled?pathways.researchFault:s.faultyChange && s.capability>=1 && permitted)||pathways.harmfulOperation&&s.stopDelay>0||pathways.harmfulOperation&&pathways.controlLost;
+  const pathways=simulatePathways(s,seed);
+  const verificationMinutes=Math.round(90-0.65*s.verification+(s.independent?0:60*(1-s.fallback/100)));
+  const verificationAvailable=s.independent||s.fallback>0;
+  const timely=verificationAvailable&&verificationMinutes<=s.decisionTime;
+  const agentWarning=pathways.harmfulOperation&&(pathways.controlLost||s.stopDelay>0)&&s.aiAdvice;
+  const agentVerified=agentWarning&&timely&&draw(seed,'agent:verify')<s.verification/100;
+  const agentEscalation=agentWarning&&!agentVerified&&s.tension>=50&&draw(seed,'agent:escalate')<s.tension/100;
+  const agentNuclear=agentEscalation&&s.tension>=80&&draw(seed,'agent:nuclear')<.2;
+  const updates=updateSchedule(s,seed,agentNuclear?0:720);
+  if(agentNuclear){pathways.research={made:0,checked:0,unchecked:0,backlog:0,history:[]};pathways.researchFault=false;pathways.events=pathways.events.filter(e=>e.id!=='development');}
+  const faultHours=updates.releases.filter(r=>r.fault).map(r=>r.hour);
+  if(pathways.harmfulOperation&&(pathways.controlLost||s.stopDelay>0))faultHours.unshift(0);
+  const incident=faultHours.length>0;
   const powerAffected=incident&&s.capability===2&&s.sharedProvider;
   const spread=regionalSpread(s.connectedness,seed);
   if(pathways.harmfulOperation){spread.reasons=spread.reasons.map((text,i)=>i===0?'The harmful agent disrupts services here.':spread.routes[i]==='shared'?'The same AI-operated system disrupts services here too.':text);}
-  const civilisation=simulateCivilisation(s,incident,powerAffected,pathways,undefined,seed);
+  const civilisation=simulateCivilisation(s,incident,powerAffected,pathways,faultHours,seed);
   // The causal board describes Region 1; the regional display and collapse result cover all six.
   const recoveryModel=civilisation.regions[0].recovery;
   // Duration fields measure observed interruption; only restoredAt states a completion time.
   const restoreHours=recoveryModel.restoredAt??recoveryModel.observedHours;
-  const powerOutage=powerAffected?restoreHours:0;
+  const powerOutage=powerAffected?recoveryModel.frames.filter(f=>f.time<720&&f.power<1).length:0;
   const {hospitalGap,foodGap,emergencyGap}=recoveryModel;
   const endText=recoveryModel.completed?`${restoreHours}h`:'30 days+';
   const affectedRegions=incident?spread.count:0;
@@ -84,28 +98,27 @@ export function simulate(input:Settings,seed=42):Result {
     power:r.exposed&&powerAffected,hospital:r.recovery.healthcareGap>0,
     food:r.recovery.foodGap>0||r.recovery.foodShortageHours>0,emergency:r.recovery.emergencyGap>0}));
   const warning=incident && s.aiAdvice;
-  const verificationMinutes=Math.round(90-0.65*s.verification+(s.independent?0:60*(1-s.fallback/100)));
-  const verificationAvailable=s.independent||s.fallback>0;
-  const timely=verificationAvailable&&verificationMinutes<=s.decisionTime;
-  const verified=warning && timely && draw(seed,'verification')<s.verification/100;
-  const escalation=warning && !verified && s.tension>=50 && draw(seed,'escalation')<s.tension/100;
-  // This expressly stipulates an additional human strategic decision in a fictional case.
-  const nuclear=escalation && s.tension>=80 && draw(seed,'strategic-use')<0.2;
+  const faults=updates.releases.filter(r=>r.fault);
+  const verified=warning&&(!agentWarning||agentVerified)&&faults.every(r=>r.verified);
+  const escalation=agentEscalation||updates.releases.some(r=>r.escalation);
+  const nuclear=agentNuclear||updates.releases.some(r=>r.nuclear);
+  const nuclearAt=agentNuclear?0:updates.releases.find(r=>r.nuclear)?.hour??null;
+
   const nodes:Record<string,NodeState>={};
   const set=(id:string,status:Status,label:string,reason:string,parents:string[],rule:string)=>nodes[id]={status,label,reason,parents,rule};
   set('ai','quiet',['Can suggest changes','Can configure a network','Can coordinate services'][s.capability],
     ['AI proposes changes. It cannot execute them.','AI can make communications changes if permitted.','AI can operate communications and connected power controls if permitted.'][s.capability],[], 'Ability and permission are independent. This fixture describes operational reach, not a universal intelligence scale.');
   set('access',permitted?'exposed':'safe', ['Advice only',s.humanApproval?'Change approved':'Human approval required','Acts without asking'][s.authority],
     permitted?'AI can put its update into the live network. If the update is bad, people using that network lose their connection.':'AI cannot put this update into the live network. People keep their connection.', ['ai'],'A change executes only with network capability AND automatic authority or explicit approval. Advice never grants launch authority.');
-  set('comms',incident?'harm':'safe',incident?'Communications interrupted':'Faulty change held back',
-    pathways.harmfulOperation&&incident?'The agent disrupts the network and keeps undoing repairs while it remains active. Calls and messages fail in the exposed regions.':incident?`AI installs a bad update. Calls and messages stop getting through in ${affectedRegions} regions. ${recoveryModel.completed?`Crews finish repairs after ${restoreHours} hours.`:'It is still down after 30 days.'}`:'The bad update never reaches the network, or there is no bad update in this experiment. Calls and messages keep working.', ['access','development','control'],'Incident = faulty proposal AND network capability AND execution permission. Repair work accumulates each hour, limited by crews, communications, power and consumable supplies. Service failures affect later work. See recovery details.');
+  set('comms',incident?'harm':'safe',incident?'Communications interrupted':'Network keeps working',
+    pathways.harmfulOperation&&incident?'The agent disrupts the network and keeps undoing repairs while it remains active. Calls and messages fail in the exposed regions.':incident?`${updates.releases.filter(r=>r.fault).length} faulty updates reach the network this month. Calls and messages fail in ${affectedRegions} regions. ${recoveryModel.completed?`Crews finish repairs after ${restoreHours} hours.`:'It is still down after 30 days.'}`:'No faulty update reaches the network this month. Calls and messages keep working.', ['access','development','control'],'Incident = faulty proposal AND network capability AND execution permission. Repair work accumulates each hour, limited by crews, communications, power and consumable supplies. Service failures affect later work. See recovery details.');
   set('checks',verified?'safe':warning?'exposed':'quiet',verified?'Warning challenged':warning?(!verificationAvailable?'Check has no working channel':timely?'Check missed the error':'Check arrives too late'):'No warning to check',
     warning&&!verificationAvailable?'The checking team uses the broken network too. Give them an independent channel before extra time or stronger checks can help.':warning?`Verification needs ${verificationMinutes} minutes; the decision window is ${s.decisionTime} minutes. ${verified?'The check succeeds in this case.':timely?'The check is timely but does not catch this case.':'A check cannot protect this decision after its deadline.'}`:'The AI-mediated warning route was not reached.', ['comms'],`A working independent channel or remaining fallback communication is required. Verification time = 90 − 0.65 × check strength, plus up to 60 minutes if checks depend on failed communications. A timely check succeeds when its fixed event draw is below check strength / 100. All are illustrative assumptions.`);
   set('warning',warning&&!verified?'exposed':verified?'safe':'quiet',verified?'False warning rejected':warning?'False warning survives':'Warning route not reached',
     warning?`After communications fail, AI wrongly warns that an attack is coming. ${verified?'People check another source and reject the warning.':'People must decide whether to believe it.'}`:'AI does not send a false attack warning in this case.', ['comms','checks'],'This case introduces a misleading warning if communications fail and AI advice is enabled. It is not an estimate of actual error frequency.');
   set('military',escalation?'harm':warning?'safe':'quiet',escalation?'Crisis escalates':warning?'Escalation interrupted':'No escalation in this case',
     escalation?'Leaders believe the false warning and escalate the crisis. Rival countries are already on edge. People still decide whether to use weapons.':'The false warning does not cause a conflict here: people catch it, tensions are lower, or leaders choose not to act on it.', ['warning'],`Requires surviving warning, rivalry ≥ 50, and the escalation draw < rivalry / 100. This response rule is authored for exploration, not calibrated.`);
-  set('power',powerOutage?'harm':'safe',powerOutage?`Power lost · ${endText}`:'Power stays available',
+  set('power',powerOutage?'harm':'safe',powerOutage?`Power lost · ${powerOutage}h total`:'Power stays available',
     powerOutage?'The power system uses the same network. When that network fails, electricity is cut too.':'Power controls use a separate system, or the bad update was stopped. Electricity stays on.', ['comms'],'Power interruption requires the incident, cross-service capability and a shared control provider. It returns when the shared repair job finishes. Incomplete work remains unresolved at day 30.');
   set('hospital',Math.min(...recoveryModel.frames.map(f=>f.healthcare))<.5?'harm':recoveryModel.healthcareGap?'exposed':'safe',recoveryModel.healthcareGap>hospitalGap?`Care shortfall · ${recoveryModel.healthcareGap}h`:hospitalGap?`Power gap · ${hospitalGap}h${recoveryModel.completed?'':'+'}`:'Critical services sustained',
     recoveryModel.healthcareGap>hospitalGap?`Power alone cannot meet the extra demand. Care falls short for ${recoveryModel.healthcareGap} hours in Region 1. More staff and facilities, or a quicker response, reduce the strain.`:hospitalGap?`Hospital generators last ${s.reserves} hours. Essential equipment ${recoveryModel.completed?`loses power for ${hospitalGap} hours before repairs finish`:`has been without power for ${hospitalGap} hours by day 30, and the outage continues`}.`:powerOutage?`Generators cover the ${powerOutage} hours of outage ${recoveryModel.completed?'before repair':'observed so far'}.`:'The hospital keeps its electricity supply.', ['power','bio'], 'Hospital backup is consumed once each hour without mains power. Gaps count actual unsupported hours inside the 30-day window. Hospital support affects crew capacity on subsequent repair steps.');
@@ -113,7 +126,7 @@ export function simulate(input:Settings,seed=42):Result {
     `${s.fallback}% of communication and tool capacity can work independently. Radios keep crews in touch and independent power keeps some tools working after generators run out.`, [],'Independent capacity supports repair coordination, tools and emergency communications. It also helps military checks if they use the affected channel. It is not a probability of survival.');
   set('repair',!incident?'quiet':recoveryModel.completed?'safe':recoveryModel.status==='stalled'?'harm':'exposed',
     !incident?'No repair needed':recoveryModel.completed?`Repaired · ${restoreHours}h`:`${Math.floor(recoveryModel.progress*100)}% repaired · day 30`,
-    !incident?'The bad update was stopped, so crews do not need to repair this fault.':recoveryModel.completed?`Crews complete ${s.repair} hours of repair work in ${restoreHours} elapsed hours. Power, calls, supplies and the needs of their families affect how much work they can do.`:`After 30 days, ${Math.floor(recoveryModel.progress*100)}% of the work is done. ${recoveryModel.status==='stalled'?'Work has stopped':'Work is continuing slowly'}. The main limit is ${recoveryModel.final.limiting}. This does not tell us when, or whether, later help arrives.`,
+    !incident?'The bad update was stopped, so crews do not need to repair this fault.':recoveryModel.completed?`Crews complete ${recoveryModel.final.target} hours of repair work in ${restoreHours} elapsed hours. Power, calls, supplies and the needs of their families affect how much work they can do.`:`After 30 days, ${Math.floor(recoveryModel.progress*100)}% of the work is done. ${recoveryModel.status==='stalled'?'Work has stopped':'Work is continuing slowly'}. The main limit is ${recoveryModel.final.limiting}. This does not tell us when, or whether, later help arrives.`,
     ['comms','fallback','power','hospital','food','emergency','crews','supplies','aid','control','information'],
     'Each hour: work rate = crew availability × coordination × tool-power support, capped by available repair supplies. Hospital and food support affect crew availability. Optional AI repair advice raises potential work by 25% with network-level ability; materials and tool limits still apply. Every unit of work consumes one unit of repair supplies. The 30-day boundary is a calculation limit, not a collapse threshold.');
   const lowestCrew=Math.min(...recoveryModel.frames.map(f=>f.crews));
@@ -125,11 +138,11 @@ export function simulate(input:Settings,seed=42):Result {
     'Stock next = stock + actual deliveries − actual repair work; stock is never negative. Independent delivery share bypasses grid/network failure; other deliveries require both. Hospital, food and repair-site backup are separate stocks and are not refilled in this experiment.');
   set('recovery',nuclear?'unknown':recoveryModel.completed?'safe':recoveryModel.status==='stalled'?'harm':'exposed',
     nuclear?'Wider recovery unknown':!incident?'Network keeps working':recoveryModel.completed?`Outage ends · ${restoreHours}h`:recoveryModel.status==='stalled'?'Repairs stalled · day 30':'Still repairing · day 30',
-    nuclear?'This calculation covers the original network fault only. It does not calculate the effects of nuclear weapons.':recoveryModel.completed?'The original network and connected power controls work again. Fixing them does not undo harm during the outage.':'Essential services remain disrupted at day 30. Later recovery is unknown; this is not a civilisation-collapse finding.',
+    nuclear?'The service calculation covers network failures only. It does not calculate the effects of nuclear weapons.':recoveryModel.completed?'The network and connected power controls work again after the month’s failures. Fixing them does not undo harm during the outage.':'Essential services remain disrupted at day 30. Later recovery is unknown; this is not a civilisation-collapse finding.',
     ['hospital','food','repair'],'Recovery is recorded only when accumulated work reaches the required workload. There is no automatic repair deadline. Local repair alone does not determine the whole-world outcome.');
-  set('development',!s.researchEnabled?'quiet':pathways.research.unchecked>=1?'exposed':'safe',!s.researchEnabled?'Research loop off':`${Math.floor(pathways.research.unchecked+1e-9)} unchecked releases`,
-    `In the 30 days before this crisis, AI proposes ${pathways.research.made.toFixed(0)} updates. People check ${pathways.research.checked.toFixed(0)}; ${pathways.research.backlog.toFixed(0)} wait. ${pathways.researchFault?'A faulty update goes live before checks finish.':!s.faultyChange?'No faulty update is introduced.':!permitted?'Permission blocks the faulty update.':'No faulty update reaches the network through this research queue.'} Faster research alone does not give AI more access.`,[],
-    'Candidates/day = 4 × min(research speed, compute, experiments) / 100. Evaluation processes up to 4 × evaluation capacity / 100 per day. With permission and no wait-for-checks gate, the remaining queue is released unchecked. One unchecked release is enough to admit the stipulated fault. No recursive intelligence-growth claim.');
+  set('development',updates.releases.some(r=>r.fault)?'harm':updates.waiting?'exposed':updates.made?'safe':'quiet',`${updates.releases.filter(r=>r.fault).length} faulty updates escaped`,
+    `${updates.made} updates produced this month. ${updates.mistakes} contain mistakes; checks catch ${updates.caught}. ${updates.releases.length} go live, including ${updates.releases.filter(r=>r.fault).length} faulty updates. ${updates.waiting+updates.ready} wait for checks or permission. Turn AI project pace to change how much work arrives.`,[],
+    'Up to 20 candidates/day, limited by project pace, computers and experiments. Testing handles up to 4/day. Mistake rate applies to each project; testing effectiveness is the chance a tested mistake is caught. Caught mistakes are withheld. Each escaped mistake adds repair work; stocks are not reset.');
   set('control',pathways.controlLost?'harm':pathways.agentDeployed?'safe':'quiet',pathways.controlLost?'Stop order fails':pathways.agentDeployed?`Stopped after ${s.stopDelay}h`:'Agent route off',
     pathways.controlLost?`The agent keeps operating after people tell it to stop. ${s.harmfulGoal?'It keeps breaking the network, so repairs cannot finish.':'It has no harmful goal in this case. Loss of control alone does not create an outage.'}`:'The agent needs connected-service ability and permission to act. Independent isolation or revocable resources let people stop it.',
     ['ai','access'],'Loss of control requires deployed agent AND resistance to stopping AND outside resources AND no independent stop. A harmful goal is separate. Harmful operation prevents network repair progress until stopped; it does not grant weapons or laboratory access.');
@@ -145,7 +158,7 @@ export function simulate(input:Settings,seed=42):Result {
     'Each donor exports at most aidStrength / 100 packages/hour from its finite separate aid budget. Shipments are shared equally among unfinished regions. One package carries a crew/tool work-hour, a repair-supply unit and a food-support hour. Arrivals enter the next local step. In-transit and unused arrivals are recorded. No donor essential stock is spent.');
   set('collapse',nuclear?'unknown':civilisation.crossedAt!==null?'harm':civilisation.peakRegions?'exposed':'safe',
     nuclear?'Wider outcome unknown':civilisation.crossedAt!==null?civilisation.recoveredAt!==null?'Threshold crossed; recovered':'Collapse threshold crossed':'Collapse threshold not met',
-    `This experiment calls it collapse when power, healthcare and food support are each below 50%, and emergency coordination is below 50%, in at least ${s.collapseRegions} of six equal-weight regions for ${s.collapseDays} continuous days. The longest such period was ${(civilisation.longestHours/24).toFixed(1)} days.`,['governance','hospital','food','power','aid','recovery'],
+    `This model calls it collapse when power, healthcare and food support are each below 50%, and emergency coordination is below 50%, in at least ${s.collapseRegions} of six equal-weight regions for ${s.collapseDays} continuous days. The longest such period was ${(civilisation.longestHours/24).toFixed(1)} days.`,['governance','hospital','food','power','aid','recovery'],
     'An adjustable educational definition, not an established scientific boundary. Extinction, deaths and nuclear damage are not calculated. Earlier threshold crossing is retained after recovery. Recovery requires all regions to regain the basket and coordination for 24 hours.');
   set('bio',pathways.healthIntroduced?(Math.min(...pathways.frames.map(f=>f.healthcare))<.5?'harm':pathways.healthGapHours?'exposed':'safe'):s.healthChallenge?'safe':'quiet',pathways.healthIntroduced?`${pathways.healthGapHours}h demand above capacity`:s.healthChallenge?'Health threat blocked':'Health route off',
     pathways.healthIntroduced?`More people need care at the same time. Peak demand reaches ${pathways.peakDemand.toFixed(1)} times normal. Hospitals also need power; illness reduces the available workforce.`:'This route needs an introduced threat, AI scientific assistance, a malicious actor, physical access and failed screening. Remove any gate and this introduced threat is blocked.',[],
@@ -169,19 +182,24 @@ export function simulate(input:Settings,seed=42):Result {
     ['comms'],'Six fictional regions of equal weight. Connectedness samples a shared rollout and directed service dependencies with fixed named draws. Shared rollout failures are correlated. All reached regions receive the same repair challenge at incident onset; spread timing is not simulated. Higher connectedness also increases the rate at which healthy donors can send aid. Region profiles scale the chosen reserves. Aid follows finite budgets and travel delays. Counts describe this experiment, not countries or population. Military consequences are not included in this regional service display.');
   const events:Result['events']=[...pathways.events];
   const event=(id:string,time:number,parents:string[])=>events.push({id,time,parents,description:nodes[id]?.reason||id});
-  if(incident) {event('comms',0,['access']); if(powerOutage)event('power',0,['comms']);}
-  if(warning) {event('warning',s.decisionTime/60,['comms']);if(verified)event('checks',verificationMinutes/60,['comms']);}
-  if(escalation)event('military',s.decisionTime/60,['warning']);
-  if(nuclear)events.push({id:'nuclear',time:s.decisionTime/60+1,parents:['military'],description:'Additional illustrative strategic-use draw succeeds. This is a human decision, not AI launch authority.'});
-  if(hospitalGap)event('hospital',s.reserves,['power']); if(incident&&recoveryModel.completed)event('repair',restoreHours,['comms','fallback']);
-  if(foodGap)event('food',s.foodBackup,['power']);
-  if(emergencyGap)event('emergency',0,['comms','fallback']);
+  for(const release of updates.releases.filter(r=>r.fault)){
+    events.push({id:'comms',time:release.hour,parents:['development','access'],description:`Update ${release.id} goes wrong on day ${Math.floor(release.hour/24)+1}. It adds another repair job across ${affectedRegions} connected regions.`});
+    if(powerAffected)event('power',release.hour,['comms']);
+    if(s.aiAdvice)event('warning',release.hour+s.decisionTime/60,['comms']);
+    if(release.verified)event('checks',release.hour+verificationMinutes/60,['warning']);
+    if(release.escalation)event('military',release.hour+s.decisionTime/60,['warning']);
+    if(release.nuclear)events.push({id:'nuclear',time:release.hour+s.decisionTime/60+1,parents:['military'],description:'Leaders use nuclear weapons after a false attack warning. The aftermath is outside this service model.'});
+  }
+  if(pathways.harmfulOperation&&incident){event('comms',0,['control']);if(agentWarning)event('warning',s.decisionTime/60,['comms']);if(agentEscalation)event('military',s.decisionTime/60,['warning']);if(agentNuclear)events.push({id:'nuclear',time:s.decisionTime/60+1,parents:['military'],description:'Leaders use nuclear weapons after a false warning caused by the agent disruption.'});}
+  if(hospitalGap)event('hospital',recoveryModel.frames.find(f=>f.hospital<1)?.time??720,['power']); if(incident&&recoveryModel.completed)event('repair',restoreHours,['comms','fallback']);
+  if(foodGap)event('food',recoveryModel.frames.find(f=>f.coldStorage<1)?.time??720,['power']);
+  if(emergencyGap)event('emergency',recoveryModel.frames.find(f=>f.emergency<1)?.time??720,['comms','fallback']);
   for(const m of recoveryModel.milestones)if(m.kind!=='restored')events.push({id:`recovery-${m.kind}`,time:m.time,parents:['repair'],description:m.description});
   if(civilisation.firstAidUsedAt!==null)events.push({id:'mutual-aid',time:civilisation.firstAidUsedAt,parents:['aid'],description:'Outside relief teams and supplies begin supporting repairs and food needs.'});
   if(civilisation.crossedAt!==null)events.push({id:'service-collapse',time:civilisation.crossedAt,parents:['governance','hospital','food','power'],description:'The network-service experiment crosses its chosen multi-region collapse threshold. Nuclear consequences are outside this calculation.'});
   if(civilisation.recoveredAt!==null)events.push({id:'civilisation-recovery',time:civilisation.recoveredAt,parents:['service-collapse','repair','aid'],description:'All six regions have regained essential services and emergency coordination for 24 hours.'});
   events.sort((a,b)=>a.time-b.time||a.id.localeCompare(b.id));
-  return {spread,pathways,civilisation,recoveryModel,nodes,seed,settings:s,incident,powerOutage,hospitalGap,restoreHours,warning,verified,escalation,nuclear,verificationMinutes,verificationAvailable,events,foodGap,emergencyGap,affectedRegions,regions};
+  return {updates,spread,pathways,civilisation,recoveryModel,nodes,seed,settings:s,incident,powerOutage,hospitalGap,restoreHours,warning,verified,escalation,nuclear,verificationMinutes,verificationAvailable,nuclearAt,events,foodGap,emergencyGap,affectedRegions,regions};
 }
 export function summariseChange(before:Result,after:Result):string {
   if(before.settings.collapseDays!==after.settings.collapseDays||before.settings.collapseRegions!==after.settings.collapseRegions)return 'The definition changed. Services and repairs did not change.';
