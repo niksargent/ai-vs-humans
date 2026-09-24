@@ -30,6 +30,8 @@ Open http://127.0.0.1:4173/. The server serves `dist/`; rebuild after source cha
 
 **Replay this world** changes random events while keeping settings fixed. **Explore possible outcomes** compares 128 replays. The model illustrates possible mechanisms; it does not forecast real-world probabilities.
 
+Optional sound effects are controlled by **Sound off / Sound on** in the top header. Sound starts off and is saved separately from your scenario.
+
 ## Tests
 
 ```sh

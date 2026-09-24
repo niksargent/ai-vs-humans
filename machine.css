@@ -130,6 +130,14 @@ html[data-motion=on] .survival-trail{animation:signal-flow 14s linear infinite!i
 @keyframes mission-ticker{0%,15%{transform:translateX(0)}85%,100%{transform:translateX(var(--ticker-distance))}}
 html[data-motion=off] #change-text .mission-message{animation:none!important}
 html[data-motion=off] #change-text{overflow-x:auto;scrollbar-width:thin}
+
+.sound-toggle{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-width:96px;height:31px;padding:0 9px;border:1px solid #6c7687;border-radius:5px;background:linear-gradient(#393e48,#272c34);box-shadow:inset 0 1px 0 #c5d5ee25,0 2px 4px #0007;color:#b7c5d6;white-space:nowrap;font:9px var(--mono);letter-spacing:.35px}
+.sound-toggle svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.sound-toggle .sound-wave{display:none}
+.sound-toggle[aria-pressed="true"]{color:#c8f4e8;border-color:#73bda9;box-shadow:inset 0 1px 0 #c5ffeb28,0 0 10px #75dfbd58,0 2px 4px #0007}
+.sound-toggle[aria-pressed="true"] .sound-wave{display:block}
+.sound-toggle[aria-pressed="true"] .sound-slash{display:none}
+@media(max-width:950px){.header-actions{gap:9px}.sound-toggle{min-width:88px;padding:0 7px;font-size:8px}}
 .survival-story-picker{font:18px var(--sans);color:#d6e5f2}.survival-story-picker h2{font-size:26px;margin:0 0 24px}.survival-story-picker button{display:block;width:100%;text-align:left;padding:22px 25px;margin:0 0 16px;border:1px solid #99bcdf77;border-radius:12px;background:linear-gradient(115deg,#233744,#142129);color:#e5f2ff;cursor:pointer;box-shadow:inset 0 1px #ffffff19,0 0 22px #73b6ff12}.survival-story-picker button:hover,.survival-story-picker button:focus-visible{border-color:#cce5ff;box-shadow:0 0 24px #79b8ff40}.survival-story-picker strong{display:block;font-size:22px;margin-bottom:9px}.survival-story-picker span,.survival-story-picker p{font-size:16px;line-height:1.5;color:#b7cbdc}
 
 /* Five percent less map height, with the adjacent readout reduced by the same amount. */
